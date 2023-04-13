@@ -108,7 +108,7 @@ public class CrusherColumnCalloutFactory implements IColumnCalloutFactory {
 				|| columnName.equals(TF_MOrder.COLUMNNAME_Item2_ID) || columnName.equals(TF_MOrder.COLUMNNAME_Item1_UOM_ID) 
 				|| columnName.equals(TF_MOrder.COLUMNNAME_Item2_UOM_ID) || columnName.equals(TF_MOrder.COLUMNNAME_DateAcct)
 				|| columnName.equals(TF_MOrder.COLUMNNAME_C_BPartner_ID) )) {			
-			list.add(new CalloutOrderQuickEntry_SetPriceUOM());
+			//list.add(new CalloutOrderQuickEntry_SetPriceUOM());
 		}
 		
 		//TF_MOrder - Set Vehicle No
@@ -374,6 +374,7 @@ public class CrusherColumnCalloutFactory implements IColumnCalloutFactory {
 		}
 		
 		if(tableName.equals(TF_MOrder.Table_Name) && (columnName.equals(TF_MOrder.COLUMNNAME_Distance) ||
+				columnName.equals(TF_MOrder.COLUMNNAME_Tonnage) || 
 				columnName.equals(TF_MOrder.COLUMNNAME_Rate) || columnName.equals(TF_MOrder.COLUMNNAME_IsLumpSumRent))) {			
 			list.add(new CalloutOrder_CalcRentAmount());
 			list.add(new CalloutOrder_SOUnitPriceRent());

@@ -55,7 +55,7 @@ public class CalloutOrder_VehicleRent implements IColumnCallout {
 			Tonnage = (BigDecimal) mTab.getValue(TF_MOrder.COLUMNNAME_Tonnage);
 		}
 		
-
+/*
 		if(TF_RentedVehicle_ID>0) {
 			MRentedVehicle rv = new MRentedVehicle(ctx, TF_RentedVehicle_ID, null);
 			Vendor_ID = rv.getC_BPartner_ID();
@@ -104,6 +104,7 @@ public class CalloutOrder_VehicleRent implements IColumnCallout {
 			mTab.setValue(TF_MOrder.COLUMNNAME_Rent_UOM_ID, Rent_UOM_ID == 0 ? null : Rent_UOM_ID);
 			
 		}
+		*/
 		return null;
 	
 	}

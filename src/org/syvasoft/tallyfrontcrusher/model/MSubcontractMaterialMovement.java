@@ -224,7 +224,7 @@ public class MSubcontractMaterialMovement extends X_TF_RMSubcon_Movement {
 		return mov.getTF_RMSubcon_Movement_ID();
 	}
 	
-	/*public static void createMaterialMovement(String trxName, Timestamp dateAcct,int AD_Org_ID, int C_Project_ID,  int C_Invoice_ID, 
+	public static void createMaterialMovement(String trxName, Timestamp dateAcct,int AD_Org_ID, int C_Project_ID,  int C_Invoice_ID, 
 			int C_BPartner_ID, int M_Product_ID, BigDecimal QtyPayment, int TF_WeighmentEntry_ID) {
 		MJobworkProductPrice pp = new Query(Env.getCtx(), MJobworkProductPrice.Table_Name, 
 				"C_Project_ID = ? AND M_Product_ID = ? AND IsActive='Y'", null)
@@ -244,7 +244,7 @@ public class MSubcontractMaterialMovement extends X_TF_RMSubcon_Movement {
 		mov.setTF_WeighmentEntry_ID(TF_WeighmentEntry_ID);
 		mov.setProcessed(true);
 		mov.saveEx();
-	}*/
+	}
 	
 	public static void createMaterialMovement(String trxName, Timestamp dateAcct,int AD_Org_ID, int C_Order_ID, 
 			int C_BPartner_ID, int M_Product_ID, BigDecimal QtyPayment, int TF_WeighmentEntry_ID) {		

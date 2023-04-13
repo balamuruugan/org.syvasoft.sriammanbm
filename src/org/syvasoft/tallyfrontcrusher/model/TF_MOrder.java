@@ -1900,7 +1900,7 @@ public class TF_MOrder extends MOrder {
 		
 		updateQuickOrderLines();
 		//updateVehicleRentLine();
-		updateRentedVehicleRentLine();
+		//updateRentedVehicleRentLine();
 		if(isItem1_IsUpdatePrice() && isSOTrx()) {
 			TF_MOrder.updateProductPricing(getItem1_ID(), getM_PriceList_ID(), getC_BPartner_ID(), 
 					getItem1_Qty(), getItem1_UnitPrice(), getDateOrdered(), isSOTrx());
@@ -2192,7 +2192,7 @@ public class TF_MOrder extends MOrder {
 			setOrderLine(ordLine, getVehicle_ID(), BigDecimal.ONE, getRent_Amt());
 			MResource res = MResource.get(getCtx(), getVehicle().getS_Resource_ID());			
 			ordLine.setUser1_ID(res.get_ValueAsInt("C_ElementValue_ID"));
-			ordLine.setDescription("Vehicle Rent");
+			ordLine.setDescription("Hire charges ");
 			ordLine.saveEx();
 			DB.executeUpdate("UPDATE C_Order SET " + COLUMNNAME_Vehicle_C_OrderLine_ID + " = "
 				+ ordLine.getC_OrderLine_ID() + " WHERE C_Order_ID = " + getC_Order_ID(), get_TrxName());	
@@ -2541,7 +2541,7 @@ public class TF_MOrder extends MOrder {
 				}
 			}
 		}
-		//createSubcontractPurchaseEntry();
+		createSubcontractPurchaseEntry();
 			
 		postCrusherProduction();
 		
@@ -2550,11 +2550,11 @@ public class TF_MOrder extends MOrder {
 		issuePermit();		
 		
 		//if(!createConsolidatedTransportInvoice)
-		//	createTransporterInvoice();
+			createTransporterInvoice();
 		//else
 		//	createTransportMaterialReceipt();
 		
-		createAdditionalInvoice();
+		//createAdditionalInvoice();
 		closeWeighmentEntry();
 		closeTokenNo();
 		closeYardEntry();
@@ -2600,9 +2600,9 @@ public class TF_MOrder extends MOrder {
 			setSalesDiscountAmt(BigDecimal.ZERO);
 		}
 		
-		//TF_MProject proj = TF_MProject.getCrusherProductionSubcontractByWarehouse(getM_Warehouse_ID());
-		//if(proj != null && getC_Project_ID() == 0)
-		//	setC_Project_ID(proj.getC_Project_ID());
+		TF_MProject proj = TF_MProject.getCrusherProductionSubcontractByWarehouse(getM_Warehouse_ID());
+		if(proj != null && getC_Project_ID() == 0)
+			setC_Project_ID(proj.getC_Project_ID());
 		
 		TF_MOrg org = new TF_MOrg(getCtx(), getAD_Org_ID(), get_TrxName());
 		setOrgType(org.getOrgType());
@@ -2721,7 +2721,7 @@ public class TF_MOrder extends MOrder {
 			reverseWeighmentEntry();		
 			reverseTokenNo();
 			reverseYardEntry();
-			//reverseSubcontractPurchaseEntry();
+		    reverseSubcontractPurchaseEntry();
 			reverseIssuedPermit();
 			reversePurchasedPermit();
 			reverseCrusherProduction();
@@ -2783,7 +2783,7 @@ public class TF_MOrder extends MOrder {
 			reverseWeighmentEntry();
 			reverseTokenNo();
 			reverseYardEntry();
-			//reverseSubcontractPurchaseEntry();
+			reverseSubcontractPurchaseEntry();
 			reverseIssuedPermit();
 			reversePurchasedPermit();
 			reverseCrusherProduction();
@@ -2932,7 +2932,7 @@ public class TF_MOrder extends MOrder {
 			TF_MInvoice inv = new TF_MInvoice(getCtx(), getTransporterInvoice_ID(), get_TrxName());
 			if(inv.getDocStatus().equals(DOCSTATUS_Completed))
 				inv.reverseCorrectIt();
-			inv.saveEx();
+			inv.saveEx();			
 		}
 	}
 	
@@ -3125,7 +3125,7 @@ public class TF_MOrder extends MOrder {
 		return m_processMsg;
 	}
 	
-	/*
+	
 	public void createSubcontractPurchaseEntry() {
 		if(!isSOTrx()) {		
 			return;
@@ -3142,7 +3142,7 @@ public class TF_MOrder extends MOrder {
 			}
 			else if(getItem1_ID() == Boulder_ID && getTF_WeighmentEntry_ID() > 0) {
 				MBoulderMovement.createBoulderIssue(get_TrxName(), getDateAcct(), getAD_Org_ID(), getItem1_ID(),
-						getItem1_Qty(), getTF_WeighmentEntry_ID());
+						getItem1_Qty(), getTF_WeighmentEntry_ID(), getM_Warehouse_ID(),0);
 			}
 			return;
 		}
@@ -3160,8 +3160,8 @@ public class TF_MOrder extends MOrder {
 					getTF_WeighmentEntry_ID());
 		
 		//Do not create invoice from sales
-		if(!st.isCreateInvFromSales())
-			return;
+		//if(!st.isCreateInvFromSales())
+		//	return;
 		
 		int priceItem_Id = 0;
 		int priceItem2_id = 0;
@@ -3216,7 +3216,7 @@ public class TF_MOrder extends MOrder {
 		
 		//Invoice Line - Item1
 		MInvoiceLine invLine = new MInvoiceLine(invoice);
-		invLine.setM_Product_ID(getItem1_ID() , true);
+		invLine.setM_Product_ID(priceItem_Id , true);
 		invLine.setQty(getItem1_Qty());					
 		invLine.setPriceActual(purchasePrice);
 		invLine.setPriceList(purchasePrice);
@@ -3224,16 +3224,7 @@ public class TF_MOrder extends MOrder {
 		invLine.setPriceEntered(purchasePrice);		
 		invLine.setC_Tax_ID(1000000);
 		//invLine.setDescription(getItem1_Desc());
-		
-		if(getOrgType().equals(TF_MOrder.ORGTYPE_SandBlockBucket) ||  
-				getOrgType().equals(TF_MOrder.ORGTYPE_SandBlockWeighbridge)) {
-			invLine.set_ValueOfColumn(TF_MOrderLine.COLUMNNAME_SandType, getItem1_SandType());
-			invLine.set_ValueOfColumn(TF_MOrderLine.COLUMNNAME_BucketQty, getItem1_BucketQty());
-			invLine.set_ValueOfColumn(TF_MOrderLine.COLUMNNAME_IsPermitSales, isItem1_IsPermitSales() );
-			invLine.set_ValueOfColumn(TF_MOrderLine.COLUMNNAME_TonePerBucket, getTonePerBucket());
-			invLine.set_ValueOfColumn(TF_MOrderLine.COLUMNNAME_TotalLoad, getItem1_TotalLoad());
-			invLine.set_ValueOfColumn(TF_MOrderLine.COLUMNNAME_TF_VehicleType_ID, getItem1_VehicleType_ID());
-		}
+		invLine.saveEx();		
 		
 		//Invoice Line - Item2
 		MInvoiceLine invLine2 = new MInvoiceLine(invoice);
@@ -3245,16 +3236,9 @@ public class TF_MOrder extends MOrder {
 			invLine2.setPriceLimit(purchasePrice2);
 			invLine2.setPriceEntered(purchasePrice2);		
 			invLine2.setC_Tax_ID(1000000);
-			//invLine2.setDescription(getItem2_Desc());
-			if(getOrgType().equals(TF_MOrder.ORGTYPE_SandBlockBucket) ) {
-				invLine2.set_ValueOfColumn(TF_MOrderLine.COLUMNNAME_SandType, getItem2_SandType());
-				invLine2.set_ValueOfColumn(TF_MOrderLine.COLUMNNAME_BucketQty, getItem2_BucketQty());
-				invLine2.set_ValueOfColumn(TF_MOrderLine.COLUMNNAME_IsPermitSales, isItem2_IsPermitSales() );
-				invLine2.set_ValueOfColumn(TF_MOrderLine.COLUMNNAME_TonePerBucket, getItem2_TonePerBucket());
-				invLine2.set_ValueOfColumn(TF_MOrderLine.COLUMNNAME_TotalLoad, getItem2_TotalLoad());
-			}
+			invLine2.saveEx();
 		}
-		
+		/*
 		//MM Receipt
 		if(st.isCreateMRFromSales()) {
 			MInOut inout = new MInOut(invoice, 1000014, getDateAcct(), getM_Warehouse_ID());
@@ -3293,7 +3277,7 @@ public class TF_MOrder extends MOrder {
 			
 			setSubcon_Receipt_ID(inout.getM_InOut_ID());
 		}
-		
+		*/
 		//Invoice DocAction
 		if (!invoice.processIt(DocAction.ACTION_Complete))
 			throw new AdempiereException("Failed when processing document - " + invoice.getProcessMsg());
@@ -3303,8 +3287,8 @@ public class TF_MOrder extends MOrder {
 		setSubcon_Invoice_ID(invoice.getC_Invoice_ID());
 				
 	}
-	*/
-	/*
+	
+	
 	public void reverseSubcontractPurchaseEntry() {
 		MSubcontractMaterialMovement.deleteSalesEntryMovement(getC_Order_ID(), get_TrxName());
 		MSubcontractMaterialMovement.deleteWeighmentMovement(getTF_WeighmentEntry_ID(), get_TrxName());
@@ -3316,7 +3300,7 @@ public class TF_MOrder extends MOrder {
 				inv.saveEx();
 			}
 			MSubcontractMaterialMovement.deleteInvoiceMovement(inv.getC_Invoice_ID(), get_TrxName());
-			setSubcon_Invoice_ID(0);
+			//setSubcon_Invoice_ID(0);
 		}
 		if(getSubcon_Receipt_ID() > 0) {
 			MInOut io = new MInOut(getCtx(), getSubcon_Receipt_ID(), get_TrxName());
@@ -3328,7 +3312,7 @@ public class TF_MOrder extends MOrder {
 		}
 		
 	}
-	*/
+	
 	//Only for purchase
 	public void purchasePermit() {
 		if(!isSOTrx()) {

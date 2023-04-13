@@ -804,7 +804,7 @@ public class TF_MInvoice extends MInvoice {
 			if (proj.getSubcontractType().equals(TF_MProject.SUBCONTRACTTYPE_QuarryProducton)) {
 				// to update the Subcon_Invoice_ID on TF_Boulder_Receipt while clicking Document
 				// Action button in Inoice (Vendor) screen
-				updateSubContractInvoice(proj);
+				//updateSubContractInvoice(proj);
 			}
 			if (proj.getSubcontractType().equals(TF_MProject.SUBCONTRACTTYPE_CrusherProduction)) {
 				// to update the CP_Invoice_ID on TF_Boulder_Receipt while clicking Document
