@@ -496,7 +496,8 @@ DELETE FROM c_bankstatement;
 UPDATE c_invoice SET c_payment_id = NULL;
 UPDATE c_order SET c_payment_id = NULL;
 
-
+delete from c_pospayment;
+DELETE FROM tf_weighmententry_payment;
 DELETE FROM tf_weighmententry;
 DELETE FROM c_payment WHERE ad_client_id in (11,1000000);
 DELETE FROM c_Invoice WHERE ad_client_id in (11,1000000);

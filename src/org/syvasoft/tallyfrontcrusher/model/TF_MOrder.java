@@ -3146,7 +3146,10 @@ public class TF_MOrder extends MOrder {
 			}
 			return;
 		}
-				
+		
+		if(getC_Project_ID() == 0)
+			return;
+		
 		TF_MProject proj = new TF_MProject(getCtx(), getC_Project_ID(), get_TrxName());
 		if(!TF_MProject.SUBCONTRACTTYPE_CrusherProduction.equals(proj.getSubcontractType()) &&
 				proj.getM_Warehouse_ID() != getM_Warehouse_ID())
