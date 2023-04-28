@@ -969,6 +969,7 @@ public class TF_MOrder extends MOrder {
 	
 	/** Column name Subcon_Invoice_ID */
     public static final String COLUMNNAME_Subcon_Invoice_ID = "Subcon_Invoice_ID";
+    public static final String COLUMNNAME_Subcon_Invoice2_ID = "Subcon_Invoice2_ID";
     public org.compiere.model.I_C_Invoice getSubcon_Invoice() throws RuntimeException
     {
 		return (org.compiere.model.I_C_Invoice)MTable.get(getCtx(), org.compiere.model.I_C_Invoice.Table_Name)
@@ -993,7 +994,28 @@ public class TF_MOrder extends MOrder {
 			 return 0;
 		return ii.intValue();
 	}
+
+	/** Set Subcontractor2 Invoice.
+	@param Subcon_Invoice_ID Subcontractor Invoice	  */
+	public void setSubcon_Invoice2_ID (int Subcon_Invoice2_ID)
+	{
+		if (Subcon_Invoice2_ID < 1) 
+			set_Value (COLUMNNAME_Subcon_Invoice2_ID, null);
+		else 
+			set_Value (COLUMNNAME_Subcon_Invoice2_ID, Integer.valueOf(Subcon_Invoice2_ID));
+	}
 	
+	/** Get Subcontractor2 Invoice.
+		@return Subcontractor Invoice	  */
+	public int getSubcon_Invoice2_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_Subcon_Invoice2_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+	
+
     /** Column name Subcon_Receipt_ID */
     public static final String COLUMNNAME_Subcon_Receipt_ID = "Subcon_Receipt_ID";
     public org.compiere.model.I_M_InOut getSubcon_Receipt() throws RuntimeException
@@ -3288,9 +3310,79 @@ public class TF_MOrder extends MOrder {
 		//End DocAction
 		
 		setSubcon_Invoice_ID(invoice.getC_Invoice_ID());
-				
+		
+		//create subcontractor 2 invoice
+		if(proj.getC_BPartnerSubcon2_ID() > 0) {
+			CreateSubcontract2Invoice(proj.getC_BPartnerSubcon2_ID(), proj.getM_ProductSubcon2_ID(), proj.getPriceSubcon2());
+		}
 	}
 	
+	public void CreateSubcontract2Invoice(int C_BPartnerSubcon2_ID, int M_ProductSubcon2_ID, BigDecimal priceSubcon2) {
+		if(M_ProductSubcon2_ID == 0)
+			throw new AdempiereException("Please specify Product (Subcontract 2) in " + getC_Project().getName() +
+					" Subcontract to Create Subcontract 2 Invoice!");
+		
+		if(priceSubcon2 == null || priceSubcon2.doubleValue() == 0)
+			throw new AdempiereException("Please specify Contract Price (Subcontract 2) in " + getC_Project().getName() +
+					" Subcontract to Create Subcontract 2 Invoice!");
+		
+		int invoiceItem_id = M_ProductSubcon2_ID;
+		
+		//Crusher Production Subcontract Purchase		
+		BigDecimal purchasePrice = priceSubcon2;		
+		
+		TF_MBPartner bp = new TF_MBPartner(getCtx(), C_BPartnerSubcon2_ID, get_TrxName());
+		
+		//Purchase Invoice Header
+		MGLPostingConfig config = MGLPostingConfig.getMGLPostingConfig(getCtx());
+		TF_MInvoice invoice = new TF_MInvoice(getCtx(), 0, get_TrxName());
+		invoice.setClientOrg(getAD_Client_ID(), getAD_Org_ID());
+		invoice.setC_DocTypeTarget_ID(config.getTransporterInvoiceDocType_ID());	// AP Invoice		
+		invoice.setDateInvoiced(getDateAcct());
+		invoice.setDateAcct(getDateAcct());
+		//
+		invoice.setSalesRep_ID(Env.getAD_User_ID(getCtx()));
+		invoice.setTF_WeighmentEntry_ID(getTF_WeighmentEntry_ID());
+		//
+		
+		invoice.setBPartner(bp);
+		invoice.setIsSOTrx(false);		
+		invoice.setVehicleNo(getVehicleNo());
+		
+		String desc = "Sales Entry : " + getDocumentNo();		
+		invoice.setDescription(desc);
+		
+		//Price List
+		int m_M_PriceList_ID = MPriceList.getDefault(getCtx(), true).getM_PriceList_ID();		
+		invoice.setC_Currency_ID(MPriceList.get(getCtx(), m_M_PriceList_ID, get_TrxName()).getC_Currency_ID());
+		if(invoice.getC_Currency_ID() == 0)
+			invoice.setC_Currency_ID(getC_Currency_ID());
+		
+				
+		invoice.saveEx();
+		//End Invoice Header
+		
+		//Invoice Line - Vehicle Rental Charge
+		MInvoiceLine invLine = new MInvoiceLine(invoice);
+		invLine.setM_Product_ID(invoiceItem_id , true);				
+		
+		invLine.setQty(getItem1_Qty());
+		invLine.setDescription(getDescription());
+		
+		invLine.setPriceActual(purchasePrice);
+		invLine.setPriceList(purchasePrice);
+		invLine.setPriceLimit(purchasePrice);
+		invLine.setPriceEntered(purchasePrice);
+		
+		invLine.setC_Tax_ID(1000000);
+		invLine.saveEx();
+		
+		//Invoice DocAction
+		if (!invoice.processIt(DocAction.ACTION_Complete))
+			throw new AdempiereException("Failed when processing document - " + invoice.getProcessMsg());
+		invoice.saveEx();
+		setSubcon_Invoice2_ID(invoice.getC_Invoice_ID());
+	}
 	
 	public void reverseSubcontractPurchaseEntry() {
 		MSubcontractMaterialMovement.deleteSalesEntryMovement(getC_Order_ID(), get_TrxName());
@@ -3312,6 +3404,15 @@ public class TF_MOrder extends MOrder {
 				io.saveEx();
 			}
 			setSubcon_Receipt_ID(0);
+		}
+		if(getSubcon_Invoice2_ID() > 0) {			
+			TF_MInvoice inv = new TF_MInvoice(getCtx(), getSubcon_Invoice2_ID(), get_TrxName());
+			if(inv.getDocStatus().equals(DOCSTATUS_Completed)) {
+				inv.reverseCorrectIt();
+				inv.saveEx();
+			}
+			//MSubcontractMaterialMovement.deleteInvoiceMovement(inv.getC_Invoice_ID(), get_TrxName());
+			//setSubcon_Invoice_ID(0);
 		}
 		
 	}
