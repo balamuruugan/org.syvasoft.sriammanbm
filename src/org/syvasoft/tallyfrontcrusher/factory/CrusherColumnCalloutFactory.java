@@ -369,7 +369,7 @@ public class CrusherColumnCalloutFactory implements IColumnCalloutFactory {
 			list.add(new CalloutOrder_Destination());
 			list.add(new CalloutOrder_RentedVehicle());
 			list.add(new CalloutOrder_CalcRentAmount());
-			list.add(new CalloutOrder_SOUnitPriceRent());
+			//list.add(new CalloutOrder_SOUnitPriceRent());
 			list.add(new CalloutOrder_VehicleRent());
 		}
 		
@@ -377,7 +377,7 @@ public class CrusherColumnCalloutFactory implements IColumnCalloutFactory {
 				columnName.equals(TF_MOrder.COLUMNNAME_Tonnage) || 
 				columnName.equals(TF_MOrder.COLUMNNAME_Rate) || columnName.equals(TF_MOrder.COLUMNNAME_IsLumpSumRent))) {			
 			list.add(new CalloutOrder_CalcRentAmount());
-			list.add(new CalloutOrder_SOUnitPriceRent());
+			//list.add(new CalloutOrder_SOUnitPriceRent());
 		}
 		
 		if(tableName.equals(TF_MOrder.Table_Name) && columnName.equals(TF_MOrder.COLUMNNAME_M_Warehouse_ID)) {
@@ -422,7 +422,7 @@ public class CrusherColumnCalloutFactory implements IColumnCalloutFactory {
 			list.add(new CalloutOrder_WeighmentEntry());			
 			list.add(new CalloutOrder_VehicleRent());
 			list.add(new CalloutOrder_VehicleType());
-			list.add(new CalloutOrder_SOUnitPriceRent());
+			//list.add(new CalloutOrder_SOUnitPriceRent());
 		}
 
 		if(tableName.equals(TF_MOrder.Table_Name) && columnName.equals(TF_MOrder.COLUMNNAME_Item1_VehicleType_ID)) {
@@ -441,12 +441,12 @@ public class CrusherColumnCalloutFactory implements IColumnCalloutFactory {
 					|| columnName.equals(TF_MOrder.COLUMNNAME_Item1_ID))) {
 			list.add(new CalloutOrder_SetTonnage());
 			list.add(new CalloutOrder_CalcRentAmount());
-			list.add(new CalloutOrder_SOUnitPriceRent());
+			//list.add(new CalloutOrder_SOUnitPriceRent());
 			list.add(new CalloutOrder_CalcRentPayable());
 		}
 		
 		if(tableName.equals(TF_MOrder.Table_Name) && columnName.equals(TF_MOrder.COLUMNNAME_Rent_Amt)) {			
-			list.add(new CalloutOrder_SOUnitPriceRent());
+			//list.add(new CalloutOrder_SOUnitPriceRent());
 			list.add(new CalloutOrder_CalcRentPayable());
 		}
 		
@@ -459,7 +459,7 @@ public class CrusherColumnCalloutFactory implements IColumnCalloutFactory {
 				|| columnName.equals(TF_MOrder.COLUMNNAME_IsRentInclusive)
 				|| columnName.equals(TF_MOrder.COLUMNNAME_IsRoyaltyPassInclusive)
 				|| columnName.equals(TF_MOrder.COLUMNNAME_IsRoyaltyPassBreakup)) ) {
-			list.add(new CalloutOrder_SOUnitPriceRent());
+			//list.add(new CalloutOrder_SOUnitPriceRent());
 		}
 		
 		if(tableName.equals(TF_MOrder.Table_Name) && columnName.equals(TF_MOrder.COLUMNNAME_RentMargin)) {
