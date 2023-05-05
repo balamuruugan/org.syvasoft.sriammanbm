@@ -513,5 +513,29 @@ delete from ad_session;
 delete from ad_changelog;
 delete from ad_accesslog;
 delete from ad_error;
+delete from AD_ChangeLog;
 
-SELECT * FROM m_requisition
+DELETE FROM TF_QUARRY;
+DELETE FROM PM_Machinery;
+DELETE FROM TF_DESTINATION;
+
+--- ORGANIZATION DELETE;
+DELETE FROM C_ValidCombination WHERE AD_ORG_ID NOT IN (0,1000000) AND AD_CLIENT_ID = 1000000;
+UPDATE C_ValidCombination SET AD_Org_ID = 0 WHERE AD_CLIENT_ID = 1000000;
+
+DELETE FROM AD_Role_OrgAccess WHERE AD_org_ID NOT IN (0,1000000) AND AD_Client_ID = 1000000;
+DELETE FROM AD_WF_Activity WHERE AD_Client_ID = 1000000;
+DELETE FROM AD_OrgInfo WHERE AD_org_ID NOT IN (0,1000000) AND AD_Client_ID = 1000000;
+DELETE FROM C_UOM WHERE AD_org_ID NOT IN (0,1000000) AND AD_Client_ID = 1000000;
+DELETE FROM ad_user WHERE AD_org_ID NOT IN (0,1000000) AND AD_Client_ID = 1000000;
+DELETE FROM m_product_category_trl WHERE AD_org_ID NOT IN (0,1000000) AND AD_Client_ID = 1000000;
+UPDATE c_elementvalue SET DefaultOrg_ID = 0 WHERE  AD_Client_ID = 1000000;
+DELETE FROM ad_user_roles WHERE AD_org_ID NOT IN (0,1000000) AND AD_Client_ID = 1000000;
+DELETE FROM c_bpartner_location WHERE AD_org_ID NOT IN (0,1000000) AND AD_Client_ID = 1000000;
+DELETE FROM AD_Org WHERE AD_org_ID NOT IN (0,1000000) AND AD_Client_ID = 1000000;
+
+
+--SELECT * FROM AD_Org where AD_Org_ID = 1000003;
+
+
+VACUUM;
