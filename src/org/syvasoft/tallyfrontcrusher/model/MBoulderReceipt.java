@@ -152,6 +152,7 @@ public class MBoulderReceipt extends X_TF_Boulder_Receipt {
 		setDateReceipt(entry.getGrossWeightTime());
 		setDateAcct(entry.getGrossWeightTime());
 		TF_MProject proj = new TF_MProject(getCtx(), entry.getC_Project_ID(), get_TrxName());	
+		TF_MProduct prod = (TF_MProduct) entry.getM_Product();
 		
 		if(proj != null && proj.getC_Project_ID() > 0) {
 			setC_Project_ID(entry.getC_Project_ID());
@@ -160,12 +161,17 @@ public class MBoulderReceipt extends X_TF_Boulder_Receipt {
 			setC_UOM_ID(proj.getC_UOM_ID());
 		}
 		if(entry.getTF_Quarry_ID() > 0) {
-			setTF_Quarry_ID(entry.getTF_Quarry_ID());
-			TF_MProduct prod = (TF_MProduct) entry.getM_Product();
+			setTF_Quarry_ID(entry.getTF_Quarry_ID());			
 			setC_UOM_ID(prod.getC_UOM_ID());
-		}
+		}		
 		setM_Product_ID(entry.getM_Product_ID());		
 		setQtyReceived( new BigDecimal(entry.getNetWeight().doubleValue()/1000));
+		
+		//set qty in transaction qty
+		if(entry.getC_UOM_ID() != prod.getC_UOM_ID()) {
+			setQtyReceived(entry.getNetWeightUnit());
+			setC_UOM_ID(entry.getC_UOM_ID());
+		}
 		
 		setM_Warehouse_ID(entry.getM_Warehouse_ID());
 		
