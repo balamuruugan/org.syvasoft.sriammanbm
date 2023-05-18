@@ -46,7 +46,8 @@ public class CreateCrusherKatingEntryFromWeighment extends SvrProcess {
 				katEntry.setKatingEntryType( config == null ? MCrusherKatingEntry.KATINGENTRYTYPE_Tonnage : config.getKatingEntryType());
 				katEntry.setM_Warehouse_ID(wEntry.getM_Warehouse_ID());
 				katEntry.setM_Product_ID(wEntry.getM_Product_ID());
-				katEntry.setTonnage(wEntry.getNetWeight().divide(new BigDecimal(1000)));
+				//katEntry.setTonnage(wEntry.getNetWeight().divide(new BigDecimal(1000)));
+				katEntry.setTonnage(wEntry.getNetWeightUnit());
 				katEntry.setTotalLoad(BigDecimal.ONE);
 				katEntry.setTF_RentedVehicle_ID(wEntry.getTF_RentedVehicle_ID());
 				katEntry.setTransport_Price(config == null ? BigDecimal.ZERO : config.getTransport_Price());				

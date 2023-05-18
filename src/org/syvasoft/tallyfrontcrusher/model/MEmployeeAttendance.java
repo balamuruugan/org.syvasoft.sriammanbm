@@ -28,6 +28,25 @@ public class MEmployeeAttendance extends X_TF_EmployeeAttendance {
 	}
 
 	@Override
+	protected boolean beforeSave(boolean newRecord) {
+		setAttendance();
+		return super.beforeSave(newRecord);
+	}
+	
+	public void setAttendance() {
+		if(getStatus().equals(STATUS_HalfDay)) {
+			setAttendanceUnit(new BigDecimal(0.5));
+		}
+		else if(getStatus().equals(STATUS_Absent) || getStatus().equals(STATUS_Unknown)) {
+			setAttendanceUnit(BigDecimal.ZERO);
+		}
+		else {
+			setAttendanceUnit(BigDecimal.ONE);
+		}
+			
+	}
+	
+	@Override
 	protected boolean beforeDelete() {
 		if(getBiometricLogs().size() > 0) {
 			throw new AdempiereException("You cannot delete this attendance record since it was generated from Biometric Attendance logs!");

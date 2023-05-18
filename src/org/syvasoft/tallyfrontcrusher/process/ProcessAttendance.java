@@ -3,16 +3,15 @@ package org.syvasoft.tallyfrontcrusher.process;
 import org.compiere.process.DocAction;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
-import org.syvasoft.tallyfrontcrusher.model.MSalaryHdr;
+import org.syvasoft.tallyfrontcrusher.model.MEmployeeAttendanceHdr;
 
-public class ProcessMonthlySalary extends SvrProcess {
+public class ProcessAttendance extends SvrProcess {
 
 	private String docAction="CO";	
-	MSalaryHdr hdr = null;
-	
+	MEmployeeAttendanceHdr att = null;
 	@Override
 	protected void prepare() {
-		ProcessInfoParameter[] para = getParameter();
+		ProcessInfoParameter[] para = getParameter();		
 		
 		for (int i = 0; i < para.length; i++)
 		{						
@@ -21,17 +20,19 @@ public class ProcessMonthlySalary extends SvrProcess {
 				docAction =  para[i].getParameterAsString();
 		}
 		
-		hdr = new MSalaryHdr(getCtx(), getRecord_ID(), get_TrxName());
+		att = new MEmployeeAttendanceHdr(getCtx(), getRecord_ID(), get_TrxName());
+		
 	}
 
 	@Override
 	protected String doIt() throws Exception {
-		if(!hdr.isProcessed())
-			hdr.processIt(DocAction.ACTION_Complete);		
-		else if(docAction.equals("MO"))
-			hdr.reverseIt();
 		
-		hdr.saveEx();
+		if(!att.isProcessed())
+			att.processIt(DocAction.ACTION_Complete);		
+		else if(docAction.equals("MO"))
+			att.reverseIt();		
+		att.saveEx();
+		
 		return null;
 	}
 

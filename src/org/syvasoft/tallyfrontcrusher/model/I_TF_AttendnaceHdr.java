@@ -21,18 +21,18 @@ import java.sql.Timestamp;
 import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Interface for TF_EmployeeAttendance
+/** Generated Interface for TF_AttendnaceHdr
  *  @author iDempiere (generated) 
  *  @version Release 5.1
  */
 @SuppressWarnings("all")
-public interface I_TF_EmployeeAttendance 
+public interface I_TF_AttendnaceHdr 
 {
 
-    /** TableName=TF_EmployeeAttendance */
-    public static final String Table_Name = "TF_EmployeeAttendance";
+    /** TableName=TF_AttendnaceHdr */
+    public static final String Table_Name = "TF_AttendnaceHdr";
 
-    /** AD_Table_ID=1000386 */
+    /** AD_Table_ID=1000510 */
     public static final int Table_ID = MTable.getTable_ID(Table_Name);
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
@@ -64,30 +64,6 @@ public interface I_TF_EmployeeAttendance
 	  */
 	public int getAD_Org_ID();
 
-    /** Column name AttendanceUnit */
-    public static final String COLUMNNAME_AttendanceUnit = "AttendanceUnit";
-
-	/** Set Attendance Unit	  */
-	public void setAttendanceUnit (BigDecimal AttendanceUnit);
-
-	/** Get Attendance Unit	  */
-	public BigDecimal getAttendanceUnit();
-
-    /** Column name C_BPartner_ID */
-    public static final String COLUMNNAME_C_BPartner_ID = "C_BPartner_ID";
-
-	/** Set Business Partner .
-	  * Identifies a Business Partner
-	  */
-	public void setC_BPartner_ID (int C_BPartner_ID);
-
-	/** Get Business Partner .
-	  * Identifies a Business Partner
-	  */
-	public int getC_BPartner_ID();
-
-	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
-
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
 
@@ -117,24 +93,6 @@ public interface I_TF_EmployeeAttendance
 	  */
 	public Timestamp getDateAcct();
 
-    /** Column name DateInTime */
-    public static final String COLUMNNAME_DateInTime = "DateInTime";
-
-	/** Set In Time	  */
-	public void setDateInTime (Timestamp DateInTime);
-
-	/** Get In Time	  */
-	public Timestamp getDateInTime();
-
-    /** Column name DateOutTime */
-    public static final String COLUMNNAME_DateOutTime = "DateOutTime";
-
-	/** Set Out Time	  */
-	public void setDateOutTime (Timestamp DateOutTime);
-
-	/** Get Out Time	  */
-	public Timestamp getDateOutTime();
-
     /** Column name Description */
     public static final String COLUMNNAME_Description = "Description";
 
@@ -148,18 +106,31 @@ public interface I_TF_EmployeeAttendance
 	  */
 	public String getDescription();
 
-    /** Column name Duration */
-    public static final String COLUMNNAME_Duration = "Duration";
+    /** Column name DocStatus */
+    public static final String COLUMNNAME_DocStatus = "DocStatus";
 
-	/** Set Duration.
-	  * Normal Duration in Duration Unit
+	/** Set Document Status.
+	  * The current status of the document
 	  */
-	public void setDuration (String Duration);
+	public void setDocStatus (String DocStatus);
 
-	/** Get Duration.
-	  * Normal Duration in Duration Unit
+	/** Get Document Status.
+	  * The current status of the document
 	  */
-	public String getDuration();
+	public String getDocStatus();
+
+    /** Column name DocumentNo */
+    public static final String COLUMNNAME_DocumentNo = "DocumentNo";
+
+	/** Set Document No.
+	  * Document sequence number of the document
+	  */
+	public void setDocumentNo (String DocumentNo);
+
+	/** Get Document No.
+	  * Document sequence number of the document
+	  */
+	public String getDocumentNo();
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
@@ -174,18 +145,27 @@ public interface I_TF_EmployeeAttendance
 	  */
 	public boolean isActive();
 
-    /** Column name Status */
-    public static final String COLUMNNAME_Status = "Status";
+    /** Column name Processed */
+    public static final String COLUMNNAME_Processed = "Processed";
 
-	/** Set Status.
-	  * Status of the currently running check
+	/** Set Processed.
+	  * The document has been processed
 	  */
-	public void setStatus (String Status);
+	public void setProcessed (boolean Processed);
 
-	/** Get Status.
-	  * Status of the currently running check
+	/** Get Processed.
+	  * The document has been processed
 	  */
-	public String getStatus();
+	public boolean isProcessed();
+
+    /** Column name Processing */
+    public static final String COLUMNNAME_Processing = "Processing";
+
+	/** Set Process Now	  */
+	public void setProcessing (boolean Processing);
+
+	/** Get Process Now	  */
+	public boolean isProcessing();
 
     /** Column name TF_AttendnaceHdr_ID */
     public static final String COLUMNNAME_TF_AttendnaceHdr_ID = "TF_AttendnaceHdr_ID";
@@ -196,36 +176,14 @@ public interface I_TF_EmployeeAttendance
 	/** Get Generate Attendance	  */
 	public int getTF_AttendnaceHdr_ID();
 
-	public I_TF_AttendnaceHdr getTF_AttendnaceHdr() throws RuntimeException;
+    /** Column name TF_AttendnaceHdr_UU */
+    public static final String COLUMNNAME_TF_AttendnaceHdr_UU = "TF_AttendnaceHdr_UU";
 
-    /** Column name TF_EmployeeAttendance_ID */
-    public static final String COLUMNNAME_TF_EmployeeAttendance_ID = "TF_EmployeeAttendance_ID";
+	/** Set TF_AttendnaceHdr_UU	  */
+	public void setTF_AttendnaceHdr_UU (String TF_AttendnaceHdr_UU);
 
-	/** Set Employee Attendance	  */
-	public void setTF_EmployeeAttendance_ID (int TF_EmployeeAttendance_ID);
-
-	/** Get Employee Attendance	  */
-	public int getTF_EmployeeAttendance_ID();
-
-    /** Column name TF_EmployeeAttendance_UU */
-    public static final String COLUMNNAME_TF_EmployeeAttendance_UU = "TF_EmployeeAttendance_UU";
-
-	/** Set TF_EmployeeAttendance_UU	  */
-	public void setTF_EmployeeAttendance_UU (String TF_EmployeeAttendance_UU);
-
-	/** Get TF_EmployeeAttendance_UU	  */
-	public String getTF_EmployeeAttendance_UU();
-
-    /** Column name TF_EmpShift_ID */
-    public static final String COLUMNNAME_TF_EmpShift_ID = "TF_EmpShift_ID";
-
-	/** Set Employee Shift	  */
-	public void setTF_EmpShift_ID (int TF_EmpShift_ID);
-
-	/** Get Employee Shift	  */
-	public int getTF_EmpShift_ID();
-
-	public I_TF_EmpShift getTF_EmpShift() throws RuntimeException;
+	/** Get TF_AttendnaceHdr_UU	  */
+	public String getTF_AttendnaceHdr_UU();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

@@ -17,10 +17,12 @@
 /** Generated Model - DO NOT CHANGE */
 package org.syvasoft.tallyfrontcrusher.model;
 
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
 import org.compiere.model.*;
+import org.compiere.util.Env;
 
 /** Generated Model for TF_EmployeeAttendance
  *  @author iDempiere (generated) 
@@ -31,7 +33,7 @@ public class X_TF_EmployeeAttendance extends PO implements I_TF_EmployeeAttendan
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211106L;
+	private static final long serialVersionUID = 20230516L;
 
     /** Standard Constructor */
     public X_TF_EmployeeAttendance (Properties ctx, int TF_EmployeeAttendance_ID, String trxName)
@@ -39,10 +41,10 @@ public class X_TF_EmployeeAttendance extends PO implements I_TF_EmployeeAttendan
       super (ctx, TF_EmployeeAttendance_ID, trxName);
       /** if (TF_EmployeeAttendance_ID == 0)
         {
+			setAttendanceUnit (Env.ZERO);
+// 0
 			setC_BPartner_ID (0);
 			setDateAcct (new Timestamp( System.currentTimeMillis() ));
-			setDateInTime (new Timestamp( System.currentTimeMillis() ));
-			setDateOutTime (new Timestamp( System.currentTimeMillis() ));
 			setStatus (null);
 // A
 			setTF_EmployeeAttendance_ID (0);
@@ -76,6 +78,23 @@ public class X_TF_EmployeeAttendance extends PO implements I_TF_EmployeeAttendan
         .append(get_ID()).append("]");
       return sb.toString();
     }
+
+	/** Set Attendance Unit.
+		@param AttendanceUnit Attendance Unit	  */
+	public void setAttendanceUnit (BigDecimal AttendanceUnit)
+	{
+		set_Value (COLUMNNAME_AttendanceUnit, AttendanceUnit);
+	}
+
+	/** Get Attendance Unit.
+		@return Attendance Unit	  */
+	public BigDecimal getAttendanceUnit () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_AttendanceUnit);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
 
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
     {
@@ -194,6 +213,8 @@ public class X_TF_EmployeeAttendance extends PO implements I_TF_EmployeeAttendan
 	public static final String STATUS_Leave = "L";
 	/** Unknown = U */
 	public static final String STATUS_Unknown = "U";
+	/** Half Day = HD */
+	public static final String STATUS_HalfDay = "HD";
 	/** Set Status.
 		@param Status 
 		Status of the currently running check
@@ -210,6 +231,31 @@ public class X_TF_EmployeeAttendance extends PO implements I_TF_EmployeeAttendan
 	public String getStatus () 
 	{
 		return (String)get_Value(COLUMNNAME_Status);
+	}
+
+	public I_TF_AttendnaceHdr getTF_AttendnaceHdr() throws RuntimeException
+    {
+		return (I_TF_AttendnaceHdr)MTable.get(getCtx(), I_TF_AttendnaceHdr.Table_Name)
+			.getPO(getTF_AttendnaceHdr_ID(), get_TrxName());	}
+
+	/** Set Generate Attendance.
+		@param TF_AttendnaceHdr_ID Generate Attendance	  */
+	public void setTF_AttendnaceHdr_ID (int TF_AttendnaceHdr_ID)
+	{
+		if (TF_AttendnaceHdr_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_TF_AttendnaceHdr_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_TF_AttendnaceHdr_ID, Integer.valueOf(TF_AttendnaceHdr_ID));
+	}
+
+	/** Get Generate Attendance.
+		@return Generate Attendance	  */
+	public int getTF_AttendnaceHdr_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_TF_AttendnaceHdr_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Employee Attendance.

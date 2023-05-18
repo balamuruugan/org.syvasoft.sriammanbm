@@ -737,7 +737,7 @@ public class TF_MProject extends MProject {
 	public static TF_MProject getCrusherProductionSubcontractByWarehouse(int M_Warehouse_ID) {
 		TF_MProject proj = new Query(Env.getCtx(), TF_MProject.Table_Name, "M_Warehouse_ID=? AND DocStatus='IP' "
 				+ " AND C_Project.TF_SubcontractType_ID IN (SELECT a.TF_SubcontractType_ID FROM TF_SubcontractType a "
-				+ " WHERE a.SubcontractType='QP' )", null)
+				+ " WHERE a.SubcontractType='CP' )", null)
 				.setParameters(M_Warehouse_ID).first();
 		return proj;
 	}
