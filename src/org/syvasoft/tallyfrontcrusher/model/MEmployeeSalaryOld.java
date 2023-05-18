@@ -12,6 +12,7 @@ import org.compiere.model.MJournal;
 import org.compiere.model.MJournalLine;
 import org.compiere.model.MPeriod;
 import org.compiere.model.Query;
+import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
 
@@ -206,14 +207,16 @@ public class MEmployeeSalaryOld extends X_TF_Employee_Salary {
 		setIsBiometricAttendance(false);
 		setIsCalculated(true);
 		
-		String whereClause = " AD_Org_ID = ? AND C_BPartner_ID = ? AND trunc(DateAcct) >= ? AND trunc(DateAcct) <= ? AND Status = 'P'";
+		//String whereClause = " AD_Org_ID = ? AND C_BPartner_ID = ? AND trunc(DateAcct) >= ? AND trunc(DateAcct) <= ? AND Status = 'P'";
+		String sqlPresentDays = "SELECT SUM(AttendanceUnit) FROM TF_EmployeeAttendance where AD_Org_ID = ? AND C_BPartner_ID = ? AND trunc(DateAcct) >= ? AND trunc(DateAcct) <= ?";
 		
-		List<MEmployeeAttendance> attendance = new Query(getCtx(), MEmployeeAttendance.Table_Name, whereClause, get_TrxName())
+		/*List<MEmployeeAttendance> attendance = new Query(getCtx(), MEmployeeAttendance.Table_Name, whereClause, get_TrxName())
 				.setClient_ID()
 				.setParameters(getAD_Org_ID(), getC_BPartner_ID(), getDateFrom(), getDateTo())
 				.list();
+		*/
 		
-		BigDecimal presentdays = new BigDecimal(attendance.size());
+		BigDecimal presentdays = DB.getSQLValueBD(get_TrxName(), sqlPresentDays, getAD_Org_ID(), getC_BPartner_ID(), getDateFrom(), getDateTo());
 		int workingDays =	TimeUtil.getDaysBetween(getDateFrom(), getDateTo()) + 1;
 		setStd_Days(new BigDecimal(workingDays));
 		setMonthlySalaryAmt(bp.getStd_Wage());
