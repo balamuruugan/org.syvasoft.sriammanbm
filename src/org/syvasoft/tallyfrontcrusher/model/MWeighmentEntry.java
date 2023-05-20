@@ -955,7 +955,9 @@ public class MWeighmentEntry extends X_TF_WeighmentEntry {
 			return MT;
 		
 		//Commented to enforce only the MT should be posted in the aggregate and boulder movements.
-		BigDecimal qtyMovement = MT.divide(divideRate,2, RoundingMode.HALF_EVEN);
+		//BigDecimal qtyMovement = MT.divide(divideRate,2, RoundingMode.HALF_EVEN);
+		BigDecimal qtyMovement = getNetWeightUnit();
+		
 		return qtyMovement;
 		//return MT;
 	}

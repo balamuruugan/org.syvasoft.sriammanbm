@@ -1954,7 +1954,7 @@ public class TF_MOrder extends MOrder {
 			multiplyRate = wEntry.getCFTMultiplyRate();
 		
 		if(multiplyRate != null) {						
-			line.setQtyOrdered (qty.divide(multiplyRate,2, RoundingMode.HALF_EVEN));
+			line.setQtyOrdered (qty.divide(multiplyRate,3, RoundingMode.HALF_EVEN));
 		}
 		else {
 			line.setQtyOrdered(qty); 

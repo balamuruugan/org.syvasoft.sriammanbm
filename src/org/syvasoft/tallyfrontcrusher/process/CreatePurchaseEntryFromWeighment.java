@@ -61,6 +61,11 @@ public class CreatePurchaseEntryFromWeighment extends SvrProcess {
 				.setClient_ID().setParameters(RecordId).list();
 		for(MWeighmentEntry wEntry : wEntries) {
 			Trx trx = Trx.get(get_TrxName(), false);
+			if(wEntry.getStatus().equals(MWeighmentEntry.STATUS_Error)) {
+				wEntry.setStatus(MWeighmentEntry.STATUS_Unbilled);
+				wEntry.setDescription(null);
+				wEntry.saveEx();
+			}
 			
 			if(!wEntry.isRequiredTaxInvoicePerLoad())
 				continue;

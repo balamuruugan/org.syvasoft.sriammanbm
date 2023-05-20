@@ -84,6 +84,8 @@ public class CreateShipmentForWE extends SvrProcess {
 					addLog(we.get_Table_ID(), we.getGrossWeightTime(), null, ex.getMessage(), we.get_Table_ID(), we.get_ID());
 				}
 				i=i+1;
+				if(i > 25)
+					break;
 			}
 			else {
 				j=j+1;
