@@ -140,6 +140,7 @@ public class CreateTransporterInvoice extends SvrProcess {
 		int i = 0;
 		MTax tax = new MTax(getCtx(), C_Tax_ID, get_TrxName());
 		BigDecimal taxRate = tax.getRate().divide(new BigDecimal(100), 2, RoundingMode.HALF_EVEN).add(BigDecimal.ONE);
+		boolean automatic_process = MSysConfig.getValue("AUTOMATIC_TRANSPORTER_INVOICE_CREATION","Y").equals("Y");
 		
 		for(TF_MInOutLine ioLine : list) {
 			TF_MInOut io = new TF_MInOut(getCtx(), ioLine.getM_InOut_ID(), get_TrxName());
@@ -171,6 +172,9 @@ public class CreateTransporterInvoice extends SvrProcess {
 				String OnAccountValue = (OnAccount == true)?"Y":"N";
 				sp = trx.setSavepoint(io.getDocumentNo());
 				TF_MOrder ord = new TF_MOrder(getCtx(), 0, get_TrxName());
+				
+				if(automatic_process)
+					dateInvoiced = io.getMovementDate();
 				
 				MDocType dt = new Query(getCtx(),MDocType.Table_Name,"OnAccount = '" + OnAccountValue + "' AND C_DocTypeShipment_ID = " + io.getC_DocType_ID() ,get_TrxName()).first();
 				ord.setAD_Org_ID(io.getAD_Org_ID());
