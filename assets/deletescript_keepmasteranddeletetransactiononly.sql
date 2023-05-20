@@ -130,7 +130,7 @@ UPDATE C_Invoice SET C_Project_ID = null WHERE AD_client_ID = 1000000;
 UPDATE m_inventory SET C_Project_ID = null WHERE AD_Client_ID = 1000000;
 DELETE FROM TF_TripSheet WHERE ad_client_id in (11,1000000);
 UPDATE C_Order SET tf_weighmententry_id = null, C_PROJECT_id = NULL, IssueToSubcontract_ID= null, SUBCON_invoice_id = null,
-TransporterInvoice_ID = null
+TransporterInvoice_ID = null, Item1_C_OrderLine_ID = null, Item2_C_OrderLine_ID = null
  WHERE AD_client_ID = 1000000;
  UPDATE tf_weighmententry SET tf_weighmententryprimary_id = NULL;
  DELETE FROM TF_CrusherKatingEntry;
@@ -493,17 +493,22 @@ DELETE FROM c_allocationline;
 DELETE FROM c_allocationhdr;
 DELETE FROM c_bankstatementline;
 DELETE FROM c_bankstatement;
-UPDATE c_invoice SET c_payment_id = NULL;
-UPDATE c_order SET c_payment_id = NULL;
-
+UPDATE c_invoice SET c_payment_id = NULL,tf_weighmententry_id = null ;
+UPDATE c_order SET c_payment_id = NULL,tf_weighmententry_id = null ;
+UPDATE m_inout SET tf_weighmententry_id = null ;
+UPDATE c_payment SET tf_weighmententry_id = null ;
+delete from tf_fuel_issue;
 delete from c_pospayment;
 DELETE FROM tf_weighmententry_payment;
+DELETE FROM tf_rmsubcon_movement;
 DELETE FROM tf_weighmententry;
-DELETE FROM c_payment WHERE ad_client_id in (11,1000000);
-DELETE FROM c_Invoice WHERE ad_client_id in (11,1000000);
-DELETE FROM m_inout WHERE ad_client_id in (11,1000000);
-DELETE FROM c_order WHERE ad_client_id in (11,1000000);
-DELETE FROM m_inventory WHERE ad_client_id in (11,1000000);
+delete from m_transaction WHERE ad_client_id in (1000000);
+DELETE FROM c_orderline WHERE ad_client_id in (1000000);
+DELETE FROM c_payment WHERE ad_client_id in (1000000);
+DELETE FROM c_Invoice WHERE ad_client_id in (1000000);
+DELETE FROM m_inout WHERE ad_client_id in (1000000);
+DELETE FROM c_order WHERE ad_client_id in (1000000);
+DELETE FROM m_inventory WHERE ad_client_id in (1000000);
 
 DELETE FROM AD_PInstance_Para;
 DELETE FROM AD_PInstance_Log;
@@ -515,9 +520,9 @@ delete from ad_accesslog;
 delete from ad_error;
 delete from AD_ChangeLog;
 
-DELETE FROM TF_QUARRY;
-DELETE FROM PM_Machinery;
-DELETE FROM TF_DESTINATION;
+--DELETE FROM TF_QUARRY;
+--DELETE FROM PM_Machinery;
+--DELETE FROM TF_DESTINATION;
 
 
 /* -- USE IT TO CREATE SEED DB FOR NEW PROJECT
