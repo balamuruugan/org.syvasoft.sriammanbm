@@ -1185,6 +1185,8 @@ public class MWeighmentEntry extends X_TF_WeighmentEntry {
 
 	public int getC_BankAccount_ID() {
 		TF_MUser user = new TF_MUser(getCtx(), getAD_User_ID(), get_TrxName());
+		if(user.getC_BankAccount_ID() == 0)
+			return TF_MBankAccount.getDefaultCashAccount(getCtx(), getAD_Org_ID(), get_TrxName());
 		return user.getC_BankAccount_ID();
 	}
 
