@@ -1066,6 +1066,19 @@ public class MWeighmentEntry extends X_TF_WeighmentEntry {
 		try {
 			String msg = null;
 			
+			//Boulder Receipt
+			List<MBoulderReceipt> boulders = new Query(getCtx(), MBoulderReceipt.Table_Name, "TF_WeighmentEntry_ID = ? AND DocStatus ='CO'", get_TrxName())
+					.setClient_ID()
+					.setParameters(getTF_WeighmentEntry_ID())
+					.list();
+			
+			for(MBoulderReceipt br : boulders) {
+				br.reverseIt();
+				br.setDocStatus(MBoulderReceipt.DOCSTATUS_Voided);
+				br.setProcessed(true);
+				br.saveEx();
+			}
+			
 			
 			//Shipment
 			TF_MInOut io = new Query(getCtx(), TF_MInOut.Table_Name, oWhereClause, get_TrxName())
@@ -1141,18 +1154,6 @@ public class MWeighmentEntry extends X_TF_WeighmentEntry {
 				p.saveEx();
 			}
 			
-			//Boulder Receipt
-			List<MBoulderReceipt> boulders = new Query(getCtx(), MBoulderReceipt.Table_Name, "TF_WeighmentEntry_ID = ? AND DocStatus ='CO'", get_TrxName())
-					.setClient_ID()
-					.setParameters(getTF_WeighmentEntry_ID())
-					.list();
-			
-			for(MBoulderReceipt br : boulders) {
-				br.reverseIt();
-				br.setDocStatus(MBoulderReceipt.DOCSTATUS_Voided);
-				br.setProcessed(true);
-				br.saveEx();
-			}
 			
 			
 			//Stock to Hopper
