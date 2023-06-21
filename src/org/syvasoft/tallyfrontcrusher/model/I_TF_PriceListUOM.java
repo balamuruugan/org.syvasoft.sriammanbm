@@ -39,8 +39,8 @@ public interface I_TF_PriceListUOM
 
     /** AccessLevel = 1 - Org 
      */
-    BigDecimal accessLevel = BigDecimal.valueOf(1);
-
+    BigDecimal accessLevel = BigDecimal.valueOf(3);
+ 
     /** Load Meta Data */
 
     /** Column name AD_Client_ID */
