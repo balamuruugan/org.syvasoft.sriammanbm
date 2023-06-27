@@ -117,7 +117,8 @@ public class MBoulderReceipt extends X_TF_Boulder_Receipt {
 			MSubcontractType st = new MSubcontractType(getCtx(), proj.getTF_SubcontractType_ID(), get_TrxName());
 			if(st.isTrackMaterialMovement() ) {
 				int matMov_ID = MSubcontractMaterialMovement.createRawmaterialMovement(get_TrxName(), getDateAcct(), getAD_Org_ID(),
-						proj.getC_Project_ID(), proj.getC_BPartner_ID(), getM_Product_ID(), getTF_WeighmentEntry_ID(), getQtyReceived(), getTF_Boulder_Wastage_ID(), 0);
+						proj.getC_Project_ID(), proj.getC_BPartner_ID(), getM_Product_ID(), getTF_WeighmentEntry_ID(), getQtyReceived(), getTF_Boulder_Wastage_ID(),
+						0, getTF_Boulder_Receipt_ID());
 				setTF_RMSubcon_Movement_ID(matMov_ID);
 			}
 			
@@ -125,7 +126,7 @@ public class MBoulderReceipt extends X_TF_Boulder_Receipt {
 		else if(TF_SEND_TO_Production.equals(getTF_Send_To())) {
 			
 			int matMov_ID = MSubcontractMaterialMovement.createRawmaterialMovement(get_TrxName(), getDateAcct(), getAD_Org_ID(),
-					0, 0, getM_Product_ID(), getTF_WeighmentEntry_ID(), getQtyReceived(), getTF_Boulder_Wastage_ID(), 0);			
+					0, 0, getM_Product_ID(), getTF_WeighmentEntry_ID(), getQtyReceived(), getTF_Boulder_Wastage_ID(), 0, getTF_Boulder_Receipt_ID());			
 			setTF_RMSubcon_Movement_ID(matMov_ID);
 		}
 		/*else if(getTF_Boulder_Wastage_ID() > 0) {
@@ -140,9 +141,9 @@ public class MBoulderReceipt extends X_TF_Boulder_Receipt {
 				setTF_RMSubcon_Movement_ID(matMov_ID);
 			}
 		}*/
-		else if(getTF_WeighmentEntry_ID() > 0 || getTF_Boulder_Wastage_ID() > 0){
+		else {
 			MBoulderMovement.createBoulderReceipt(get_TrxName(), getDateReceipt(), getAD_Org_ID(), getM_Product_ID(), getQtyReceived(),
-					getTF_WeighmentEntry_ID(), getM_Warehouse_ID(), getTF_Boulder_Wastage_ID(), 0);
+					getTF_WeighmentEntry_ID(), getM_Warehouse_ID(), getTF_Boulder_Wastage_ID(), 0, getTF_Boulder_Receipt_ID());
 		}
 			
 	}
@@ -575,6 +576,8 @@ public class MBoulderReceipt extends X_TF_Boulder_Receipt {
 		
 		MBoulderMovement.deleteBoulderMovement(getTF_WeighmentEntry_ID(), get_TrxName());
 		MBoulderMovement.deleteBoulderMovementFromBoulderWastage(getTF_Boulder_Wastage_ID(), get_TrxName());
+		MBoulderMovement.deleteBoulderMovementFromBoulderReceipt(getTF_Boulder_Receipt_ID(), get_TrxName());
+		MSubcontractMaterialMovement.deleteBoulderReceiptEntry(getTF_Boulder_Receipt_ID(), get_TrxName());
 		
 		if(getTF_WeighmentEntry_ID() > 0) {
 			MWeighmentEntry we = new MWeighmentEntry(getCtx(), getTF_WeighmentEntry_ID(), get_TrxName());

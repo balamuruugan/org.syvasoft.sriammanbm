@@ -1251,7 +1251,7 @@ public class MWeighmentEntry extends X_TF_WeighmentEntry {
 		else if(getWeighmentEntryType().equals(WEIGHMENTENTRYTYPE_StockToCrusher)) {
 			if(getTF_Send_To().equals("P") && p.isGenerateMovementRecord()) {				
 				MBoulderMovement.createBoulderIssue(get_TrxName(), getGrossWeightTime(), getAD_Org_ID(), getM_Product_ID(), qty, getTF_WeighmentEntry_ID(), getM_Warehouse_ID(), 0);
-				MSubcontractMaterialMovement.createRawmaterialMovement(get_TrxName(), getGrossWeightTime(), getAD_Org_ID(), 0, 0, getM_Product_ID(), getTF_WeighmentEntry_ID(), qty, 0, 0);
+				MSubcontractMaterialMovement.createRawmaterialMovement(get_TrxName(), getGrossWeightTime(), getAD_Org_ID(), 0, 0, getM_Product_ID(), getTF_WeighmentEntry_ID(), qty, 0, 0,0);
 			}
 		}
 	}

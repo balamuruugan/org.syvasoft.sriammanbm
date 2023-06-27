@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for TF_RMSubcon_Movement
  *  @author iDempiere (generated) 
- *  @version Release 5.1
+ *  @version Release 10
  */
 @SuppressWarnings("all")
 public interface I_TF_RMSubcon_Movement 
@@ -67,12 +67,12 @@ public interface I_TF_RMSubcon_Movement
     /** Column name C_BPartner_ID */
     public static final String COLUMNNAME_C_BPartner_ID = "C_BPartner_ID";
 
-	/** Set Business Partner .
+	/** Set Business Partner.
 	  * Identifies a Business Partner
 	  */
 	public void setC_BPartner_ID (int C_BPartner_ID);
 
-	/** Get Business Partner .
+	/** Get Business Partner.
 	  * Identifies a Business Partner
 	  */
 	public int getC_BPartner_ID();
@@ -235,6 +235,17 @@ public interface I_TF_RMSubcon_Movement
 
 	/** Get Receipt Qty	  */
 	public BigDecimal getQty_Receipt();
+
+    /** Column name TF_Boulder_Receipt_ID */
+    public static final String COLUMNNAME_TF_Boulder_Receipt_ID = "TF_Boulder_Receipt_ID";
+
+	/** Set Boulder Receipt	  */
+	public void setTF_Boulder_Receipt_ID (int TF_Boulder_Receipt_ID);
+
+	/** Get Boulder Receipt	  */
+	public int getTF_Boulder_Receipt_ID();
+
+	public I_TF_Boulder_Receipt getTF_Boulder_Receipt() throws RuntimeException;
 
     /** Column name TF_Boulder_Wastage_ID */
     public static final String COLUMNNAME_TF_Boulder_Wastage_ID = "TF_Boulder_Wastage_ID";

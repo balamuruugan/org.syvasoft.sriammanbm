@@ -26,7 +26,7 @@ public class ProcessBoulderReceipt extends SvrProcess {
 	protected String doIt() throws Exception {
 		String m_processMsg = null;
 		if(!br.isProcessed()) {
-			m_processMsg = br.processIt(MBoulderReceipt.DOCACTION_Complete);
+			m_processMsg =  br.processIt(MBoulderReceipt.DOCACTION_Complete);
 			if(m_processMsg == null)
 				br.saveEx();
 			else

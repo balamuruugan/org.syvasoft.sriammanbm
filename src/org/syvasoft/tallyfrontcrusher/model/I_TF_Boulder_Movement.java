@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for TF_Boulder_Movement
  *  @author iDempiere (generated) 
- *  @version Release 5.1
+ *  @version Release 10
  */
 @SuppressWarnings("all")
 public interface I_TF_Boulder_Movement 
@@ -199,6 +199,17 @@ public interface I_TF_Boulder_Movement
 
 	/** Get TF_Boulder_Movement_UU	  */
 	public String getTF_Boulder_Movement_UU();
+
+    /** Column name TF_Boulder_Receipt_ID */
+    public static final String COLUMNNAME_TF_Boulder_Receipt_ID = "TF_Boulder_Receipt_ID";
+
+	/** Set Boulder Receipt	  */
+	public void setTF_Boulder_Receipt_ID (int TF_Boulder_Receipt_ID);
+
+	/** Get Boulder Receipt	  */
+	public int getTF_Boulder_Receipt_ID();
+
+	public I_TF_Boulder_Receipt getTF_Boulder_Receipt() throws RuntimeException;
 
     /** Column name TF_Boulder_Wastage_ID */
     public static final String COLUMNNAME_TF_Boulder_Wastage_ID = "TF_Boulder_Wastage_ID";

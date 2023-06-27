@@ -208,7 +208,7 @@ public class MSubcontractMaterialMovement extends X_TF_RMSubcon_Movement {
 	}
 	
 	public static int createRawmaterialMovement(String trxName, Timestamp movementDate, int AD_Org_ID, int C_Project_ID, int C_BPartner_ID, 
-			int M_Product_ID, int TF_WeighmentEntry_ID,  BigDecimal QtyReceipt, int TF_Boulder_Wastage_ID, int TF_CrusherKatingEntry_ID) {
+			int M_Product_ID, int TF_WeighmentEntry_ID,  BigDecimal QtyReceipt, int TF_Boulder_Wastage_ID, int TF_CrusherKatingEntry_ID, int TF_Boulder_Receipt_ID) {
 		MSubcontractMaterialMovement mov = new MSubcontractMaterialMovement(Env.getCtx(), 0, trxName);
 		mov.setAD_Org_ID(AD_Org_ID);
 		mov.setC_Project_ID(C_Project_ID);
@@ -219,6 +219,7 @@ public class MSubcontractMaterialMovement extends X_TF_RMSubcon_Movement {
 		mov.setTF_CrusherKatingEntry_ID(TF_CrusherKatingEntry_ID);
 		mov.setMovementDate(movementDate);
 		mov.setQty_Receipt(QtyReceipt);
+		mov.setTF_Boulder_Receipt_ID(TF_Boulder_Receipt_ID);
 		mov.setProcessed(true);
 		mov.saveEx();
 		return mov.getTF_RMSubcon_Movement_ID();
@@ -280,4 +281,10 @@ public class MSubcontractMaterialMovement extends X_TF_RMSubcon_Movement {
 		String sql = "DELETE FROM TF_RMSubcon_Movement WHERE TF_CrusherKatingEntry_ID = " + TF_CrusherKatingEntry_ID;
 		DB.executeUpdate(sql, trxName);
 	}
+	
+	public static void deleteBoulderReceiptEntry(int TF_Boulder_Receipt_ID, String trxName) {
+		String sql = "DELETE FROM TF_RMSubcon_Movement WHERE TF_Boulder_Receipt_ID = " + TF_Boulder_Receipt_ID;
+		DB.executeUpdate(sql, trxName);
+	}
+	
 }

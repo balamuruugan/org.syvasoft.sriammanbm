@@ -52,7 +52,7 @@ public class MCrusherKatingEntry extends X_TF_CrusherKatingEntry {
 			//int BoulderID = MSysConfig.getIntValue("BOULDER_ID", 1000233, getAD_Client_ID(), getAD_Org_ID());
 			if(product.isGenerateMovementRecord()) {
 				MBoulderMovement.createBoulderIssue(get_TrxName(), getDateAcct(), getAD_Org_ID(), getM_Product_ID(), getTonnage(), getTF_WeighmentEntry_ID(), getM_Warehouse_ID(), getTF_CrusherKatingEntry_ID());
-				MSubcontractMaterialMovement.createRawmaterialMovement(get_TrxName(), getDateAcct(), getAD_Org_ID(), 0, 0, getM_Product_ID(), getTF_WeighmentEntry_ID(), getTonnage(), 0, getTF_CrusherKatingEntry_ID());
+				MSubcontractMaterialMovement.createRawmaterialMovement(get_TrxName(), getDateAcct(), getAD_Org_ID(), 0, 0, getM_Product_ID(), getTF_WeighmentEntry_ID(), getTonnage(), 0, getTF_CrusherKatingEntry_ID(),0);
 				
 				if(!MSysConfig.getValue("AGGREGATE_STOCK_APPROACH","B", getAD_Client_ID(), getAD_Org_ID()).equals("B")) {
 					postCrusherProduction();	
