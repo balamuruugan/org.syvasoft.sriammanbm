@@ -2563,7 +2563,7 @@ public class TF_MOrder extends MOrder {
 				}
 			}
 		}
-		createSubcontractPurchaseEntry();
+		//createSubcontractPurchaseEntry();
 			
 		postCrusherProduction();
 		
