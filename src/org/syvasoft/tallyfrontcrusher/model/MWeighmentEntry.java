@@ -1266,4 +1266,14 @@ public class MWeighmentEntry extends X_TF_WeighmentEntry {
 		
 		return list;
 	}
+	
+	public BigDecimal getTotalMixedPayment() {
+		String sql = "SELECT COALESCE(SUM(Amount),0) FROM TF_WeighmentEntry_Payment WHERE TF_WeighmentEntry_ID = " + getTF_WeighmentEntry_ID();
+		BigDecimal TotalMixedPayment = DB.getSQLValueBDEx(get_TrxName(), sql);
+		return TotalMixedPayment;
+	}
+	
+	public BigDecimal getSalesTotalAmount() {
+		return getTotalAmt().add(getDriverTips()).add(getDiscountAmount());
+	}
 }

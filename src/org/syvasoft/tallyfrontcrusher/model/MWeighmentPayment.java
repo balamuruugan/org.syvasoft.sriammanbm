@@ -1,7 +1,10 @@
 package org.syvasoft.tallyfrontcrusher.model;
 
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Properties;
+
+import org.adempiere.exceptions.AdempiereException;
 
 public class MWeighmentPayment extends X_TF_WeighmentEntry_Payment {
 
@@ -26,4 +29,30 @@ public class MWeighmentPayment extends X_TF_WeighmentEntry_Payment {
 		// TODO Auto-generated constructor stub
 	}
 
+	@Override
+	protected boolean afterSave(boolean newRecord, boolean success) {
+		validatePayment();
+		return super.afterSave(newRecord, success);
+	}
+	
+	/*
+	 * Mixed Payment Validation
+		Before save of Weighment Payment, 
+		1. weighment entry payment rule should be Mixed Payment
+		2. total amount of weighment payment should not exceed the sales amount
+	*/
+	 
+	private void validatePayment() {
+		MWeighmentEntry we = (MWeighmentEntry) getTF_WeighmentEntry();
+		
+		if(!we.getPaymentRule().equals(MWeighmentEntry.PAYMENTRULE_MixedPayment))
+			throw new AdempiereException("Mixed Tender Payment cannot be saved due to invalid payment rule!");
+		
+		BigDecimal SalesAmount = we.getSalesTotalAmount();
+		BigDecimal TotalMixedPayment = we.getTotalMixedPayment();
+		
+		if(SalesAmount.doubleValue() < TotalMixedPayment.doubleValue())
+			throw new AdempiereException("Mixed Tender Payments exceeds the sales amount!");
+		
+	}
 }

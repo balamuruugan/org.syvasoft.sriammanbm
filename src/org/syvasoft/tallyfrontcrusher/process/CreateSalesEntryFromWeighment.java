@@ -99,6 +99,15 @@ public class CreateSalesEntryFromWeighment extends SvrProcess {
 				continue;
 			}
 			
+			if(wEntry.getPaymentRule().equals(MWeighmentEntry.PAYMENTRULE_MixedPayment) &&
+					wEntry.getSalesTotalAmount().doubleValue() != wEntry.getTotalMixedPayment().doubleValue()) {
+				wEntry.setDescription("ERROR: " + "Invalid Mixed Payment Total");;
+				wEntry.saveEx();
+				
+				addLog(wEntry.get_Table_ID(), wEntry.getGrossWeightTime(), null, "Invalid Mixed Payment Total", wEntry.get_Table_ID(), wEntry.get_ID());				
+				continue;
+			}
+			
 			Trx trx = Trx.get(get_TrxName(), false);
 			
 			if(wEntry.getStatus().equals(MWeighmentEntry.STATUS_UnderReview)) {
