@@ -246,6 +246,13 @@ public class MWeighmentEntry extends X_TF_WeighmentEntry {
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
 		//CreateBP();
+		if(getDiscountAmount() == null) {
+			setDiscountAmount(BigDecimal.ZERO);
+		}
+		
+		if(getDriverTips() == null) {
+			setDriverTips(BigDecimal.ZERO);
+		}
 		
 		if(isPermitSales() && isBillPriceGST()) {
 			throw new AdempiereUserError("Please choose either Apply tax or Bill Price GST");
