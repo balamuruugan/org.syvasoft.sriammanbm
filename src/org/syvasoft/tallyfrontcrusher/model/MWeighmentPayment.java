@@ -51,7 +51,7 @@ public class MWeighmentPayment extends X_TF_WeighmentEntry_Payment {
 		BigDecimal SalesAmount = we.getSalesTotalAmount();
 		BigDecimal TotalMixedPayment = we.getTotalMixedPayment();
 		
-		if(SalesAmount.doubleValue() < TotalMixedPayment.doubleValue())
+		if(SalesAmount.add(BigDecimal.ONE).doubleValue() < TotalMixedPayment.doubleValue())
 			throw new AdempiereException("Mixed Tender Payments exceeds the sales amount!");
 		
 	}

@@ -100,8 +100,9 @@ public class CreateSalesEntryFromWeighment extends SvrProcess {
 			}
 			
 			if(wEntry.getPaymentRule().equals(MWeighmentEntry.PAYMENTRULE_MixedPayment) &&
-					wEntry.getSalesTotalAmount().doubleValue() != wEntry.getTotalMixedPayment().doubleValue()) {
+					wEntry.getSalesTotalAmount().subtract(wEntry.getTotalMixedPayment()).abs().doubleValue() > 1) {
 				wEntry.setDescription("ERROR: " + "Invalid Mixed Payment Total");;
+				wEntry.setStatus(MWeighmentEntry.STATUS_Error);
 				wEntry.saveEx();
 				
 				addLog(wEntry.get_Table_ID(), wEntry.getGrossWeightTime(), null, "Invalid Mixed Payment Total", wEntry.get_Table_ID(), wEntry.get_ID());				
