@@ -173,7 +173,7 @@ public class CreateSalesEntryFromWeighment extends SvrProcess {
 							wEntry.setGrossRent(GrossRent);
 						}
 						
-						wEntry.calculateTotalAmount();
+						//wEntry.calculateTotalAmount();
 						wEntry.saveEx();
 					}
 					
