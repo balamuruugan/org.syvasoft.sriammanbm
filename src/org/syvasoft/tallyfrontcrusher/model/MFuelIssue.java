@@ -147,10 +147,12 @@ public class MFuelIssue extends X_TF_Fuel_Issue {
 			if(qtyAvailable==null) {
 				qtyAvailable=BigDecimal.ZERO;
 			}
-			
+						
 			if(qtyAvailable.doubleValue() < getQty().doubleValue() && validateStock && getMovementQty().doubleValue() > 0) {
 				//log.saveError("NotEnoughStocked", Msg.getElement(getCtx(), COLUMNNAME_Qty));
-				throw new AdempiereException("Inventory on Hand : " + qtyAvailable);				
+				MWarehouse w = (MWarehouse) getM_Locator().getM_Warehouse();
+				if(w.isDisallowNegativeInv())
+					throw new AdempiereException("Inventory on Hand : " + qtyAvailable);				
 			}
 
 			if(getC_BPartner_ID() > 0) {
@@ -251,7 +253,7 @@ public class MFuelIssue extends X_TF_Fuel_Issue {
 		inv.setDescription(getDocumentNo());
 		//inv.addDescription(getDescription());
 		inv.setMovementDate(getDateAcct());
-		inv.setUser1_ID(getC_ElementValue_ID());
+		inv.setUser1_ID(getUser1_ID());
 		inv.setC_Project_ID(getC_Project_ID());
 		inv.setDocStatus(DOCSTATUS_Drafted);
 		inv.saveEx();
@@ -363,7 +365,7 @@ public class MFuelIssue extends X_TF_Fuel_Issue {
 		//
 		invoice.setSalesRep_ID(Env.getAD_User_ID(getCtx()));
 		//
-		
+		invoice.setUser1_ID(getUser1_ID());
 		invoice.setBPartner(bp);
 		invoice.setIsSOTrx(false);		
 		
@@ -429,6 +431,7 @@ public class MFuelIssue extends X_TF_Fuel_Issue {
 			MInOut inout = new MInOut(invoice, MGLPostingConfig.getMGLPostingConfig(getCtx()).getMaterialIssue_DocType_ID(), getDateAcct(), getM_Warehouse_ID());
 			inout.setDescription(invoice.getDescription());
 			inout.setMovementType(MInOut.MOVEMENTTYPE_VendorReturns);
+			inout.setUser1_ID(getUser1_ID());
 			inout.saveEx(get_TrxName());
 			
 			//Material Issue Line
@@ -485,6 +488,7 @@ public class MFuelIssue extends X_TF_Fuel_Issue {
 		inout.setC_BPartner_ID(bPartnerID);
 		inout.setC_BPartner_Location_ID(bp.getPrimaryC_BPartner_Location_ID());
 		inout.setAD_User_ID(bp.getAD_User_ID());
+		inout.setUser1_ID(getUser1_ID());
 		inout.setM_Warehouse_ID(getM_Warehouse_ID());
 		inout.setPriorityRule(TF_MInOut.PRIORITYRULE_Medium);
 		inout.setFreightCostRule(TF_MInOut.FREIGHTCOSTRULE_FreightIncluded);		
