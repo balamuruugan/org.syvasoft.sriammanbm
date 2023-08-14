@@ -31,7 +31,7 @@ public class ProcessCreateDetails extends SvrProcess {
 				.setParameters(machinery.getTF_RentedVehicle_ID(),tripsheet.getDateStart(),tripsheet.getDateEnd())
 				.list();
 		
-		int i = 0;
+		
 		for(MWeighmentEntry m : list) {
 	    M_TF_TripSheet_details td = new M_TF_TripSheet_details(getCtx(), 0, get_TrxName());
 	    td.setAD_Org_ID(tripsheet.getAD_Org_ID());
