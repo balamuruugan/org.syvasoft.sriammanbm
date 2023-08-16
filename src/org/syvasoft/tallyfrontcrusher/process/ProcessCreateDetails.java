@@ -12,7 +12,7 @@ import org.syvasoft.tallyfrontcrusher.model.MMachinery;
 import org.syvasoft.tallyfrontcrusher.model.MQuarry;
 import org.syvasoft.tallyfrontcrusher.model.MTripSheet;
 import org.syvasoft.tallyfrontcrusher.model.MWeighmentEntry;
-import org.syvasoft.tallyfrontcrusher.model.M_TF_TripSheet_details;
+import org.syvasoft.tallyfrontcrusher.model.MTripSheetDetails;
 
 public class ProcessCreateDetails extends SvrProcess {
    // MTripSheet tripsheet;
@@ -29,6 +29,7 @@ public class ProcessCreateDetails extends SvrProcess {
 		MTripSheet tripsheet = new MTripSheet(getCtx(), getRecord_ID(), get_TrxName());
 		MMachinery machinery = new MMachinery(getCtx(),tripsheet.getPM_Machinery_ID(), get_TrxName());
 		String Whereclause = " TF_RentedVehicle_ID = ? AND TareWeightTime >= ? AND GrossWeightTime <= ?  "
+				               +"AND Status IN ('CO','CL')"
 		                       +"AND NOT EXISTS (SELECT * FROM TF_TripSheet_details WHERE TF_WeighmentEntry_ID = TF_WeighmentEntry.TF_WeighmentEntry_ID) " ;
 	
 	
@@ -39,18 +40,18 @@ public class ProcessCreateDetails extends SvrProcess {
 		
 		
 		for(MWeighmentEntry m : list) {
-	    M_TF_TripSheet_details td = new M_TF_TripSheet_details(getCtx(), 0, get_TrxName());
+	    MTripSheetDetails td = new MTripSheetDetails(getCtx(), 0, get_TrxName());
 	    MProject pro = new MProject(getCtx(), 0, get_TrxName());
-//	    MQuarry qua	= new MQuarry(getCtx(),0, get_TrxName());
-	   // String quarry = (String) pro.get_Value(TF_Quarry_ID);
+
 	    
 	    td.setAD_Org_ID(tripsheet.getAD_Org_ID());
 	    td.setTF_TripSheet_ID(tripsheet.getTF_TripSheet_ID());
 	    td.setM_Product_ID(m.getM_Product_ID());
-	    
+	    td.setTonnage(m.getNetWeightUnit());
+  
 	    td.setTF_WeighmentEntry_ID(m.getTF_WeighmentEntry_ID());
 	    td.setStartTime(m.getTareWeightTime());
-	 // td.setEndTime(m.getGrossWeightTime());
+
 	    if(m.getWeighmentEntryType().equals("3PR")) {
 	    	td.setFrom1(m.getTF_Quarry().getName());
 	    	td.setTo1(m.getM_Warehouse().getName());
@@ -75,6 +76,9 @@ public class ProcessCreateDetails extends SvrProcess {
 	    	
 	    	
 	    }
+	    
+	    
+	    
 	    
 	    
 	    td.saveEx();

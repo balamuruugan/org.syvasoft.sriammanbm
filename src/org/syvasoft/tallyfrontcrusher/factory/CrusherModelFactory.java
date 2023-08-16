@@ -369,8 +369,8 @@ public class CrusherModelFactory implements IModelFactory {
 			return MPOSPayment.class;
 		else if(MWeighmentPayment.Table_Name.equals(tableName))
 			return MWeighmentPayment.class;
-		else if(M_TF_TripSheet_details.Table_Name.equals(tableName))
-			return M_TF_TripSheet_details.class;
+		else if(MTripSheetDetails.Table_Name.equals(tableName))
+			return MTripSheetDetails.class;
 		return null;
 	}
 
@@ -733,8 +733,8 @@ public class CrusherModelFactory implements IModelFactory {
 			return new MPOSPayment(ctx, Record_ID, trxName);
 		else if(MWeighmentPayment.Table_Name.equals(tableName))
 			return new MWeighmentPayment(ctx, Record_ID, trxName);
-		else if(M_TF_TripSheet_details.Table_Name.equals(tableName))
-			return new M_TF_TripSheet_details(ctx, Record_ID, trxName);
+		else if(MTripSheetDetails.Table_Name.equals(tableName))
+			return new MTripSheetDetails(ctx, Record_ID, trxName);
 		return null;
 	}
 
@@ -1099,8 +1099,8 @@ public class CrusherModelFactory implements IModelFactory {
 			return new MPOSPayment(ctx, rs, trxName);
 		else if(MWeighmentPayment.Table_Name.equals(tableName))
 			return new MWeighmentPayment(ctx, rs, trxName);
-		else if(M_TF_TripSheet_details.Table_Name.equals(tableName))
-			return new M_TF_TripSheet_details(ctx, rs, trxName);
+		else if(MTripSheetDetails.Table_Name.equals(tableName))
+			return new MTripSheetDetails(ctx, rs, trxName);
 		return null;
 	}
 }
