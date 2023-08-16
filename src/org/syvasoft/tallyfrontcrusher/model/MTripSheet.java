@@ -64,6 +64,8 @@ public class MTripSheet extends X_TF_TripSheet {
 		return openingMeter;
 	}
 	
+	
+	
 	public static BigDecimal getOpeningFuel(int vehicle_ID, Timestamp dateReport) {
 		String sql = " SELECT Closing_Fuel FROM TF_TripSheet WHERE Vehicle_ID=? AND DateReport <= ? AND " +
 				" DocStatus = 'CO' ORDER BY DateReport DESC, Updated DESC ";		
