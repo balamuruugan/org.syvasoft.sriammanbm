@@ -271,7 +271,7 @@ public class MWeighmentEntry extends X_TF_WeighmentEntry {
 			if(getTF_RentedVehicle_ID() > 0 && (getVehicleNo() == null || getVehicleNo().length() == 0))
 					setVehicleNo(getTF_RentedVehicle().getVehicleNo());
 			
-			if(getC_BPartner_ID() == 0 && (getPaymentRule().equals(PAYMENTRULE_Cash) ||  getPaymentRule().equals("O"))) {
+			if(getC_BPartner_ID() == 0) { // && (getPaymentRule().equals(PAYMENTRULE_Cash) ||  getPaymentRule().equals("O"))) {
 				TF_MBPartner bp = new Query(getCtx(), TF_MBPartner.Table_Name, " IsPOSCashBP='Y'", get_TrxName())
 						.setClient_ID().first();
 				if(bp != null) {
