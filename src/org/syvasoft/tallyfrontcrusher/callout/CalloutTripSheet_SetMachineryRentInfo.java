@@ -31,6 +31,7 @@ public class CalloutTripSheet_SetMachineryRentInfo implements IColumnCallout {
 		
 		BigDecimal unitRent = MMachineryRentConfig.getRent(ctx, PM_Machinery_ID, Jobwork_Product_ID, rentUOM_ID);		
 		mTab.setValue(MTripSheet.COLUMNNAME_Rate, unitRent);
+		mTab.setValue(MTripSheet.COLUMNNAME_C_UOM_ID, rentUOM_ID);
 		
 		return null;
 	}

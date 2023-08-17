@@ -116,11 +116,14 @@ public class MTripSheet extends X_TF_TripSheet {
 	
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
+		
+		
 		if(getProductDetailIncentiveQty().doubleValue() > 0 ) {
 			updateIncentiveQty();
 		}
 		
 		setTotal_Wage(getEarned_Wage().add(getIncentive()));
+//		setC_UOM_ID(getPM_Machinery().getPM_MachineryType().getC_UOM_ID());
 		
 		//If the Employee is created from Quick Entry
 		if(!getC_BPartner().isEmployee() && getC_BPartner_ID() > 0) {
@@ -144,6 +147,8 @@ public class MTripSheet extends X_TF_TripSheet {
 			//Tripsheet Automation			
 			setStartTime();			
 		}
+		setC_UOM_ID(getPM_Machinery().getPM_MachineryType().getC_UOM_ID());
+		
 		
 		return super.beforeSave(newRecord);
 	}
