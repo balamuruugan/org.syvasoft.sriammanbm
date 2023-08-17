@@ -64,6 +64,45 @@ public class MTripSheet extends X_TF_TripSheet {
 		return openingMeter;
 	}
 	
+	public static Timestamp getstarttime(Properties ctx,String Shift,Timestamp DateReport ,String Trxname) {
+		String Sql = "SELECT TO_TIMESTAMP(TO_Char('"+DateReport +"'::timestamp"+",'yyyy-MM-dd') || ' ' || e.BeginTime,'yyyy-MM-dd HH24:MI') FROM  "
+				+ " TF_EmpShift e  "
+				+ "WHERE e.Shift = '"+Shift+"'";
+		Timestamp starttime = DB.getSQLValueTS(Trxname, Sql );
+		
+			
+		
+		
+		return starttime;
+		
+	}
+	
+	public static Timestamp getendtime(Properties ctx,String Shift,Timestamp DateReport ,String Trxname) {
+		
+		Timestamp endtime = null;
+		
+		if(Shift.equals("D")) {
+		
+		String Sql = "SELECT TO_TIMESTAMP(TO_Char('"+DateReport +"'::timestamp"+",'yyyy-MM-dd') || ' ' || e.EndTime,'yyyy-MM-dd HH24:MI') FROM  "
+				+ " TF_EmpShift e  "
+				+ "WHERE e.Shift = '"+Shift+"'";
+		 endtime = DB.getSQLValueTS(Trxname, Sql );
+		
+		}
+		else if (Shift.equals("N") ) {
+			String Sql = "SELECT TO_TIMESTAMP(TO_Char('"+DateReport +"'::timestamp+1"+",'yyyy-MM-dd') || ' ' || e.EndTime,'yyyy-MM-dd HH24:MI') FROM  "
+					+ " TF_EmpShift e  "
+					+ "WHERE e.Shift = '"+Shift+"'";
+			 endtime = DB.getSQLValueTS(Trxname, Sql );
+			
+		}
+			
+		
+		return endtime;
+		
+		
+	}
+
 	
 	
 	public static BigDecimal getOpeningFuel(int vehicle_ID, Timestamp dateReport) {
@@ -654,6 +693,8 @@ public class MTripSheet extends X_TF_TripSheet {
 		BigDecimal qty = DB.getSQLValueBD(get_TrxName(), sql, getTF_TripSheet_ID(), inc.get_ID());
 		return qty;
 	}
+	
+	
 	
 	public void updateIncentiveQty() {
 		if(getC_BPartner_ID() == 0 || getC_UOM_ID() != 1000069)

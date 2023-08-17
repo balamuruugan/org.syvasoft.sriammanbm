@@ -911,6 +911,11 @@ public class CrusherColumnCalloutFactory implements IColumnCalloutFactory {
 				list.add(new CalloutWeighmentEntry_UOM());
 			}
 		}
+		if(tableName.equals(MTripSheet.Table_Name)) {
+			if(columnName.equals(MTripSheet.COLUMNNAME_Shift)) {
+				list.add(new CalloutTripsheet_time());
+			}
+		}
 		return list != null ? list.toArray(new IColumnCallout[0]) : new IColumnCallout[0];
 	}
 }
