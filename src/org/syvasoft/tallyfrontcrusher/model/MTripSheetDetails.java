@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.List;
 import java.util.Properties;
+
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.Query;
 
 
@@ -38,7 +40,14 @@ public class MTripSheetDetails extends X_TF_TripSheet_details {
 		}
 		if(getLineNo()==10)
 			setOpening_Meter(tripsheet.getOpening_Meter());
+		if(is_ValueChanged(COLUMNNAME_EndTime)) {
+		if(getStartTime().before(getEndTime())) {
+			setEndTime(getEndTime());
+			}else {
+				throw new AdempiereException("End time Should not less than starttime");	
+			}
 		
+		}
 		
 			
 				

@@ -147,7 +147,7 @@ public class MTripSheet extends X_TF_TripSheet {
 			//Tripsheet Automation			
 			setStartTime();			
 		}
-		setC_UOM_ID(getPM_Machinery().getPM_MachineryType().getC_UOM_ID());
+		
 		
 		
 		return super.beforeSave(newRecord);
