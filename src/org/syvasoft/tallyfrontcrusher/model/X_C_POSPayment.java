@@ -26,7 +26,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for C_POSPayment
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_POSPayment")
 public class X_C_POSPayment extends PO implements I_C_POSPayment, I_Persistent 
 {
@@ -34,7 +34,7 @@ public class X_C_POSPayment extends PO implements I_C_POSPayment, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230104L;
+	private static final long serialVersionUID = 20230905L;
 
     /** Standard Constructor */
     public X_C_POSPayment (Properties ctx, int C_POSPayment_ID, String trxName)
@@ -42,7 +42,6 @@ public class X_C_POSPayment extends PO implements I_C_POSPayment, I_Persistent
       super (ctx, C_POSPayment_ID, trxName);
       /** if (C_POSPayment_ID == 0)
         {
-			setC_BankAccount_ID (0);
 			setC_Order_ID (0);
 			setC_POSPayment_ID (0);
 			setC_POSTenderType_ID (0);
@@ -59,7 +58,6 @@ public class X_C_POSPayment extends PO implements I_C_POSPayment, I_Persistent
       super (ctx, C_POSPayment_ID, trxName, virtualColumns);
       /** if (C_POSPayment_ID == 0)
         {
-			setC_BankAccount_ID (0);
 			setC_Order_ID (0);
 			setC_POSPayment_ID (0);
 			setC_POSTenderType_ID (0);
@@ -455,6 +453,34 @@ public class X_C_POSPayment extends PO implements I_C_POSPayment, I_Persistent
 		return false;
 	}
 
+	public org.compiere.model.I_M_InOut getM_InOut() throws RuntimeException
+	{
+		return (org.compiere.model.I_M_InOut)MTable.get(getCtx(), org.compiere.model.I_M_InOut.Table_ID)
+			.getPO(getM_InOut_ID(), get_TrxName());
+	}
+
+	/** Set Shipment/Receipt.
+		@param M_InOut_ID Material Shipment Document
+	*/
+	public void setM_InOut_ID (int M_InOut_ID)
+	{
+		if (M_InOut_ID < 1)
+			set_Value (COLUMNNAME_M_InOut_ID, null);
+		else
+			set_Value (COLUMNNAME_M_InOut_ID, Integer.valueOf(M_InOut_ID));
+	}
+
+	/** Get Shipment/Receipt.
+		@return Material Shipment Document
+	  */
+	public int getM_InOut_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_InOut_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set Micr.
 		@param Micr Combination of routing no, account and check no
 	*/
@@ -547,22 +573,34 @@ public class X_C_POSPayment extends PO implements I_C_POSPayment, I_Persistent
 
 	/** TenderType AD_Reference_ID=214 */
 	public static final int TENDERTYPE_AD_Reference_ID=214;
-	/** Direct Deposit = A */
-	public static final String TENDERTYPE_DirectDeposit = "A";
+	/** Advance = A */
+	public static final String TENDERTYPE_Advance = "A";
+	/** Cash6 = B */
+	public static final String TENDERTYPE_Cash6 = "B";
 	/** Credit Card = C */
 	public static final String TENDERTYPE_CreditCard = "C";
 	/** Direct Debit = D */
 	public static final String TENDERTYPE_DirectDebit = "D";
+	/** Cash2 = E */
+	public static final String TENDERTYPE_Cash2 = "E";
+	/** Cash3 = F */
+	public static final String TENDERTYPE_Cash3 = "F";
 	/** GPay = G */
 	public static final String TENDERTYPE_GPay = "G";
+	/** Cash7 = H */
+	public static final String TENDERTYPE_Cash7 = "H";
 	/** IMPS = I */
 	public static final String TENDERTYPE_IMPS = "I";
+	/** Cash4 = J */
+	public static final String TENDERTYPE_Cash4 = "J";
 	/** Check = K */
 	public static final String TENDERTYPE_Check = "K";
+	/** Cash5 = L */
+	public static final String TENDERTYPE_Cash5 = "L";
 	/** NEFT = N */
 	public static final String TENDERTYPE_NEFT = "N";
-	/** PayTM = P */
-	public static final String TENDERTYPE_PayTM = "P";
+	/** Phone Pay = P */
+	public static final String TENDERTYPE_PhonePay = "P";
 	/** RTGS = R */
 	public static final String TENDERTYPE_RTGS = "R";
 	/** Account = T */
@@ -586,6 +624,27 @@ public class X_C_POSPayment extends PO implements I_C_POSPayment, I_Persistent
 	public String getTenderType()
 	{
 		return (String)get_Value(COLUMNNAME_TenderType);
+	}
+
+	/** Set Weighment Entry.
+		@param TF_WeighmentEntry_ID Weighment Entry
+	*/
+	public void setTF_WeighmentEntry_ID (int TF_WeighmentEntry_ID)
+	{
+		if (TF_WeighmentEntry_ID < 1)
+			set_Value (COLUMNNAME_TF_WeighmentEntry_ID, null);
+		else
+			set_Value (COLUMNNAME_TF_WeighmentEntry_ID, Integer.valueOf(TF_WeighmentEntry_ID));
+	}
+
+	/** Get Weighment Entry.
+		@return Weighment Entry	  */
+	public int getTF_WeighmentEntry_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_TF_WeighmentEntry_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Voice authorization code.

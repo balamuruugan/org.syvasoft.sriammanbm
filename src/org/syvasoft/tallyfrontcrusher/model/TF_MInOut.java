@@ -241,8 +241,10 @@ public class TF_MInOut extends MInOut {
 				we.shipped();
 			else if(!we.getWeighmentEntryType().equals(MWeighmentEntry.WEIGHMENTENTRYTYPE_Sales) && !isSOTrx() )
 				we.shipped();			
-			
 			we.saveEx();
+			
+			if(we.getWeighmentEntryType().equals(MWeighmentEntry.WEIGHMENTENTRYTYPE_Sales) && isSOTrx() && !we.isRequiredTaxInvoicePerLoad())
+				postMixedPayment();
 			
 			if(createConsolidatedTransportInvoice)
 				createTransportMaterialReceipt();
@@ -265,6 +267,23 @@ public class TF_MInOut extends MInOut {
 		return error;
 	}
 	
+	private void postMixedPayment() {
+		// TODO Auto-generated method stub
+		if(!isSOTrx())
+			return;
+		
+		if(getTF_WeighmentEntry_ID() == 0)
+			return;
+		
+		MWeighmentEntry we = new MWeighmentEntry(getCtx(), getTF_WeighmentEntry_ID(), get_TrxName());
+		List<MWeighmentPayment> list = we.getPayments();
+		for(MWeighmentPayment p : list) {
+			MPOSPayment pos =  MPOSPayment.createPOSPayment(getCtx(), getAD_Org_ID(), getM_InOut_ID(), getTF_WeighmentEntry_ID(), p.getTenderType(), p.getAmount(), get_TrxName());
+			pos.processIt();
+			pos.saveEx();
+		}
+	}
+	
 	@Override
 	public boolean reverseCorrectIt() {
 		
@@ -283,6 +302,9 @@ public class TF_MInOut extends MInOut {
 			
 			reverseTransportMaterialReceipt();
 			reverseServiceInvoiceOrder();
+			
+			if(we.getWeighmentEntryType().equals(MWeighmentEntry.WEIGHMENTENTRYTYPE_Sales) && isSOTrx() && !we.isRequiredTaxInvoicePerLoad())
+				reverseMixedPayment();
 		}
 		
 		MSubcontractMaterialMovement.deleteWeighmentMovement(getTF_WeighmentEntry_ID(), get_TrxName());
@@ -766,5 +788,11 @@ public class TF_MInOut extends MInOut {
 			
 			dispensePlanLine.saveEx();
 		}
+	}
+	
+	public void reverseMixedPayment() {
+		if(!isSOTrx())
+			return;
+		MPOSPayment.reversePayments(getCtx(), getM_InOut_ID(), getTF_WeighmentEntry_ID(), get_TrxName());
 	}
 }
