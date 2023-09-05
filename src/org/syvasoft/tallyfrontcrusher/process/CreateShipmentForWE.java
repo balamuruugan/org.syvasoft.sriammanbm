@@ -41,7 +41,7 @@ public class CreateShipmentForWE extends SvrProcess {
 	
 	@Override
 	protected String doIt() throws Exception {
-		String whereClause = " TF_WeighmentEntry.WeighmentEntryType IN ('1SO','2PO') AND TF_WeighmentEntry.Status IN ('CO','CL','PV') AND TF_WeighmentEntry.Processed='N' AND IsSecondary='N' ";
+		String whereClause = " TF_WeighmentEntry.WeighmentEntryType IN ('1SO','2PO') AND TF_WeighmentEntry.Status IN ('CO','CL','PV','P') AND TF_WeighmentEntry.Processed='N' AND IsSecondary='N' ";
 				
 		List<MWeighmentEntry> list = new Query(getCtx(), MWeighmentEntry.Table_Name, whereClause, get_TrxName())
 				.setClient_ID()
@@ -59,6 +59,12 @@ public class CreateShipmentForWE extends SvrProcess {
 			if(!we.getNetWeightUnit().equals(BigDecimal.ZERO))
 			{
 				try {
+					if(we.getPaymentRule().equals(MWeighmentEntry.PAYMENTRULE_MixedPayment) && 
+							we.getSalesTotalAmount().subtract(we.getTotalMixedPayment()).abs().doubleValue() > 1) {
+								we.setStatus(MWeighmentEntry.STATUS_Pending);
+								we.saveEx();
+								continue;
+							}
 					if(we.getWeighmentEntryType().equals(MWeighmentEntry.WEIGHMENTENTRYTYPE_Sales)) {
 						createShipmentDocument(we);
 					}

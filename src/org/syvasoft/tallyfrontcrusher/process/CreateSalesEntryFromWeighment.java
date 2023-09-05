@@ -69,14 +69,14 @@ public class CreateSalesEntryFromWeighment extends SvrProcess {
 		List<MWeighmentEntry> wEntries;
 		
 		if(RecordId > 0) {
-			whereClause =" WeighmentEntryType = '1SO' AND (TF_WeighmentEntry_ID = ? AND TF_WeighmentEntry.Status IN ('UR','CO')) ";
+			whereClause =" WeighmentEntryType = '1SO' AND (TF_WeighmentEntry_ID = ? AND TF_WeighmentEntry.Status IN ('UR','CO','P')) ";
 			wEntries = new Query(getCtx(), MWeighmentEntry.Table_Name, whereClause, get_TrxName())
 					.setClient_ID()
 					.setParameters(RecordId)
 					.list();
 		}
 		else {
-			whereClause =" WeighmentEntryType = '1SO' AND IsRequiredTaxInvoicePerLoad = 'Y' AND ((TF_WeighmentEntry.Status IN ('CO') AND (SELECT OrgType FROM AD_Org WHERE "				
+			whereClause =" WeighmentEntryType = '1SO' AND IsRequiredTaxInvoicePerLoad = 'Y' AND ((TF_WeighmentEntry.Status IN ('CO','P') AND (SELECT OrgType FROM AD_Org WHERE "				
 					+ "AD_Org.AD_Org_ID = TF_WeighmentEntry.AD_Org_ID) = 'C' "
 					//+ " AND (EXISTS (SELECT T_Selection_ID FROM T_Selection WHERE  " + 
 					//" T_Selection.AD_PInstance_ID=? AND T_Selection.T_Selection_ID = TF_WeighmentEntry.TF_WeighmentEntry_ID)) "
@@ -101,8 +101,8 @@ public class CreateSalesEntryFromWeighment extends SvrProcess {
 			
 			if(wEntry.getPaymentRule().equals(MWeighmentEntry.PAYMENTRULE_MixedPayment) &&
 					wEntry.getSalesTotalAmount().subtract(wEntry.getTotalMixedPayment()).abs().doubleValue() > 1) {
-				wEntry.setDescription("ERROR: " + "Invalid Mixed Payment Total");;
-				wEntry.setStatus(MWeighmentEntry.STATUS_Error);
+//				wEntry.setDescription("ERROR: " + "Invalid Mixed Payment Total");;
+				wEntry.setStatus(MWeighmentEntry.STATUS_Pending);
 				wEntry.saveEx();
 				
 				addLog(wEntry.get_Table_ID(), wEntry.getGrossWeightTime(), null, "Invalid Mixed Payment Total", wEntry.get_Table_ID(), wEntry.get_ID());				

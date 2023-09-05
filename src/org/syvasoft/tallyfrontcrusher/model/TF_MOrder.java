@@ -2963,7 +2963,7 @@ public class TF_MOrder extends MOrder {
 		if(getTF_WeighmentEntry_ID() > 0) {
 			MWeighmentEntry weighment = new MWeighmentEntry(getCtx(), getTF_WeighmentEntry_ID(), get_TrxName());
 			
-			if(weighment.getStatus().equals(weighment.STATUS_Unbilled) || weighment.getStatus().equals(weighment.STATUS_UnderReview) ) {
+			if(weighment.getStatus().equals(weighment.STATUS_Unbilled) || weighment.getStatus().equals(weighment.STATUS_UnderReview) || weighment.getStatus().equals(weighment.STATUS_Pending)) {
 				weighment.close();
 				weighment.saveEx();
 			}			

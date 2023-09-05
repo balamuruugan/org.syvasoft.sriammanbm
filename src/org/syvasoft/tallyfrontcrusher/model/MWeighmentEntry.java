@@ -904,6 +904,7 @@ public class MWeighmentEntry extends X_TF_WeighmentEntry {
 	
 	public void shipped() {
 		setProcessed(true);
+		setStatus(STATUS_Unbilled);
 	}
 	
 	public void reverseShipped() {
