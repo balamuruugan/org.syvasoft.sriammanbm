@@ -97,7 +97,7 @@ public class MTripSheetDetails extends X_TF_TripSheet_details {
 				loadtrips.setOpening_Meter(getClosing_Meter());
 				loadtrips.saveEx();
 			}
-				
+			
 	
 	
 		

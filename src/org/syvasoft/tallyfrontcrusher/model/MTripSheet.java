@@ -96,6 +96,13 @@ public class MTripSheet extends X_TF_TripSheet {
 			 endtime = DB.getSQLValueTS(Trxname, Sql );
 			
 		}
+		else if (Shift.equals("F") ) {
+			String Sql = "SELECT TO_TIMESTAMP(TO_Char('"+DateReport +"'::timestamp+1"+",'yyyy-MM-dd') || ' ' || e.EndTime,'yyyy-MM-dd HH24:MI') FROM  "
+					+ " TF_EmpShift e  "
+					+ "WHERE e.Shift = '"+Shift+"'";
+			 endtime = DB.getSQLValueTS(Trxname, Sql );
+			
+		}
 			
 		
 		return endtime;
