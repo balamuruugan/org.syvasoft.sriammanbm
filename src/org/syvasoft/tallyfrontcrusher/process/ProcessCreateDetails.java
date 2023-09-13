@@ -52,10 +52,15 @@ public class ProcessCreateDetails extends SvrProcess {
 	    td.setTF_WeighmentEntry_ID(m.getTF_WeighmentEntry_ID());
 	    td.setStartTime(m.getTareWeightTime());
 
-	    if(m.getWeighmentEntryType().equals("3PR")) {
+	    if(m.getWeighmentEntryType().equals("3PR") && m.getTF_Send_To().equals("P")) {
 	    	td.setFrom1(m.getTF_Quarry().getName());
 	    	//td.setTo1(m.getM_Warehouse().getName());
 	    	td.setTo1(m.getTF_ProductionPlant().getName());
+	    }
+	    else if(m.getWeighmentEntryType().equals("3PR") && m.getTF_Send_To().equals("S")) {
+	    	td.setFrom1(m.getTF_Quarry().getName());
+	    	td.setTo1(m.getM_Warehouse().getName());
+	    	//td.setTo1(m.getTF_ProductionPlant().getName());
 	    }
 	    else if(m.getWeighmentEntryType().equals("1SO")) {
 	    	td.setFrom1(m.getM_Warehouse().getName());
