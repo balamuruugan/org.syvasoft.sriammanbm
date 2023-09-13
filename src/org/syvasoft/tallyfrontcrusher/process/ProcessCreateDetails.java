@@ -41,7 +41,7 @@ public class ProcessCreateDetails extends SvrProcess {
 		
 		for(MWeighmentEntry m : list) {
 	    MTripSheetDetails td = new MTripSheetDetails(getCtx(), 0, get_TrxName());
-	    MProject pro = new MProject(getCtx(), 0, get_TrxName());
+	//    MProject pro = new MProject(getCtx(), 0, get_TrxName());
 
 	    
 	    td.setAD_Org_ID(tripsheet.getAD_Org_ID());
@@ -54,7 +54,8 @@ public class ProcessCreateDetails extends SvrProcess {
 
 	    if(m.getWeighmentEntryType().equals("3PR")) {
 	    	td.setFrom1(m.getTF_Quarry().getName());
-	    	td.setTo1(m.getM_Warehouse().getName());
+	    	//td.setTo1(m.getM_Warehouse().getName());
+	    	td.setTo1(m.getTF_ProductionPlant().getName());
 	    }
 	    else if(m.getWeighmentEntryType().equals("1SO")) {
 	    	td.setFrom1(m.getM_Warehouse().getName());
@@ -72,9 +73,11 @@ public class ProcessCreateDetails extends SvrProcess {
 	    			+ "WHERE w.TF_WeighmentEntry_ID = ?";
 	    	String quarry = DB.getSQLValueString(get_TrxName(), sql, weighment_id);
 	    	td.setFrom1(quarry);
-	    	td.setTo1(m.getM_Warehouse().getName());
-	    	
-	    	
+	    	td.setTo1(m.getTF_ProductionPlant().getName());
+	    }
+	    else if(m.getWeighmentEntryType().equals("5KA")) {
+	    	td.setFrom1(m.getM_Warehouse().getName());
+	    	td.setTo1(m.getTF_ProductionPlant().getName());
 	    }
 	    
 	    
