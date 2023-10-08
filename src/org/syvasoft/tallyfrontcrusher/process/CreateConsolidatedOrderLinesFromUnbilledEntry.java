@@ -34,6 +34,8 @@ import org.syvasoft.tallyfrontcrusher.model.TF_MProduct;
 public class CreateConsolidatedOrderLinesFromUnbilledEntry extends SvrProcess {
 
 	int C_Order_ID = 0;
+	int C_DocTypeTarget_ID = 0;
+	boolean IsTaxIncluded = false;
 	@Override
 	protected void prepare() {
 		ProcessInfoParameter[] para = getParameter();	
@@ -41,7 +43,11 @@ public class CreateConsolidatedOrderLinesFromUnbilledEntry extends SvrProcess {
 		{
 			String name = para[i].getParameterName();
 			if (name.equals("C_Order_ID"))
-				C_Order_ID = para[i].getParameterAsInt();			
+				C_Order_ID = para[i].getParameterAsInt();		
+			else if(name.equals("IsTaxIncluded"))
+				IsTaxIncluded = para[i].getParameterAsBoolean();
+			else if(name.equals("C_DocTypeTarget_ID"))
+				C_DocTypeTarget_ID = para[i].getParameterAsInt();
 		}
 	}
 
@@ -56,7 +62,19 @@ public class CreateConsolidatedOrderLinesFromUnbilledEntry extends SvrProcess {
 		TF_MOrder ord = new TF_MOrder(getCtx(), C_Order_ID, get_TrxName());
 		
 		for (MWeighmentEntry mWeighmentEntry : weighmententries) {
-				//mWeighmentEntry.setGSTRate(tax.getRate());
+				if(C_DocTypeTarget_ID == TF_MOrder.GSTConsolidatedOrderDocType_ID(getCtx()) && 
+						!mWeighmentEntry.isPermitSales() && IsTaxIncluded) {
+					mWeighmentEntry.setIsPermitSales(true);
+					mWeighmentEntry.setIsTaxIncluded(true);
+					mWeighmentEntry.setRentIncludesTax(true);
+					mWeighmentEntry.calculateTotalAmount();
+				}
+				else if(C_DocTypeTarget_ID == TF_MOrder.GSTConsolidatedOrderDocType_ID(getCtx()) && 
+						!mWeighmentEntry.isPermitSales() && !IsTaxIncluded) {
+					mWeighmentEntry.setIsPermitSales(true);
+					mWeighmentEntry.calculateTotalAmount();
+				}
+				
 				mWeighmentEntry.setC_Order_ID(C_Order_ID);
 				mWeighmentEntry.saveEx();
 		}

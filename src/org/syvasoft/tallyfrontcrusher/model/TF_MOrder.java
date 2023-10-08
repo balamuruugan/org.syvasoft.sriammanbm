@@ -3852,9 +3852,9 @@ public class TF_MOrder extends MOrder {
 			ordLine.delete(true, get_TrxName());
 		}
 		
-		String sql = "SELECT m_product_id, c_uom_id, price,gstrate, SUM(netweightunit) netweightunit FROM "  
+		String sql = "SELECT m_product_id, c_uom_id, price,SUM(netweightunit) netweightunit FROM "  
 						+ "( SELECT"
-						+ 	"	w.m_product_id,w.c_uom_id, round(w.amount + w.rent_amt + w.permitpassamount, 2) / w.netweightunit price,w.netweightunit FROM " 
+						+ 	"	w.m_product_id,w.c_uom_id, round(w.amount + w.rent_amt + w.permitpassamount / w.netweightunit, 2) price,w.netweightunit FROM " 
 						+ "	tf_weighmententry w  WHERE w.c_order_id = ?)"
 						+ " we GROUP BY m_product_id, c_uom_id, price;";
 		
@@ -3887,7 +3887,7 @@ public class TF_MOrder extends MOrder {
 				ordLine.setPriceEntered(price);
 				ordLine.setC_Order_ID(getC_Order_ID());
 				TF_MProduct prod = new TF_MProduct(getCtx(), M_Product_ID, get_TrxName());
-				ordLine.setC_Tax_ID(prod.getTax_ID((getC_DocType_ID() == GSTConsolidatedOrderDocType_ID(getCtx())), bp.isInterState()));
+				ordLine.setC_Tax_ID(prod.getTax_ID((getC_DocTypeTarget_ID() == GSTConsolidatedOrderDocType_ID(getCtx())), bp.isInterState()));
 				ordLine.saveEx();
 			}	
 		}
