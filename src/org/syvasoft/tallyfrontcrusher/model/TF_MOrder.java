@@ -3854,7 +3854,7 @@ public class TF_MOrder extends MOrder {
 		
 		String sql = "SELECT m_product_id, c_uom_id, price,SUM(netweightunit) netweightunit FROM "  
 						+ "( SELECT"
-						+ 	"	w.m_product_id,w.c_uom_id, round(w.amount + w.rent_amt + w.permitpassamount / w.netweightunit, 2) price,w.netweightunit FROM " 
+						+ 	"	w.m_product_id,w.c_uom_id, round((w.amount + w.rent_amt + w.permitpassamount) / w.netweightunit, 2) price,w.netweightunit FROM " 
 						+ "	tf_weighmententry w  WHERE w.c_order_id = ?)"
 						+ " we GROUP BY m_product_id, c_uom_id, price;";
 		
