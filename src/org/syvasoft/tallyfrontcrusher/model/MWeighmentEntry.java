@@ -114,7 +114,7 @@ public class MWeighmentEntry extends X_TF_WeighmentEntry {
 			rentExcludesTax = rentprice;	
 		}
 			
-		BigDecimal Amount = qty.multiply(priceExcludesTax);
+		BigDecimal Amount = qty.multiply(priceExcludesTax).setScale(2, RoundingMode.HALF_EVEN);
 		
 		if(passqty != null && passprice != null) {
 			PassAmount = passqty.multiply(passprice);
@@ -124,7 +124,7 @@ public class MWeighmentEntry extends X_TF_WeighmentEntry {
 		BigDecimal RentAmount = BigDecimal.ZERO;// CalloutUtil.getBDValue(mTab, MWeighmentEntry.COLUMNNAME_Rent_Amt);
 		
 		if(passID > 0) {
-			PassAmount = passqty.multiply(passprice);
+			PassAmount = passqty.multiply(passprice).setScale(2, RoundingMode.HALF_EVEN);
 		}
 		
 		if(freight_uom_id > 0) {
@@ -147,6 +147,7 @@ public class MWeighmentEntry extends X_TF_WeighmentEntry {
 			}
 		}
 		
+		RentAmount = RentAmount.setScale(2, RoundingMode.HALF_EVEN);
 		
 		BigDecimal GstAmt = BigDecimal.ZERO;
 		BigDecimal TCSAmt = BigDecimal.ZERO;
@@ -193,7 +194,7 @@ public class MWeighmentEntry extends X_TF_WeighmentEntry {
 			
 		
 		BigDecimal SalesAmt = Amount.add(RentAmount).add(PassAmount).add(GstAmt).add(TCSAmt);
-		GrandTotalAmt = Amount.add(RentAmount).add(PassAmount).add(otherCharges).add(GstAmt).add(TCSAmt).subtract(driverTips).subtract(discountAmt);
+		GrandTotalAmt = Amount.add(RentAmount).add(PassAmount).add(otherCharges).add(GstAmt).add(TCSAmt).subtract(driverTips).subtract(discountAmt).setScale(2, RoundingMode.HALF_EVEN);
 		
 		setPrice(priceExcludesTax);
 		setFreightPrice(rentExcludesTax);	

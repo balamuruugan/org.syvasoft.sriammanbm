@@ -1,15 +1,5 @@
 package org.syvasoft.tallyfrontcrusher.process;
 
-
-import org.compiere.process.SvrProcess;
-
-public class BulkWeighmentUpdate extends SvrProcess {
-
-	@Override
-	protected void prepare() {
-		
-
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.PreparedStatement;
@@ -34,7 +24,6 @@ import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 import org.compiere.util.DB;
 import org.compiere.util.Trx;
-import org.syvasoft.tallyfrontcrusher.model.MPriceListUOM;
 import org.syvasoft.tallyfrontcrusher.model.MWeighmentEntry;
 import org.syvasoft.tallyfrontcrusher.model.TF_MBPartner;
 import org.syvasoft.tallyfrontcrusher.model.TF_MInvoice;
@@ -42,62 +31,55 @@ import org.syvasoft.tallyfrontcrusher.model.TF_MOrder;
 import org.syvasoft.tallyfrontcrusher.model.TF_MOrderLine;
 import org.syvasoft.tallyfrontcrusher.model.TF_MProduct;
 
-public class BulkWeighmentUpdate extends SvrProcess {
+public class CreateConsolidatedOrderLinesFromUnbilledEntry extends SvrProcess {
 
+	int C_Order_ID = 0;
+	int C_DocTypeTarget_ID = 0;
 	boolean IsTaxIncluded = false;
-	private BigDecimal GrossPrice = BigDecimal.ZERO;
-	private BigDecimal GrossRent = BigDecimal.ZERO;
-	
 	@Override
 	protected void prepare() {
-		ProcessInfoParameter[] para = getParameter();
-		
+		ProcessInfoParameter[] para = getParameter();	
 		for (int i = 0; i < para.length; i++)
-		{						
+		{
 			String name = para[i].getParameterName();
-		
-			if(name.equals("IsTaxIncluded"))
+			if (name.equals("C_Order_ID"))
+				C_Order_ID = para[i].getParameterAsInt();		
+			else if(name.equals("IsTaxIncluded"))
 				IsTaxIncluded = para[i].getParameterAsBoolean();
-			if(name.equals("GrossPrice"))
-				GrossPrice = para[i].getParameterAsBigDecimal();
-			if(name.equals("GrossRent"))
-				GrossRent = para[i].getParameterAsBigDecimal();
+			else if(name.equals("C_DocTypeTarget_ID"))
+				C_DocTypeTarget_ID = para[i].getParameterAsInt();
 		}
 	}
 
 	@Override
 	protected String doIt() throws Exception {
-	
-	
-
 		String whereClause = " Status = 'CO' AND (EXISTS (SELECT T_Selection_ID FROM T_Selection WHERE " +
 				" T_Selection.AD_PInstance_ID=? AND T_Selection.T_Selection_ID = TF_WeighmentEntry.TF_WeighmentEntry_ID)) ";
 		
 		List<MWeighmentEntry> weighmententries = new Query(getCtx(),MWeighmentEntry.Table_Name,  whereClause, get_TrxName())
 													.setParameters(getAD_PInstance_ID()) 
 													.list();
-		int i = 0;
+		TF_MOrder ord = new TF_MOrder(getCtx(), C_Order_ID, get_TrxName());
 		
-		for (MWeighmentEntry wEntry : weighmententries) {
-			wEntry.setIsTaxIncluded(IsTaxIncluded);
-			wEntry.setRentIncludesTax(IsTaxIncluded);
-			
-			GrossPrice = (GrossPrice == null) ? BigDecimal.ZERO : GrossPrice;			
-			if(GrossPrice.doubleValue() > 0) {
-				wEntry.setGrossPrice(GrossPrice);
-			}
-			
-			GrossRent = (GrossRent == null) ? BigDecimal.ZERO : GrossRent;			
-			if(GrossRent.doubleValue() > 0) {
-				wEntry.setGrossRent(GrossRent);
-			}
-			
-			wEntry.calculateTotalAmount();
-			wEntry.saveEx();
-			i++;
-		}
+		for (MWeighmentEntry mWeighmentEntry : weighmententries) {
+				if(C_DocTypeTarget_ID == TF_MOrder.GSTConsolidatedOrderDocType_ID(getCtx()) && 
+						!mWeighmentEntry.isPermitSales() && IsTaxIncluded) {
+					mWeighmentEntry.setIsPermitSales(true);
+					mWeighmentEntry.setIsTaxIncluded(true);
+					mWeighmentEntry.setRentIncludesTax(true);
+					mWeighmentEntry.calculateTotalAmount();
+				}
+				else if(C_DocTypeTarget_ID == TF_MOrder.GSTConsolidatedOrderDocType_ID(getCtx()) && 
+						!mWeighmentEntry.isPermitSales() && !IsTaxIncluded) {
+					mWeighmentEntry.setIsPermitSales(true);
+					mWeighmentEntry.calculateTotalAmount();
+				}
 				
-		return i + " Weighment Entries are updated successfully!";
+				mWeighmentEntry.setC_Order_ID(C_Order_ID);
+				mWeighmentEntry.saveEx();
+		}
+		
+		ord.createConsolidatedOrderLines();
+		return null;
 	}
-
 }

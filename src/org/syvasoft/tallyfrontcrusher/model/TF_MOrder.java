@@ -3846,6 +3846,66 @@ public class TF_MOrder extends MOrder {
 		DB.executeUpdateEx(sqlUpdateWEs, params.toArray(), get_TrxName());
 	}
 	
+	public void createConsolidatedOrderLines() {
+		
+		for(MOrderLine ordLine : getLines()) {
+			ordLine.delete(true, get_TrxName());
+		}
+		
+		String sql = "SELECT m_product_id, c_uom_id, price,SUM(netweightunit) netweightunit FROM "  
+						+ "( SELECT"
+						+ 	"	w.m_product_id,w.c_uom_id, round((w.amount + w.rent_amt + w.permitpassamount) / w.netweightunit, 2) price,w.netweightunit FROM " 
+						+ "	tf_weighmententry w  WHERE w.c_order_id = ?)"
+						+ " we GROUP BY m_product_id, c_uom_id, price;";
+		
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		Trx trx = Trx.get(get_TrxName(), false);
+		ArrayList<Object> params = new ArrayList<Object>();
+		params = new ArrayList<Object>();
+		
+		try	{
+			pstmt = DB.prepareStatement(sql, get_TrxName());			
+			params.add(getC_Order_ID());
+			DB.setParameters(pstmt, params.toArray());			
+			rs = pstmt.executeQuery();
+			TF_MBPartner bp = new TF_MBPartner(getCtx(), getC_BPartner_ID(), get_TrxName());
+			
+			while (rs.next()) {
+				int M_Product_ID = rs.getInt("m_product_id");
+				int C_UOM_ID = rs.getInt("c_uom_id");
+				BigDecimal netweightunit = rs.getBigDecimal("netweightunit");
+				BigDecimal price = rs.getBigDecimal("price");
+				
+				TF_MOrderLine ordLine = new TF_MOrderLine(this);
+				ordLine.setM_Product_ID(M_Product_ID, true);
+				ordLine.setC_UOM_ID(C_UOM_ID);								
+				ordLine.setQty(netweightunit);
+				ordLine.setPriceActual(price);
+				ordLine.setPriceList(price);
+				ordLine.setPriceLimit(price);
+				ordLine.setPriceEntered(price);
+				ordLine.setC_Order_ID(getC_Order_ID());
+				TF_MProduct prod = new TF_MProduct(getCtx(), M_Product_ID, get_TrxName());
+				ordLine.setC_Tax_ID(prod.getTax_ID((getC_DocTypeTarget_ID() == GSTConsolidatedOrderDocType_ID(getCtx())), bp.isInterState()));
+				ordLine.saveEx();
+			}	
+		}
+		catch (SQLException e) {
+			throw new DBException(e, sql.toString());
+		}
+		finally	{
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
+		}
+		/*
+		params = new ArrayList<Object>();
+		String sqlUpdateWEs = "UPDATE tf_weighmententry SET Status = 'CL' WHERE  tf_weighmententry.c_order_id = ? AND  Status = 'CO'";
+		params = new ArrayList<Object>();
+		params.add(getC_Order_ID());		
+		DB.executeUpdateEx(sqlUpdateWEs, params.toArray(), get_TrxName());*/
+	}
+	
 	
 	public void voidTaxInvoice() {
 		if(getTF_TaxInvoice_ID() > 0) {
@@ -4213,7 +4273,10 @@ public class TF_MOrder extends MOrder {
 		if(getTF_WeighmentEntry_ID() > 0)
 			return;
 		
-		String whereClause = " TF_WeighmentEntry_ID IN (SELECT i.TF_WeighmentEntry_ID FROM M_InOut i WHERE i.C_Order_ID = ? ) AND Processed = 'Y' AND Status='CO'";
+		//String whereClause = " TF_WeighmentEntry_ID IN (SELECT i.TF_WeighmentEntry_ID FROM M_InOut i WHERE i.C_Order_ID = ? ) AND Processed = 'Y' AND Status='CO'";
+		String whereClause = " C_Order_ID = ? AND Status='CO'";
+	
+
 		List<MWeighmentEntry> wEntries = new Query(getCtx(), MWeighmentEntry.Table_Name, whereClause, get_TrxName())
 				.setClient_ID()
 				.setParameters(getC_Order_ID())
@@ -4228,12 +4291,15 @@ public class TF_MOrder extends MOrder {
 		if(getTF_WeighmentEntry_ID() > 0 || getC_DocTypeTarget_ID() == getC_TransporterInvoiceDocType_ID() || getC_DocTypeTarget_ID() == getC_ServiceInvoiceDocType_ID())
 			return;
 		
-		String whereClause = " TF_WeighmentEntry_ID IN (SELECT i.TF_WeighmentEntry_ID FROM M_InOut i WHERE i.C_Order_ID = ? ) AND Processed = 'Y' AND Status='CL'";
+		//String whereClause = " TF_WeighmentEntry_ID IN (SELECT i.TF_WeighmentEntry_ID FROM M_InOut i WHERE i.C_Order_ID = ? ) AND Processed = 'Y' AND Status='CL'";
+		
+		String whereClause = " C_Order_ID = ? AND Status='CL'";
 		List<MWeighmentEntry> wEntries = new Query(getCtx(), MWeighmentEntry.Table_Name, whereClause, get_TrxName())
 				.setClient_ID()
 				.setParameters(getC_Order_ID())
 				.list();
 		for(MWeighmentEntry we : wEntries) {
+			we.setC_Order_ID(0);
 			we.reverse();
 			we.saveEx();
 		}
