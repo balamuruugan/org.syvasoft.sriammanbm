@@ -1,5 +1,15 @@
 package org.syvasoft.tallyfrontcrusher.process;
 
+
+import org.compiere.process.SvrProcess;
+
+public class BulkWeighmentUpdate extends SvrProcess {
+
+	@Override
+	protected void prepare() {
+		
+
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.PreparedStatement;
@@ -57,6 +67,9 @@ public class BulkWeighmentUpdate extends SvrProcess {
 
 	@Override
 	protected String doIt() throws Exception {
+	
+	
+
 		String whereClause = " Status = 'CO' AND (EXISTS (SELECT T_Selection_ID FROM T_Selection WHERE " +
 				" T_Selection.AD_PInstance_ID=? AND T_Selection.T_Selection_ID = TF_WeighmentEntry.TF_WeighmentEntry_ID)) ";
 		
@@ -89,4 +102,5 @@ public class BulkWeighmentUpdate extends SvrProcess {
 				
 		return i + " Weighment Entries are updated successfully!";
 	}
+
 }
