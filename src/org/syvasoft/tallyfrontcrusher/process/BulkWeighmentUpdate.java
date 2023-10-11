@@ -66,8 +66,11 @@ public class BulkWeighmentUpdate extends SvrProcess {
 		int i = 0;
 		
 		for (MWeighmentEntry wEntry : weighmententries) {
-			wEntry.setIsTaxIncluded(IsTaxIncluded);
-			wEntry.setRentIncludesTax(IsTaxIncluded);
+			
+			if(wEntry.isPermitSales()) {
+				wEntry.setIsTaxIncluded(IsTaxIncluded);
+				wEntry.setRentIncludesTax(IsTaxIncluded);
+			}
 			
 			GrossPrice = (GrossPrice == null) ? BigDecimal.ZERO : GrossPrice;			
 			if(GrossPrice.doubleValue() > 0) {
