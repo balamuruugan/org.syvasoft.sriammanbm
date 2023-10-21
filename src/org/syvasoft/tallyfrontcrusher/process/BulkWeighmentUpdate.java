@@ -1,46 +1,14 @@
 package org.syvasoft.tallyfrontcrusher.process;
 
 
-import org.compiere.process.SvrProcess;
-
-public class BulkWeighmentUpdate extends SvrProcess {
-
-	@Override
-	protected void prepare() {
-		
-
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Savepoint;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.adempiere.exceptions.AdempiereException;
-import org.adempiere.exceptions.DBException;
-import org.compiere.model.MInvoiceLine;
-import org.compiere.model.MOrgInfo;
-import org.compiere.model.MPriceList;
-import org.compiere.model.MProcessPara;
-import org.compiere.model.MSysConfig;
-import org.compiere.model.MTax;
 import org.compiere.model.Query;
-import org.compiere.process.DocAction;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
-import org.compiere.util.DB;
-import org.compiere.util.Trx;
-import org.syvasoft.tallyfrontcrusher.model.MPriceListUOM;
 import org.syvasoft.tallyfrontcrusher.model.MWeighmentEntry;
-import org.syvasoft.tallyfrontcrusher.model.TF_MBPartner;
-import org.syvasoft.tallyfrontcrusher.model.TF_MInvoice;
-import org.syvasoft.tallyfrontcrusher.model.TF_MOrder;
-import org.syvasoft.tallyfrontcrusher.model.TF_MOrderLine;
-import org.syvasoft.tallyfrontcrusher.model.TF_MProduct;
+
+import java.math.BigDecimal;
+import java.util.List;
+
 
 public class BulkWeighmentUpdate extends SvrProcess {
 
