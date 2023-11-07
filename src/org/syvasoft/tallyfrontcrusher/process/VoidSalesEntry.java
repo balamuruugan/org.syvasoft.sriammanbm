@@ -72,7 +72,7 @@ public class VoidSalesEntry extends SvrProcess {
 				
 				if(wEntry.getWeighmentEntryType().equalsIgnoreCase(MWeighmentEntry.WEIGHMENTENTRYTYPE_Sales) || 
 						wEntry.getWeighmentEntryType().equalsIgnoreCase(MWeighmentEntry.WEIGHMENTENTRYTYPE_Input)) {
-					if(wEntry.getStatus().equals(MWeighmentEntry.STATUS_Billed) && !wEntry.isRequiredTaxInvoicePerLoad()) {
+					if(wEntry.getStatus().equals(MWeighmentEntry.STATUS_Billed) && wEntry.getC_Order_ID() > 0) {
 						throw new AdempiereException("Weighment Entry No: " + wEntry.getDocumentNo() +" cannot be modified since it is billed under Consolidated Invoice.!");
 					}
 				}

@@ -769,9 +769,9 @@ public class MWeighmentEntry extends X_TF_WeighmentEntry {
 		
 		if(WeighmentEntryType.equals(WEIGHMENTENTRYTYPE_Sales)) {
 			if(isGST())
-				return TF_MOrder.GSTOrderDocType_ID(getCtx());
+				return TF_MOrder.GSTConsolidatedOrderDocType_ID(getCtx());
 			else
-				return TF_MOrder.NonGSTOrderDocType_ID(getCtx());
+				return TF_MOrder.NonGSTConsolidatedOrderDocType_ID(getCtx());
 		}
 		else if(WeighmentEntryType.equals(WEIGHMENTENTRYTYPE_Input)) {
 			if(isGST())

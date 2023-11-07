@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -13,6 +14,7 @@ import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
+import org.adempiere.exceptions.InvoiceFullyMatchedException;
 import org.adempiere.exceptions.ProductNotOnPriceListException;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MBankAccount;
@@ -539,6 +541,18 @@ public class TF_MOrder extends MOrder {
 	public String getVehicleNo () 
 	{
 		return (String)get_Value(COLUMNNAME_VehicleNo);
+	}
+	
+    public static final String COLUMNNAME_InvoiceNo = "InvoiceNo";
+
+	public void setInvoiceNo (String InvoiceNo)
+	{
+		set_Value (COLUMNNAME_InvoiceNo, InvoiceNo);
+	}
+
+	public String getInvoiceNo () 
+	{
+		return (String)get_Value(COLUMNNAME_InvoiceNo);
 	}
     
 	 /** Column name Rent_Amt */
@@ -2640,6 +2654,11 @@ public class TF_MOrder extends MOrder {
 				setTermsAndCondition(printdocSetup.getTermsConditions());
 			}
 		}
+		
+		if(getC_DocTypeTarget_ID() == TF_MOrder.GSTConsolidatedOrderDocType_ID(getCtx()) || getC_DocTypeTarget_ID() == TF_MOrder.NonGSTConsolidatedOrderDocType_ID(getCtx())) {
+			validateInvoiceDate();	
+		}
+		
 		return super.beforeSave(newRecord);
 	}
 
@@ -2654,7 +2673,8 @@ public class TF_MOrder extends MOrder {
 		if((!isSOTrx() && MDocType.DOCSUBTYPESO_POSOrder.equals(DocSubTypeSO)) || DocSubTypeSO.equals("IN") ||
 				getC_DocType_ID() == 1000050 || getC_DocType_ID() == 1000041 || 
 				getC_DocType_ID() == getC_VendorInvoiceDocType_ID() ||
-				getC_DocType_ID() == GSTOrderDocType_ID(getCtx()) || getC_DocType_ID() == NonGSTOrderDocType_ID(getCtx())) {
+				getC_DocType_ID() == GSTOrderDocType_ID(getCtx()) || getC_DocType_ID() == NonGSTOrderDocType_ID(getCtx()) ||
+				getC_DocType_ID() == GSTConsolidatedOrderDocType_ID(getCtx()) || getC_DocType_ID() == NonGSTConsolidatedOrderDocType_ID(getCtx())) {
 			//MR/Shipment reverse Correct
 			List<MInOut> inOutList = new Query(getCtx(), MInOut.Table_Name, "C_Order_ID=? AND DocStatus=? AND C_DocType_ID != ?", get_TrxName())
 				.setClient_ID().setParameters(getC_Order_ID(),DOCSTATUS_Completed, getC_VendorInvoiceDocType_ID()).list();
@@ -2760,59 +2780,111 @@ public class TF_MOrder extends MOrder {
 	
 	@Override
 	public boolean reActivateIt() {
-			//Only for POS Purchase
-			//For POS Sales, Core already has this functionality.
-			if(getC_DocType_ID() == 1000050) {
-				//MR/Shipment reverse Correct
-				List<MInOut> inOutList = new Query(getCtx(), MInOut.Table_Name, "C_Order_ID=? AND DocStatus=?", get_TrxName())
-					.setClient_ID().setParameters(getC_Order_ID(),DOCSTATUS_Completed).list();
-				for(MInOut inout : inOutList) {
-					if(!inout.reverseCorrectIt())
-						return false;				
-					inout.saveEx();
-				}
+		MDocType dt = (MDocType) getC_DocTypeTarget();
+		String DocSubTypeSO = dt.getDocSubTypeSO();
+		MBoulderMovement.deleteByOrder(getC_Order_ID(), get_TrxName());
+		MSubcontractMaterialMovement.deleteSalesEntryMovement(getC_Order_ID(), get_TrxName());
+		//POS Order's MR and Invoice should be reversed.
+		if((!isSOTrx() && MDocType.DOCSUBTYPESO_POSOrder.equals(DocSubTypeSO)) || DocSubTypeSO.equals("IN") ||
+				getC_DocType_ID() == 1000050 || getC_DocType_ID() == 1000041 || 
+				getC_DocType_ID() == getC_VendorInvoiceDocType_ID() ||
+				getC_DocType_ID() == GSTOrderDocType_ID(getCtx()) || getC_DocType_ID() == NonGSTOrderDocType_ID(getCtx()) ||
+				getC_DocType_ID() == GSTConsolidatedOrderDocType_ID(getCtx()) || getC_DocType_ID() == NonGSTConsolidatedOrderDocType_ID(getCtx())) {
+			//MR/Shipment reverse Correct
+			List<MInOut> inOutList = new Query(getCtx(), MInOut.Table_Name, "C_Order_ID=? AND DocStatus=? AND C_DocType_ID != ?", get_TrxName())
+				.setClient_ID().setParameters(getC_Order_ID(),DOCSTATUS_Completed, getC_VendorInvoiceDocType_ID()).list();
+			for(MInOut inout : inOutList) {
+				if(getC_DocTypeTarget_ID() == getC_TransporterInvoiceDocType_ID() || getC_DocTypeTarget_ID() == getC_ServiceInvoiceDocType_ID())
+					continue;
 				
-				//Invoice reverse Correct
-				List<TF_MInvoice> invList = new Query(getCtx(), TF_MInvoice.Table_Name, "C_Order_ID=? AND DocStatus=?", get_TrxName())
-					.setClient_ID().setParameters(getC_Order_ID(), DOCSTATUS_Completed).list();
-				for(TF_MInvoice inv : invList) {
-					if(!inv.reverseCorrectIt())
-						return false;
+				if(!inout.reverseCorrectIt())
+					return false;				
+				inout.saveEx();
+			}
+			
+			
+			//Invoice reverse Correct
+			List<TF_MInvoice> invList = new Query(getCtx(), TF_MInvoice.Table_Name, "C_Order_ID=? AND DocStatus=?", get_TrxName())
+				.setClient_ID().setParameters(getC_Order_ID(), DOCSTATUS_Completed).list();
+			for(TF_MInvoice inv : invList) {
+				//Keep the existing invoice no while reversing
+				if(!MSysConfig.getBooleanValue(MSysConfig.Invoice_ReverseUseNewNumber, true, getAD_Client_ID()) && invList.size() == 1) {						
+					
+					String sql = "SELECT COUNT(*) FROM C_Invoice WHERE TF_WeighmentEntry_ID = ?";
+					int revCount = DB.getSQLValue(get_TrxName(), sql, getTF_WeighmentEntry_ID());
+					revCount = revCount / 2 + 1;
+					inv.setDocumentNo(inv.getDocumentNo() + "-"+  revCount);
 					inv.saveEx();
 				}
-				
+				if(!inv.reverseCorrectIt())
+					return false;
+				inv.saveEx();
 			}
 			
-			if(getTF_DriverTips_Pay_ID() > 0) {
-				TF_MPayment payment = new TF_MPayment(getCtx(), getTF_DriverTips_Pay_ID(), get_TrxName());
-				if(payment.getDocStatus().equals(DOCSTATUS_Completed)){
-					payment.reverseCorrectIt();
+			reverseTransportReceiptStatus();			
+		}
+		else if(DocSubTypeSO.equals("SI")) {			
+			//Invoice reverse Correct
+			List<TF_MInvoice> invList = new Query(getCtx(), TF_MInvoice.Table_Name, "C_Order_ID=? AND DocStatus=?", get_TrxName())
+				.setClient_ID().setParameters(getC_Order_ID(), DOCSTATUS_Completed).list();
+			for(TF_MInvoice inv : invList) {
+				//Keep the existing invoice no while reversing
+				if(!MSysConfig.getBooleanValue(MSysConfig.Invoice_ReverseUseNewNumber, true, getAD_Client_ID()) && invList.size() == 1) {						
+					
+					String sql = "SELECT COUNT(*) FROM C_Invoice WHERE TF_WeighmentEntry_ID = ?";
+					int revCount = DB.getSQLValue(get_TrxName(), sql, getTF_WeighmentEntry_ID());
+					revCount = revCount / 2 + 1;
+					inv.setDocumentNo(inv.getDocumentNo() + "-"+  revCount);
+					inv.saveEx();
 				}
-				payment.saveEx();
+				if(!inv.reverseCorrectIt())
+					return false;
+				inv.saveEx();
 			}
+			
+			reverseTransportReceiptStatus();
+			
+			if(getC_DocTypeTarget_ID() == TF_MOrder.GSTConsolidatedOrderDocType_ID(getCtx()) || getC_DocTypeTarget_ID() == TF_MOrder.NonGSTConsolidatedOrderDocType_ID(getCtx())) {
+				reverseWeighmentEntries();
+			}
+		}
+		
+			
+		if(getTF_DriverTips_Pay_ID() > 0) {
+			TF_MPayment payment = new TF_MPayment(getCtx(), getTF_DriverTips_Pay_ID(), get_TrxName());
+			if(payment.getDocStatus().equals(DOCSTATUS_Completed)){
+				payment.reverseCorrectIt();
+			}
+			payment.saveEx();
+		}
 
-			if(getC_PaymentSalesDiscount_ID()> 0) {
-				TF_MPayment payment = new TF_MPayment(getCtx(), getC_PaymentSalesDiscount_ID(), get_TrxName());
-				if(payment.getDocStatus().equals(DOCSTATUS_Completed)){
-					payment.reverseCorrectIt();
-				}
-				payment.saveEx();
+		if(getC_PaymentSalesDiscount_ID()> 0) {
+			TF_MPayment payment = new TF_MPayment(getCtx(), getC_PaymentSalesDiscount_ID(), get_TrxName());
+			if(payment.getDocStatus().equals(DOCSTATUS_Completed)){
+				payment.reverseCorrectIt();
 			}
-			
-			
-			MJobworkItemIssue.ReverseFromPO(this);
-			reverseTransporterInvoice();
-			reverseWeighmentEntry();
-			reverseTokenNo();
-			reverseYardEntry();
-			reverseSubcontractPurchaseEntry();
-			reverseIssuedPermit();
-			reversePurchasedPermit();
-			reverseCrusherProduction();
-			voidTaxInvoice();
-			voidTR_TaxInvoice();
-			reverseConsolidateInvoice();
-			return super.reActivateIt();
+			payment.saveEx();
+		}
+		
+		
+		MJobworkItemIssue.ReverseFromPO(this);
+		reverseTransporterInvoice();
+		reverseWeighmentEntry();
+		reverseTokenNo();
+		reverseYardEntry();
+		reverseSubcontractPurchaseEntry();
+		reverseIssuedPermit();
+		reversePurchasedPermit();
+		reverseCrusherProduction();
+		voidTaxInvoice();
+		voidTR_TaxInvoice();
+		reverseConsolidateInvoice();
+		
+		if(getC_DocTypeTarget_ID() == TF_MOrder.GSTConsolidatedOrderDocType_ID(getCtx()) || getC_DocTypeTarget_ID() == TF_MOrder.NonGSTConsolidatedOrderDocType_ID(getCtx())) {
+			reverseWeighmentEntries();
+		}
+		
+		return super.reActivateIt();
 	}
 
 	public void createTransporterInvoice() {
@@ -4216,8 +4288,11 @@ public class TF_MOrder extends MOrder {
 		
 		//
 		
-		if(getC_DocTypeTarget_ID() == GSTOrderDocType_ID(getCtx()) || getC_DocTypeTarget_ID() == NonGSTOrderDocType_ID(getCtx())) {
-			invoice.setDocumentNo(weighment.getInvoiceNo());
+		if(getC_DocTypeTarget_ID() == GSTConsolidatedOrderDocType_ID(getCtx()) || getC_DocTypeTarget_ID() == NonGSTConsolidatedOrderDocType_ID(getCtx())) {
+			
+			if(getInvoiceNo() != null)
+				invoice.setDocumentNo(getInvoiceNo());
+			//invoice.setDocumentNo(weighment.getInvoiceNo());
 		}
 		invoice.setSalesRep_ID(Env.getAD_User_ID(getCtx()));		
 		
@@ -4262,6 +4337,9 @@ public class TF_MOrder extends MOrder {
 			
 			invLine.saveEx();
 		}
+		
+		if(getInvoiceNo() == null)
+			setInvoiceNo(invoice.getDocumentNo());
 		
 		//Invoice DocAction
 		if (!invoice.processIt(DocAction.ACTION_Complete))
@@ -4568,4 +4646,18 @@ public class TF_MOrder extends MOrder {
 		
 	}
 	
+	public void validateInvoiceDate() {
+		int inv_DocType_ID = getC_DocTypeTarget().getC_DocTypeInvoice_ID();
+		//Invoice should be greater than or equal to running/latest invoice date.
+		String whereClause = "AD_Org_ID = ? AND DocStatus = 'CO' AND DateAcct > ? AND C_DocTypeTarget_ID = ?";
+		TF_MInvoice latestInv = new Query(getCtx(), TF_MInvoice.Table_Name, whereClause, get_TrxName())
+				.setClient_ID()
+				.setParameters(getAD_Org_ID(), getDateOrdered(), inv_DocType_ID)
+				.first();
+		
+		if(latestInv != null) {
+			String datestring = new SimpleDateFormat("dd/MM/yyyy").format(latestInv.getDateAcct());
+			throw new AdempiereException("Current Invoice Date : " + datestring + ". So, please do not enter old invoice date!");
+		}
+	}
 }
