@@ -60,7 +60,7 @@ public class CreateShipmentForWE extends SvrProcess {
 			{
 				try {
 					if(we.getPaymentRule().equals(MWeighmentEntry.PAYMENTRULE_MixedPayment) && 
-							we.getSalesTotalAmount().subtract(we.getTotalMixedPayment()).abs().doubleValue() > 1) {
+							we.getSalesTotalAmount().subtract(we.getTotalMixedPayment()).abs().doubleValue() >= 1) {
 								we.setStatus(MWeighmentEntry.STATUS_Pending);
 								we.saveEx();
 								continue;
