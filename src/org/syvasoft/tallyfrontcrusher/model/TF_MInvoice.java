@@ -118,6 +118,112 @@ public class TF_MInvoice extends MInvoice {
 		return (org.compiere.model.I_C_InvoiceLine)MTable.get(getCtx(), org.compiere.model.I_C_InvoiceLine.Table_Name)
 			.getPO(getItem1_C_InvoiceLine_ID(), get_TrxName());	}
 	
+	
+	public static final String COLUMNNAME_POReference = "POReference";
+
+	public void setPOReference (String POReference)
+	{
+		set_Value (COLUMNNAME_POReference, POReference);
+	}
+	public String getPOReference  () 
+	{
+		return (String)get_Value(COLUMNNAME_POReference);
+	}
+	public static final String COLUMNNAME_PODate = "PODate";
+	
+	public void setPODate (Timestamp PODate)
+	{
+		set_Value (COLUMNNAME_PODate, PODate);
+	}
+	
+	public Timestamp getPODate  () 
+	{
+		return (Timestamp)get_Value(COLUMNNAME_PODate);
+	}
+	
+	   /** Column name IsInterState */
+	public static final String COLUMNNAME_IsInterState = "IsInterState";
+	/** Set Inter State.
+	@param IsInterState Inter State	  */
+	public void setIsInterState (boolean IsInterState)
+	{
+		set_Value (COLUMNNAME_IsInterState, Boolean.valueOf(IsInterState));
+	}
+	
+	/** Get Inter State.
+		@return Inter State	  */
+	public boolean isInterState () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsInterState);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	public static final String COLUMNNAME_C_Ship_Location_ID  = "C_Ship_Location_ID";
+    
+	public void setC_Ship_Location_ID  (int C_Ship_Location_ID)
+	{
+		if (C_Ship_Location_ID  < 1) 
+			set_Value (COLUMNNAME_C_Ship_Location_ID, null);
+		else 
+			set_Value (COLUMNNAME_C_Ship_Location_ID, Integer.valueOf(C_Ship_Location_ID ));
+	}
+	
+	public int getC_Ship_Location_ID  () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Ship_Location_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+	public static final String COLUMNNAME_eWayBillNo = "eWayBillNo";
+
+	public void seteWayBillNo (String eWayBillNo)
+	{
+		set_Value (COLUMNNAME_eWayBillNo, eWayBillNo);
+	}
+	public String geteWayBillNo () 
+	{
+		return (String)get_Value(COLUMNNAME_eWayBillNo);
+	}
+	public static final String COLUMNNAME_eWayDate = "eWayDate";
+	
+	public void seteWayDate (Timestamp eWayDate)
+	{
+		set_Value (COLUMNNAME_eWayDate, eWayDate);
+	}
+	
+	public Timestamp geteWayDate () 
+	{
+		return (Timestamp)get_Value(COLUMNNAME_eWayDate);
+	}
+	
+    public static final String COLUMNNAME_ReverseCharge = "ReverseCharge";
+    
+	public void setReverseCharge (boolean ReverseCharge)
+	{
+		set_Value (COLUMNNAME_ReverseCharge, Boolean.valueOf(ReverseCharge));
+	}
+	
+	/** Get Show Rent Breakup.
+		@return Show Rent Breakup	  */
+	public boolean isReverseCharge () 
+	{
+		Object oo = get_Value(COLUMNNAME_ReverseCharge);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+	
 	/** Column name Item1_C_InvoiceLine_ID */
     public static final String COLUMNNAME_Item1_C_InvoiceLine_ID = "Item1_C_InvoiceLine_ID";
     
@@ -474,6 +580,16 @@ public class TF_MInvoice extends MInvoice {
 				}				
 				
 				setPaymentRule(wentry.getPaymentRule());
+			}
+		}
+		
+		if(newRecord && getTermsAndCondition() == null) {
+			String whereclause = " C_DocType_ID = ?";
+			MPrintDocSetup printdocSetup = new Query(getCtx(), MPrintDocSetup.Table_Name, whereclause, get_TrxName())
+					.setClient_ID().setParameters(getC_DocTypeTarget_ID()).first();
+			
+			if(printdocSetup != null) {
+				setTermsAndCondition(printdocSetup.getTermsConditions());
 			}
 		}
 				

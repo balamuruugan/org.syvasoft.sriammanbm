@@ -68,6 +68,30 @@ public class TF_MOrder extends MOrder {
 		super(ctx, rs, trxName);
 		
 	}
+	
+	   /** Column name IsInterState */
+	public static final String COLUMNNAME_IsInterState = "IsInterState";
+	/** Set Inter State.
+	@param IsInterState Inter State	  */
+	public void setIsInterState (boolean IsInterState)
+	{
+		set_Value (COLUMNNAME_IsInterState, Boolean.valueOf(IsInterState));
+	}
+	
+	/** Get Inter State.
+		@return Inter State	  */
+	public boolean isInterState () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsInterState);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
 
 	 /** Column name Item1_Amt */
     public static final String COLUMNNAME_Item1_Amt = "Item1_Amt";
@@ -555,6 +579,71 @@ public class TF_MOrder extends MOrder {
 		return (String)get_Value(COLUMNNAME_InvoiceNo);
 	}
     
+	public static final String COLUMNNAME_POReference = "POReference";
+
+	public void setPOReference (String POReference)
+	{
+		set_Value (COLUMNNAME_POReference, POReference);
+	}
+	public String getPOReference  () 
+	{
+		return (String)get_Value(COLUMNNAME_POReference);
+	}
+	public static final String COLUMNNAME_PODate = "PODate";
+	
+	public void setPODate (Timestamp PODate)
+	{
+		set_Value (COLUMNNAME_PODate, PODate);
+	}
+	
+	public Timestamp getPODate  () 
+	{
+		return (Timestamp)get_Value(COLUMNNAME_PODate);
+	}
+	
+	public static final String COLUMNNAME_eWayBillNo = "eWayBillNo";
+
+	public void seteWayBillNo (String eWayBillNo)
+	{
+		set_Value (COLUMNNAME_eWayBillNo, eWayBillNo);
+	}
+	public String geteWayBillNo () 
+	{
+		return (String)get_Value(COLUMNNAME_eWayBillNo);
+	}
+	public static final String COLUMNNAME_eWayDate = "eWayDate";
+	
+	public void seteWayDate (Timestamp eWayDate)
+	{
+		set_Value (COLUMNNAME_eWayDate, eWayDate);
+	}
+	
+	public Timestamp geteWayDate () 
+	{
+		return (Timestamp)get_Value(COLUMNNAME_eWayDate);
+	}
+	
+    public static final String COLUMNNAME_ReverseCharge = "ReverseCharge";
+    
+	public void setReverseCharge (boolean ReverseCharge)
+	{
+		set_Value (COLUMNNAME_ReverseCharge, Boolean.valueOf(ReverseCharge));
+	}
+	
+	/** Get Show Rent Breakup.
+		@return Show Rent Breakup	  */
+	public boolean isReverseCharge () 
+	{
+		Object oo = get_Value(COLUMNNAME_ReverseCharge);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+	
 	 /** Column name Rent_Amt */
     public static final String COLUMNNAME_Rent_Amt = "Rent_Amt";
     
@@ -592,6 +681,24 @@ public class TF_MOrder extends MOrder {
 	public int getTF_WeighmentEntry_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_TF_WeighmentEntry_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+	
+	public static final String COLUMNNAME_C_Ship_Location_ID  = "C_Ship_Location_ID";
+    
+	public void setC_Ship_Location_ID  (int C_Ship_Location_ID)
+	{
+		if (C_Ship_Location_ID  < 1) 
+			set_Value (COLUMNNAME_C_Ship_Location_ID, null);
+		else 
+			set_Value (COLUMNNAME_C_Ship_Location_ID, Integer.valueOf(C_Ship_Location_ID ));
+	}
+	
+	public int getC_Ship_Location_ID  () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Ship_Location_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -2659,6 +2766,17 @@ public class TF_MOrder extends MOrder {
 			validateInvoiceDate();	
 		}
 		
+		if(newRecord && getTermsAndCondition() == null) {
+			
+			String whereclause = " C_DocType_ID = ?";
+			MPrintDocSetup printdocSetup = new Query(getCtx(), MPrintDocSetup.Table_Name, whereclause, get_TrxName())
+					.setClient_ID().setParameters(getC_DocTypeTarget_ID()).first();
+			
+			if(printdocSetup != null) {
+				setTermsAndCondition(printdocSetup.getTermsConditions());
+			}
+		}
+		
 		return super.beforeSave(newRecord);
 	}
 
@@ -4298,7 +4416,7 @@ public class TF_MOrder extends MOrder {
 		
 		invoice.setC_PaymentTerm_ID(getC_PaymentTerm_ID());
 		//
-		
+		invoice.setC_Ship_Location_ID(getC_Ship_Location_ID());
 		invoice.setBPartner(bp);	
 		invoice.setOrder(this);
 		invoice.setVehicleNo(getVehicleNo());
@@ -4312,7 +4430,15 @@ public class TF_MOrder extends MOrder {
 		
 		//Financial Dimension - Profit Center		
 		//invoice.setC_Project_ID(counterProj.getC_Project_ID());
-		invoice.setTF_WeighmentEntry_ID(getTF_WeighmentEntry_ID());		
+		invoice.setTF_WeighmentEntry_ID(getTF_WeighmentEntry_ID());
+		
+		invoice.setPOReference(getPOReference());
+		invoice.setPODate(getPODate());
+		invoice.seteWayBillNo(geteWayBillNo());
+		invoice.seteWayDate(geteWayDate());
+		invoice.setReverseCharge(isReverseCharge());
+		invoice.setIsInterState(isInterState());
+		invoice.setTermsAndCondition(getTermsAndCondition());
 		invoice.saveEx();
 		
 		for(MOrderLine oLine : getLines() ) {
