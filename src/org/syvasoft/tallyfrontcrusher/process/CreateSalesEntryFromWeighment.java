@@ -194,15 +194,17 @@ public class CreateSalesEntryFromWeighment extends SvrProcess {
 				catch(Exception e) {
 					
 				}
-				String desc = wEntry.getDescription();
-				if(desc == null)
-					desc = "";
-				if(!desc.contains("ERROR:")) {
-					wEntry.setDescription(desc + 
-							" | ERROR: " + ex.getMessage());					
-				}			
-				wEntry.setStatus(MWeighmentEntry.STATUS_Error);
-				wEntry.saveEx();
+				if(!ex.getMessage().contains("Current Invoice Date : ")) {
+					String desc = wEntry.getDescription();
+					if(desc == null)
+						desc = "";
+					if(!desc.contains("ERROR:")) {
+						wEntry.setDescription(desc + 
+								" | ERROR: " + ex.getMessage());					
+					}			
+					wEntry.setStatus(MWeighmentEntry.STATUS_Error);
+					wEntry.saveEx();					
+				}
 				addLog(wEntry.get_Table_ID(), wEntry.getGrossWeightTime(), null, ex.getMessage(), wEntry.get_Table_ID(), wEntry.get_ID());
 			}
 		}
@@ -217,8 +219,16 @@ public class CreateSalesEntryFromWeighment extends SvrProcess {
 		ord.setC_DocType_ID(wEntry.getC_DocType_ID(wEntry.getWeighmentEntryType()));
 		ord.setC_DocTypeTarget_ID(wEntry.getC_DocType_ID(wEntry.getWeighmentEntryType()));
 		ord.setM_Warehouse_ID(wEntry.getM_Warehouse_ID());
-		ord.setDateAcct(DateAcct);
-		ord.setDateOrdered(DateAcct);
+		
+		if(wEntry.getDateInvoiced() == null) {
+			ord.setDateAcct(DateAcct);
+			ord.setDateOrdered(DateAcct);
+		}
+		else {
+			ord.setDateAcct(wEntry.getDateInvoiced());
+			ord.setDateOrdered(wEntry.getDateInvoiced());
+		}
+		
 		int C_BParner_ID = wEntry.getC_BPartner_ID();
 		if(C_BParner_ID == 0)
 			C_BParner_ID = 1000020;		
@@ -344,6 +354,7 @@ public class CreateSalesEntryFromWeighment extends SvrProcess {
 			else if(!firstInvoice & wEntry.getInvoiceNo2() == null) {
 				wEntry.setInvoiceNo2(invList.get(0).getDocumentNo());				
 			}
+			wEntry.setDateInvoiced(invList.get(0).getDateInvoiced());
 			wEntry.saveEx();
 		}
 		/*
@@ -543,26 +554,4 @@ public class CreateSalesEntryFromWeighment extends SvrProcess {
 		addLog(ord.get_Table_ID(), ord.getCreated(), null, " Sales Entry : " + ord.getDocumentNo() + " is created!", ord.get_Table_ID(), ord.get_ID());
 	}
 	
-	public String validateInvoiceDate() {
-		//Invoice should be greater than or equal to running/latest invoice date.
-		String whereClause = "AD_Org_ID = ? AND DocStatus = 'CO'";
-		MTRTaxInvoice latestInv = new Query(getCtx(), MTRTaxInvoice.Table_Name, whereClause, get_TrxName())
-				.setClient_ID()
-				.setParameters()
-				.setOrderBy("DateAcct DESC")
-				.first();
-		if(latestInv != null) {
-			/*int interval = TimeUtil.getDaysBetween(latestInv.getDateAcct(), getDateAcct());
-			String datestring = new SimpleDateFormat("dd/MM/yyyy").format(latestInv.getDateAcct());
-			if(interval < 0)
-				return "Current Invoice Date:" 
-						+ datestring + " so Please do not enter old invoice date!";
-			else*/
-				return null;
-		}
-		else {
-			return null;
-		}
-		
-	}
 }

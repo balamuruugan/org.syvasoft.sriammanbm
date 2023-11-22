@@ -2813,8 +2813,8 @@ public class TF_MOrder extends MOrder {
 				//Keep the existing invoice no while reversing
 				if(!MSysConfig.getBooleanValue(MSysConfig.Invoice_ReverseUseNewNumber, true, getAD_Client_ID()) && invList.size() == 1) {						
 					
-					String sql = "SELECT COUNT(*) FROM C_Invoice WHERE TF_WeighmentEntry_ID = ?";
-					int revCount = DB.getSQLValue(get_TrxName(), sql, getTF_WeighmentEntry_ID());
+					String sql = "SELECT COUNT(*) FROM C_Invoice WHERE C_Order_ID = ?";
+					int revCount = DB.getSQLValue(get_TrxName(), sql, getC_Order_ID());
 					revCount = revCount / 2 + 1;
 					inv.setDocumentNo(inv.getDocumentNo() + "-"+  revCount);
 					inv.saveEx();
@@ -2888,7 +2888,7 @@ public class TF_MOrder extends MOrder {
 			voidTaxInvoice();
 			voidTR_TaxInvoice();
 			reverseAdditionalTransactions();
-			reverseConsolidateInvoice();
+			reverseConsolidateInvoice(false);
 		}
 		
 		reverseMixedPayment();
@@ -2928,8 +2928,8 @@ public class TF_MOrder extends MOrder {
 				//Keep the existing invoice no while reversing
 				if(!MSysConfig.getBooleanValue(MSysConfig.Invoice_ReverseUseNewNumber, true, getAD_Client_ID()) && invList.size() == 1) {						
 					
-					String sql = "SELECT COUNT(*) FROM C_Invoice WHERE TF_WeighmentEntry_ID = ?";
-					int revCount = DB.getSQLValue(get_TrxName(), sql, getTF_WeighmentEntry_ID());
+					String sql = "SELECT COUNT(*) FROM C_Invoice WHERE C_Order_ID = ?";
+					int revCount = DB.getSQLValue(get_TrxName(), sql, getC_Order_ID());
 					revCount = revCount / 2 + 1;
 					inv.setDocumentNo(inv.getDocumentNo() + "-"+  revCount);
 					inv.saveEx();
@@ -2996,7 +2996,7 @@ public class TF_MOrder extends MOrder {
 		reverseCrusherProduction();
 		voidTaxInvoice();
 		voidTR_TaxInvoice();
-		reverseConsolidateInvoice();
+		reverseConsolidateInvoice(true);
 		
 		if(getC_DocTypeTarget_ID() == TF_MOrder.GSTConsolidatedOrderDocType_ID(getCtx()) || getC_DocTypeTarget_ID() == TF_MOrder.NonGSTConsolidatedOrderDocType_ID(getCtx())) {
 			reverseWeighmentEntries();
@@ -4393,7 +4393,7 @@ public class TF_MOrder extends MOrder {
 		invoice.setIsSOTrx(isSOTrx());
 		invoice.setDateInvoiced(getDateAcct());
 		invoice.setDateAcct(getDateAcct());
-		
+		invoice.setVehicleNo(getVehicleNo());
 		//fetching already generated invoice no in case of reversing and recreating the existing invoices.
 		/*if(getC_DocTypeTarget_ID() == GSTOrderDocType_ID(getCtx())) {
 			invoice.setDocumentNo(weighment.getInvoiceNo());		
@@ -4491,7 +4491,7 @@ public class TF_MOrder extends MOrder {
 		}
 	}
 
-	public void reverseConsolidateInvoice() {	
+	public void reverseConsolidateInvoice(boolean reactivate) {	
 		if(getTF_WeighmentEntry_ID() > 0 || getC_DocTypeTarget_ID() == getC_TransporterInvoiceDocType_ID() || getC_DocTypeTarget_ID() == getC_ServiceInvoiceDocType_ID())
 			return;
 		
@@ -4503,7 +4503,9 @@ public class TF_MOrder extends MOrder {
 				.setParameters(getC_Order_ID())
 				.list();
 		for(MWeighmentEntry we : wEntries) {
-			we.setC_Order_ID(0);
+			if(!reactivate)
+				we.setC_Order_ID(0);
+			
 			we.reverse();
 			we.saveEx();
 		}

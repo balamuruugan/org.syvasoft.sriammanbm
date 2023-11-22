@@ -55,8 +55,8 @@ public interface I_TF_WeighmentEntry
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
-	/** Get Tenant.
-	  * Tenant for this installation.
+	/** Get Client.
+	  * Client/Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
 
@@ -64,12 +64,12 @@ public interface I_TF_WeighmentEntry
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
 	/** Set Organization.
-	  * Organizational entity within tenant
+	  * Organizational entity within client
 	  */
 	public void setAD_Org_ID (int AD_Org_ID);
 
 	/** Get Organization.
-	  * Organizational entity within tenant
+	  * Organizational entity within client
 	  */
 	public int getAD_Org_ID();
 
@@ -151,17 +151,6 @@ public interface I_TF_WeighmentEntry
 	public int getC_BPartner_ID();
 
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
-
-    /** Column name c_bpartnertransporter_id */
-    public static final String COLUMNNAME_c_bpartnertransporter_id = "c_bpartnertransporter_id";
-
-	/** Set c_bpartnertransporter_id	  */
-	public void setc_bpartnertransporter_id (int c_bpartnertransporter_id);
-
-	/** Get c_bpartnertransporter_id	  */
-	public int getc_bpartnertransporter_id();
-
-	public org.compiere.model.I_C_BPartner getc_bpartnertransporter() throws RuntimeException;
 
     /** Column name C_BPartnerWB_ID */
     public static final String COLUMNNAME_C_BPartnerWB_ID = "C_BPartnerWB_ID";
@@ -254,6 +243,15 @@ public interface I_TF_WeighmentEntry
 	/** Get Cash Amount	  */
 	public BigDecimal getCashAmount();
 
+    /** Column name CashReceived */
+    public static final String COLUMNNAME_CashReceived = "CashReceived";
+
+	/** Set Cash Received	  */
+	public void setCashReceived (BigDecimal CashReceived);
+
+	/** Get Cash Received	  */
+	public BigDecimal getCashReceived();
+
     /** Column name ChangeAmt */
     public static final String COLUMNNAME_ChangeAmt = "ChangeAmt";
 
@@ -333,6 +331,19 @@ s Transporter	  */
 	  * Accounting Date
 	  */
 	public Timestamp getDateAcct();
+
+    /** Column name DateInvoiced */
+    public static final String COLUMNNAME_DateInvoiced = "DateInvoiced";
+
+	/** Set Date Invoiced.
+	  * Date printed on Invoice
+	  */
+	public void setDateInvoiced (Timestamp DateInvoiced);
+
+	/** Get Date Invoiced.
+	  * Date printed on Invoice
+	  */
+	public Timestamp getDateInvoiced();
 
     /** Column name Description */
     public static final String COLUMNNAME_Description = "Description";
@@ -1085,6 +1096,15 @@ s Transporter	  */
 
 	/** Get Remarks	  */
 	public String getRemarks();
+
+    /** Column name RemoveWE */
+    public static final String COLUMNNAME_RemoveWE = "RemoveWE";
+
+	/** Set Remove	  */
+	public void setRemoveWE (String RemoveWE);
+
+	/** Get Remove	  */
+	public String getRemoveWE();
 
     /** Column name Rent_Amt */
     public static final String COLUMNNAME_Rent_Amt = "Rent_Amt";

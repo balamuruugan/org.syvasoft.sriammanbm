@@ -34,7 +34,7 @@ public class X_TF_WeighmentEntry extends PO implements I_TF_WeighmentEntry, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230226L;
+	private static final long serialVersionUID = 20231122L;
 
     /** Standard Constructor */
     public X_TF_WeighmentEntry (Properties ctx, int TF_WeighmentEntry_ID, String trxName)
@@ -288,29 +288,6 @@ public class X_TF_WeighmentEntry extends PO implements I_TF_WeighmentEntry, I_Pe
 		return ii.intValue();
 	}
 
-	public org.compiere.model.I_C_BPartner getc_bpartnertransporter() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
-			.getPO(getc_bpartnertransporter_id(), get_TrxName());
-	}
-
-	/** Set c_bpartnertransporter_id.
-		@param c_bpartnertransporter_id c_bpartnertransporter_id
-	*/
-	public void setc_bpartnertransporter_id (int c_bpartnertransporter_id)
-	{
-		throw new IllegalArgumentException ("c_bpartnertransporter_id is virtual column");	}
-
-	/** Get c_bpartnertransporter_id.
-		@return c_bpartnertransporter_id	  */
-	public int getc_bpartnertransporter_id()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_c_bpartnertransporter_id);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	public org.compiere.model.I_C_BPartner getC_BPartnerWB() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
@@ -494,6 +471,24 @@ public class X_TF_WeighmentEntry extends PO implements I_TF_WeighmentEntry, I_Pe
 		return bd;
 	}
 
+	/** Set Cash Received.
+		@param CashReceived Cash Received
+	*/
+	public void setCashReceived (BigDecimal CashReceived)
+	{
+		set_Value (COLUMNNAME_CashReceived, CashReceived);
+	}
+
+	/** Get Cash Received.
+		@return Cash Received	  */
+	public BigDecimal getCashReceived()
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_CashReceived);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
 	/** Set Change Amt.
 		@param ChangeAmt Change Amt
 	*/
@@ -603,6 +598,22 @@ public class X_TF_WeighmentEntry extends PO implements I_TF_WeighmentEntry, I_Pe
 	public Timestamp getDateAcct()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateAcct);
+	}
+
+	/** Set Date Invoiced.
+		@param DateInvoiced Date printed on Invoice
+	*/
+	public void setDateInvoiced (Timestamp DateInvoiced)
+	{
+		set_ValueNoCheck (COLUMNNAME_DateInvoiced, DateInvoiced);
+	}
+
+	/** Get Date Invoiced.
+		@return Date printed on Invoice
+	  */
+	public Timestamp getDateInvoiced()
+	{
+		return (Timestamp)get_Value(COLUMNNAME_DateInvoiced);
 	}
 
 	/** Set Description.
@@ -2029,6 +2040,21 @@ public class X_TF_WeighmentEntry extends PO implements I_TF_WeighmentEntry, I_Pe
 		return (String)get_Value(COLUMNNAME_Remarks);
 	}
 
+	/** Set Remove.
+		@param RemoveWE Remove
+	*/
+	public void setRemoveWE (String RemoveWE)
+	{
+		set_Value (COLUMNNAME_RemoveWE, RemoveWE);
+	}
+
+	/** Get Remove.
+		@return Remove	  */
+	public String getRemoveWE()
+	{
+		return (String)get_Value(COLUMNNAME_RemoveWE);
+	}
+
 	/** Set Rent (Amount).
 		@param Rent_Amt Rent (Amount)
 	*/
@@ -2192,14 +2218,14 @@ public class X_TF_WeighmentEntry extends PO implements I_TF_WeighmentEntry, I_Pe
 	public static final String STATUS_Error = "ER";
 	/** In Progress = IP */
 	public static final String STATUS_InProgress = "IP";
+	/** Pending = P */
+	public static final String STATUS_Pending = "P";
 	/** Primary DC void = PV */
 	public static final String STATUS_PrimaryDCVoid = "PV";
 	/** Under Review = UR */
 	public static final String STATUS_UnderReview = "UR";
 	/** Voided = VO */
 	public static final String STATUS_Voided = "VO";
-	/** Pending = P */
-	public static final String STATUS_Pending = "P";
 	/** Set Status.
 		@param Status Status of the currently running check
 	*/
@@ -2321,20 +2347,32 @@ public class X_TF_WeighmentEntry extends PO implements I_TF_WeighmentEntry, I_Pe
 	public static final int TENDERTYPE_AD_Reference_ID=214;
 	/** Advance = A */
 	public static final String TENDERTYPE_Advance = "A";
+	/** Cash6 = B */
+	public static final String TENDERTYPE_Cash6 = "B";
 	/** Credit Card = C */
 	public static final String TENDERTYPE_CreditCard = "C";
 	/** Direct Debit = D */
 	public static final String TENDERTYPE_DirectDebit = "D";
+	/** Cash2 = E */
+	public static final String TENDERTYPE_Cash2 = "E";
+	/** Cash3 = F */
+	public static final String TENDERTYPE_Cash3 = "F";
 	/** GPay = G */
 	public static final String TENDERTYPE_GPay = "G";
+	/** Cash7 = H */
+	public static final String TENDERTYPE_Cash7 = "H";
 	/** IMPS = I */
 	public static final String TENDERTYPE_IMPS = "I";
+	/** Cash4 = J */
+	public static final String TENDERTYPE_Cash4 = "J";
 	/** Check = K */
 	public static final String TENDERTYPE_Check = "K";
+	/** Cash5 = L */
+	public static final String TENDERTYPE_Cash5 = "L";
 	/** NEFT = N */
 	public static final String TENDERTYPE_NEFT = "N";
-	/** PayTM = P */
-	public static final String TENDERTYPE_PayTM = "P";
+	/** Phone Pay = P */
+	public static final String TENDERTYPE_PhonePay = "P";
 	/** RTGS = R */
 	public static final String TENDERTYPE_RTGS = "R";
 	/** Account = T */
