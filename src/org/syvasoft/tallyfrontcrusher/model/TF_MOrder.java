@@ -2762,8 +2762,10 @@ public class TF_MOrder extends MOrder {
 			}
 		}
 		
-		if(getC_DocTypeTarget_ID() == TF_MOrder.GSTConsolidatedOrderDocType_ID(getCtx()) || getC_DocTypeTarget_ID() == TF_MOrder.NonGSTConsolidatedOrderDocType_ID(getCtx())) {
-			validateInvoiceDate();	
+		if(newRecord || is_ValueChanged(COLUMNNAME_DateOrdered)) {
+			if(getC_DocTypeTarget_ID() == TF_MOrder.GSTConsolidatedOrderDocType_ID(getCtx()) || getC_DocTypeTarget_ID() == TF_MOrder.NonGSTConsolidatedOrderDocType_ID(getCtx())) {
+				validateInvoiceDate();	
+			}
 		}
 		
 		if(newRecord && getTermsAndCondition() == null) {
@@ -2898,6 +2900,10 @@ public class TF_MOrder extends MOrder {
 	
 	@Override
 	public boolean reActivateIt() {
+		
+		if(getTF_WeighmentEntry_ID() > 0)
+			throw new AdempiereException("Re-activate is not allowed for the single DC invoice. Kindly use Weighment Info to modify the DC.");
+		
 		MDocType dt = (MDocType) getC_DocTypeTarget();
 		String DocSubTypeSO = dt.getDocSubTypeSO();
 		MBoulderMovement.deleteByOrder(getC_Order_ID(), get_TrxName());
