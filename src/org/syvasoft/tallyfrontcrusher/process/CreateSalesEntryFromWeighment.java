@@ -269,7 +269,7 @@ public class CreateSalesEntryFromWeighment extends SvrProcess {
 			uom_id = wEntry.getM_Product().getC_UOM_ID();
 		
 		ord.setItem1_UOM_ID(wEntry.getC_UOM_ID());
-		ord.setItem1_Tax_ID(wEntry.getC_Tax_ID());
+		ord.setItem1_Tax_ID(wEntry.getC_Tax_ID(ord.isReverseCharge()));
 		BigDecimal qty = wEntry.getBilledQty();
 		if(billedQty != null)
 			qty = billedQty;
@@ -303,7 +303,7 @@ public class CreateSalesEntryFromWeighment extends SvrProcess {
 			ord.setItem2_UOM_ID(wEntry.getC_UOM_ID());
 			ord.setItem2_Price(wEntry.getPassPricePerUnit());
 			ord.setItem2_Amt(wEntry.getPermitPassAmount());
-			ord.setItem2_Tax_ID(wEntry.getC_Tax_ID());
+			ord.setItem2_Tax_ID(wEntry.getC_Tax_ID(ord.isReverseCharge()));
 		}
 		else {
 			ord.setItem2_ID(0);
@@ -319,7 +319,7 @@ public class CreateSalesEntryFromWeighment extends SvrProcess {
 			ord.setItem2_UOM_ID(prod.getC_UOM_ID());
 			ord.setItem2_Price(wEntry.getOtherCharges());
 			ord.setItem2_Amt(wEntry.getOtherCharges());		
-			ord.setItem2_Tax_ID(wEntry.getC_Tax_ID());
+			ord.setItem2_Tax_ID(wEntry.getC_Tax_ID(ord.isReverseCharge()));
 		}
 		
 		ord.setRent_Amt(wEntry.getRent_Amt());										
@@ -517,7 +517,7 @@ public class CreateSalesEntryFromWeighment extends SvrProcess {
 		int uom_id = product.getC_UOM_ID();
 		
 		ord.setItem1_UOM_ID(product.getC_UOM_ID());
-		ord.setItem1_Tax_ID(product.getTax_ID(false, bp.isInterState()));
+		ord.setItem1_Tax_ID(product.getTax_ID(false, bp.isInterState(), ord.isReverseCharge()));
 		BigDecimal qty = wEntry.getPermitIssuedQty();
 		if(billedQty != null)
 			qty = billedQty;

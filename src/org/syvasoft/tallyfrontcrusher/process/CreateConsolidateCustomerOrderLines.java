@@ -127,7 +127,7 @@ public class CreateConsolidateCustomerOrderLines extends SvrProcess {
 				ordLine.setPriceLimit(price);
 				ordLine.setPriceEntered(price);
 				TF_MProduct prod = new TF_MProduct(getCtx(), M_Product_ID, get_TrxName());
-				ordLine.setC_Tax_ID(prod.getTax_ID(true, bp.isInterState()));
+				ordLine.setC_Tax_ID(prod.getTax_ID(true, bp.isInterState(), ord.isReverseCharge()));
 				ordLine.setDescription(description);
 				ordLine.saveEx();
 			}	

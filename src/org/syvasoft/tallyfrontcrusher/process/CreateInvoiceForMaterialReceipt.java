@@ -140,7 +140,7 @@ public class CreateInvoiceForMaterialReceipt extends SvrProcess {
 					invLine.setPriceLimit(price);
 					invLine.setPriceEntered(price);				
 				
-					invLine.setC_Tax_ID(prod.getTax_ID(true, bp.isInterState()));								
+					invLine.setC_Tax_ID(prod.getTax_ID(true, bp.isInterState(), invoice.isReverseCharge()));								
 					invLine.saveEx();				
 					
 					i++;
@@ -243,7 +243,7 @@ public class CreateInvoiceForMaterialReceipt extends SvrProcess {
 				invLine.setPriceLimit(price);
 				invLine.setPriceEntered(price);				
 			
-				invLine.setC_Tax_ID(prod.getTax_ID(true, bp.isInterState()));								
+				invLine.setC_Tax_ID(prod.getTax_ID(true, bp.isInterState(), invoice.isReverseCharge()));								
 				invLine.saveEx();				
 				
 				i++;

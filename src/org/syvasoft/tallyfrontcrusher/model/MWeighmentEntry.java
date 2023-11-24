@@ -96,7 +96,7 @@ public class MWeighmentEntry extends X_TF_WeighmentEntry {
 		BigDecimal rentExcludesTax = BigDecimal.ZERO;
 		
 		TF_MProduct prod=new TF_MProduct(getCtx(), getM_Product_ID(), null);
-		MTax tax = new MTax(getCtx(), prod.getTax_ID(true, false), null);				
+		MTax tax = new MTax(getCtx(), prod.getTax_ID(true, false, false), null);				
 		BigDecimal taxRate = tax.getRate();
 		BigDecimal hundred = new BigDecimal("100");
 		
@@ -820,24 +820,24 @@ public class MWeighmentEntry extends X_TF_WeighmentEntry {
 		return MSysConfig.getIntValue("INVOICE_SEQ_ID", 0, getAD_Client_ID(), getAD_Org_ID());
 	}
 	
-	public int getC_Tax_ID() {
+	public int getC_Tax_ID(boolean ReverseCharge) {
 		TF_MProduct p = new TF_MProduct(getCtx(), getM_Product_ID(), get_TrxName());
 		TF_MBPartner bp = new TF_MBPartner(getCtx(), getC_BPartner_ID(), get_TrxName());
 		
 		if(MSysConfig.getValue("APPLY_GST_ALWAYS").equals("Y") && getWeighmentEntryType().equals(WEIGHMENTENTRYTYPE_Sales)) {
 			if(isApplyTCS()) {
-				return p.getTax_ID(getGSTRate(), true, isApplyTCS(), bp.isInterState());
+				return p.getTax_ID(getGSTRate(), true, isApplyTCS(), bp.isInterState(),ReverseCharge);
 			}
 			else {
-				return p.getTax_ID(getGSTRate(), true, false, bp.isInterState());
+				return p.getTax_ID(getGSTRate(), true, false, bp.isInterState(),ReverseCharge);
 			}
 		}
 		else {
 			if(isApplyTCS()) {
-				return p.getTax_ID(getGSTRate(), isGST(), isApplyTCS(), bp.isInterState());
+				return p.getTax_ID(getGSTRate(), isGST(), isApplyTCS(), bp.isInterState(),ReverseCharge);
 			}
 			else {
-				return p.getTax_ID(getGSTRate(), isGST(), false, bp.isInterState());
+				return p.getTax_ID(getGSTRate(), isGST(), false, bp.isInterState(),ReverseCharge);
 			}
 		}			
 	}

@@ -37,7 +37,7 @@ public class CalloutWeighmentEntry_CalcAmount implements IColumnCallout {
 		BigDecimal rentExcludesTax = BigDecimal.ZERO;
 		
 		TF_MProduct prod=new TF_MProduct(ctx, CalloutUtil.getIntValue(mTab, MWeighmentEntry.COLUMNNAME_M_Product_ID), null);
-		MTax tax = new MTax(ctx, prod.getTax_ID(true, false), null);				
+		MTax tax = new MTax(ctx, prod.getTax_ID(true, false, false), null);				
 		BigDecimal taxRate = tax.getRate();
 		BigDecimal hundred = new BigDecimal("100");
 		

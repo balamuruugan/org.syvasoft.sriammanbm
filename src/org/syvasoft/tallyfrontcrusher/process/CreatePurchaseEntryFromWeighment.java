@@ -142,7 +142,7 @@ public class CreatePurchaseEntryFromWeighment extends SvrProcess {
 		ord.setItem1_ID(wEntry.getM_Product_ID());
 		
 		ord.setItem1_UOM_ID(wEntry.getC_UOM_ID());
-		ord.setItem1_Tax_ID(wEntry.getC_Tax_ID());
+		ord.setItem1_Tax_ID(wEntry.getC_Tax_ID(ord.isReverseCharge()));
 		BigDecimal qty = wEntry.getNetWeightUnit();
 		ord.setItem1_TotalLoad(BigDecimal.ONE);
 		ord.setItem1_PermitIssued(wEntry.getPermitIssuedQty()); 
@@ -214,7 +214,7 @@ public class CreatePurchaseEntryFromWeighment extends SvrProcess {
 		int uom_id = product.getC_UOM_ID();
 		
 		ord.setItem1_UOM_ID(product.getC_UOM_ID());
-		ord.setItem1_Tax_ID(product.getTax_ID(false, bp.isInterState()));
+		ord.setItem1_Tax_ID(product.getTax_ID(false, bp.isInterState(), ord.isReverseCharge()));
 		BigDecimal qty = wEntry.getPermitIssuedQty();
 		if(billedQty != null)
 			qty = billedQty;

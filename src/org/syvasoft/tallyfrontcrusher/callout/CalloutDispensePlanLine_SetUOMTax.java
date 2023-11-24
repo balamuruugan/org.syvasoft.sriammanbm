@@ -29,7 +29,7 @@ public class CalloutDispensePlanLine_SetUOMTax implements IColumnCallout {
 			TF_MProduct product = new TF_MProduct(ctx, M_Product_ID, null);
 			
 			if(product != null) {
-				mTab.setValue(MDispensePlanLine.COLUMNNAME_C_Tax_ID, product.getTax_ID(true, bp.isInterState()));
+				mTab.setValue(MDispensePlanLine.COLUMNNAME_C_Tax_ID, product.getTax_ID(true, bp.isInterState(), false));
 				mTab.setValue(MDispensePlanLine.COLUMNNAME_C_UOM_ID, product.getC_UOM_ID());
 			}
 		}

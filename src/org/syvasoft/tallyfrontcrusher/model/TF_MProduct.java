@@ -419,15 +419,15 @@ public class TF_MProduct extends MProduct {
 		return bd;
 	}
 	
-	public int getTax_ID(boolean isTaxIncluded, boolean isInterState) {
+	public int getTax_ID(boolean isTaxIncluded, boolean isInterState, boolean ReverseCharge) {
 		String whereClause = "";
 		
 		if(isTaxIncluded) {
-			whereClause = "Rate=? AND IsSummary=? AND IsInterState=? AND ad_org_id=0";
+			whereClause = "Rate=? AND IsSummary=? AND IsInterState=? AND ad_org_id=0  AND ReverseCharge=?";
 		
 			MTax tax = new Query(getCtx(), MTax.Table_Name, whereClause, get_TrxName())
 					.setClient_ID()
-					.setParameters(isTaxIncluded?getGSTRate():Env.ZERO, "Y", (getGSTRate().doubleValue() == 0) ? "N" : (isInterState? "Y" : "N"))
+					.setParameters(isTaxIncluded?getGSTRate():Env.ZERO, "Y", (getGSTRate().doubleValue() == 0) ? "N" : (isInterState? "Y" : "N"),ReverseCharge)
 					.first();
 			
 			if(tax != null)
@@ -450,11 +450,11 @@ public class TF_MProduct extends MProduct {
 		}
 	}
 	
-	public int getTax_ID(boolean isTaxIncluded, boolean ApplyTCS, boolean isInterState) {
-		String whereClause = "Rate=? AND IsSummary=? AND IsInterState=? AND ad_org_id=0";
+	public int getTax_ID(boolean isTaxIncluded, boolean ApplyTCS, boolean isInterState, boolean ReverseCharge) {
+		String whereClause = "Rate=? AND IsSummary=? AND IsInterState=? AND ad_org_id=0 AND ReverseCharge=?";
 		MTax tax = new Query(getCtx(), MTax.Table_Name, whereClause, get_TrxName())
 				.setClient_ID()
-				.setParameters(isTaxIncluded?getGSTRate():Env.ZERO, isTaxIncluded ? "Y" : "N", (getGSTRate().doubleValue() == 0) ? "N" : (isInterState? "Y" : "N"))
+				.setParameters(isTaxIncluded?getGSTRate():Env.ZERO, isTaxIncluded ? "Y" : "N", (getGSTRate().doubleValue() == 0) ? "N" : (isInterState? "Y" : "N"), ReverseCharge)
 				.first();
 		
 		if(ApplyTCS) {
@@ -468,11 +468,11 @@ public class TF_MProduct extends MProduct {
 			return 0;
 	}
 	
-	public int getTax_ID(BigDecimal rate, boolean isTaxIncluded, boolean ApplyTCS, boolean isInterState) {
-		String whereClause = "Rate=? AND IsSummary=? AND IsInterState=? AND ad_org_id=0";
+	public int getTax_ID(BigDecimal rate, boolean isTaxIncluded, boolean ApplyTCS, boolean isInterState, boolean ReverseCharge) {
+		String whereClause = "Rate=? AND IsSummary=? AND IsInterState=? AND ad_org_id=0 AND ReverseCharge=?";
 		MTax tax = new Query(getCtx(), MTax.Table_Name, whereClause, get_TrxName())
 				.setClient_ID()
-				.setParameters(isTaxIncluded?rate:Env.ZERO, isTaxIncluded ? "Y" : "N", (rate.doubleValue() == 0) ? "N" : (isInterState? "Y" : "N"))
+				.setParameters(isTaxIncluded?rate:Env.ZERO, isTaxIncluded ? "Y" : "N", (rate.doubleValue() == 0) ? "N" : (isInterState? "Y" : "N"), ReverseCharge)
 				.first();
 		
 		if(ApplyTCS) {

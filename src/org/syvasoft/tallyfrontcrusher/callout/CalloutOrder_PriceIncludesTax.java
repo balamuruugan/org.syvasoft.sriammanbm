@@ -44,8 +44,9 @@ public class CalloutOrder_PriceIncludesTax implements IColumnCallout {
 				
 				TF_MBPartner bp = new TF_MBPartner(ctx, bPartner_ID, null);
 				TF_MProduct product = new TF_MProduct(ctx, product_ID, null);
+				boolean ReverseCharge = mTab.getValueAsBoolean(TF_MOrder.COLUMNNAME_ReverseCharge);
 				
-				int tax_ID = product.getTax_ID(isTaxIncluded, bp.isInterState());
+				int tax_ID = product.getTax_ID(isTaxIncluded, bp.isInterState(),ReverseCharge);
 				
 				if(mField.getColumnName().equals(TF_MOrder.COLUMNNAME_C_BPartner_ID) ||
 						mField.getColumnName().equals(TF_MOrder.COLUMNNAME_Item1_ID) || 
@@ -58,7 +59,7 @@ public class CalloutOrder_PriceIncludesTax implements IColumnCallout {
 					
 					if(rentedVehicle != null){
 						TF_MProduct vehicle = new TF_MProduct(ctx, rentedVehicle.getM_Product_ID(), null);
-						int vehicle_tax_ID = vehicle.getTax_ID(isTaxIncluded, bp.isInterState());
+						int vehicle_tax_ID = vehicle.getTax_ID(isTaxIncluded, bp.isInterState(),ReverseCharge);
 						
 						mTab.setValue(TF_MOrder.COLUMNNAME_Rent_Tax_ID, vehicle_tax_ID);
 					}

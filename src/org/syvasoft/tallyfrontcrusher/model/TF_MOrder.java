@@ -3801,7 +3801,7 @@ public class TF_MOrder extends MOrder {
 		
 		//Exclude Tax amount from Price
 		//TF_MProduct prod = new TF_MProduct(getCtx(), getItem1_ID(), get_TrxName());
-		MTax tax = new MTax(getCtx(), prod.getTax_ID(wEntry.getGSTRate(), true, wEntry.isApplyTCS(), partner.isInterState()), get_TrxName());
+		MTax tax = new MTax(getCtx(), prod.getTax_ID(wEntry.getGSTRate(), true, wEntry.isApplyTCS(), partner.isInterState(), isReverseCharge()), get_TrxName());
 		
 		if(wEntry.isApplyTCS())	{
 			String whereClause = "C_TaxTCS_ID = ?";
@@ -3860,7 +3860,7 @@ public class TF_MOrder extends MOrder {
 			
 			
 			//Exclude Tax amount from Price
-			MTax tax2 = new MTax(getCtx(), prod2.getTax_ID(true, partner.isInterState()), get_TrxName());				
+			MTax tax2 = new MTax(getCtx(), prod2.getTax_ID(true, partner.isInterState(), isReverseCharge()), get_TrxName());				
 			BigDecimal taxRate2 = tax2.getRate();
 			BigDecimal hundred2 = new BigDecimal("100");				
 			BigDecimal priceExcludesTax2 = price2.divide(BigDecimal.ONE
@@ -4077,7 +4077,7 @@ public class TF_MOrder extends MOrder {
 				ordLine.setPriceEntered(price);
 				ordLine.setC_Order_ID(getC_Order_ID());
 				TF_MProduct prod = new TF_MProduct(getCtx(), M_Product_ID, get_TrxName());
-				ordLine.setC_Tax_ID(prod.getTax_ID((getC_DocTypeTarget_ID() == GSTConsolidatedOrderDocType_ID(getCtx())), bp.isInterState()));
+				ordLine.setC_Tax_ID(prod.getTax_ID((getC_DocTypeTarget_ID() == GSTConsolidatedOrderDocType_ID(getCtx())), bp.isInterState(), isReverseCharge()));
 				ordLine.saveEx();
 			}	
 		}

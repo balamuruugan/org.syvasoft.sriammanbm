@@ -71,8 +71,10 @@ public class CalloutOrder_WeighmentEntry implements IColumnCallout {
 			if(weighment.getM_Warehouse_ID() > 0)
 				mTab.setValue(TF_MOrder.COLUMNNAME_M_Warehouse_ID, weighment.getM_Warehouse_ID());
 			
+			boolean ReverseCharge = mTab.getValueAsBoolean(TF_MOrder.COLUMNNAME_ReverseCharge);
+			
 			mTab.setValue(TF_MOrder.COLUMNNAME_Item1_ID, weighment.getM_Product_ID());
-			mTab.setValue(TF_MOrder.COLUMNNAME_Item1_Tax_ID, weighment.getC_Tax_ID()); //Env.getContext(ctx, "#C_Tax_ID"));
+			mTab.setValue(TF_MOrder.COLUMNNAME_Item1_Tax_ID, weighment.getC_Tax_ID(ReverseCharge)); //Env.getContext(ctx, "#C_Tax_ID"));
 			mTab.setValue(TF_MOrder.COLUMNNAME_Item1_UOM_ID, uom_id);
 			
 			BigDecimal qty = weighment.getNetWeight();
