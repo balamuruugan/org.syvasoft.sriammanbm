@@ -38,7 +38,7 @@ public class BulkWeighmentUpdate extends SvrProcess {
 	
 	
 
-		String whereClause = " Status = 'CO' AND (EXISTS (SELECT T_Selection_ID FROM T_Selection WHERE " +
+		String whereClause = " Status IN ('CO','UR') AND (EXISTS (SELECT T_Selection_ID FROM T_Selection WHERE " +
 				" T_Selection.AD_PInstance_ID=? AND T_Selection.T_Selection_ID = TF_WeighmentEntry.TF_WeighmentEntry_ID)) ";
 		
 		List<MWeighmentEntry> weighmententries = new Query(getCtx(),MWeighmentEntry.Table_Name,  whereClause, get_TrxName())
