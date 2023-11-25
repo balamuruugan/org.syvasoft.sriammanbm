@@ -166,9 +166,10 @@ public class CreateSalesEntryFromWeighment extends SvrProcess {
 					continue;
 				}
 				
-				/*if(!wEntry.isRequiredTaxInvoicePerLoad())
-					continue;
-				*/
+				if(!IsInfo) {
+					if(!wEntry.isRequiredTaxInvoicePerLoad())
+						continue;
+				}
 				{
 					BigDecimal billQty = wEntry.getNetWeightUnit();
 					
@@ -219,6 +220,9 @@ public class CreateSalesEntryFromWeighment extends SvrProcess {
 		ord.setC_DocType_ID(wEntry.getC_DocType_ID(wEntry.getWeighmentEntryType()));
 		ord.setC_DocTypeTarget_ID(wEntry.getC_DocType_ID(wEntry.getWeighmentEntryType()));
 		ord.setM_Warehouse_ID(wEntry.getM_Warehouse_ID());
+		
+		if(wEntry.isRequiredTaxInvoicePerLoad())
+			DateAcct = wEntry.getGrossWeightTime();
 		
 		if(wEntry.getDateInvoiced() == null) {
 			ord.setDateAcct(DateAcct);
