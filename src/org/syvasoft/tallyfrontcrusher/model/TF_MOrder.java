@@ -2815,8 +2815,8 @@ public class TF_MOrder extends MOrder {
 				//Keep the existing invoice no while reversing
 				if(!MSysConfig.getBooleanValue(MSysConfig.Invoice_ReverseUseNewNumber, true, getAD_Client_ID()) && invList.size() == 1) {						
 					
-					String sql = "SELECT COUNT(*) FROM C_Invoice WHERE C_Order_ID = ?";
-					int revCount = DB.getSQLValue(get_TrxName(), sql, getC_Order_ID());
+					String sql = "SELECT COUNT(*) FROM C_Invoice WHERE C_Order_ID = ? OR TF_WeighmentEntry_ID = ?";
+					int revCount = DB.getSQLValue(get_TrxName(), sql, getC_Order_ID(), getTF_WeighmentEntry_ID());
 					revCount = revCount / 2 + 1;
 					inv.setDocumentNo(inv.getDocumentNo() + "-"+  revCount);
 					inv.saveEx();
