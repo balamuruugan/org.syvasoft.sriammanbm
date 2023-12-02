@@ -100,14 +100,14 @@ public class MWeighmentEntry extends X_TF_WeighmentEntry {
 		BigDecimal taxRate = tax.getRate();
 		BigDecimal hundred = new BigDecimal("100");
 		
-		if(isTaxIncluded) {
+		if(isTaxIncluded && isPermitSales()) {
 			priceExcludesTax = price.divide(BigDecimal.ONE.add(taxRate.divide(hundred,2,RoundingMode.HALF_UP)), 2, RoundingMode.HALF_UP);	
 		}
 		else {
 			priceExcludesTax = price;	
 		}
 		
-		if(isRentIncludesTax) {
+		if(isRentIncludesTax && isPermitSales()) {
 			rentExcludesTax = rentprice.divide(BigDecimal.ONE.add(taxRate.divide(hundred,2,RoundingMode.HALF_UP)), 2, RoundingMode.HALF_UP);	
 		}
 		else {

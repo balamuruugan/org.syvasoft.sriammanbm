@@ -2762,6 +2762,7 @@ public class TF_MOrder extends MOrder {
 			}
 		}
 		
+		
 		if(newRecord || is_ValueChanged(COLUMNNAME_DateOrdered)) {
 			if(getC_DocTypeTarget_ID() == TF_MOrder.GSTConsolidatedOrderDocType_ID(getCtx()) || getC_DocTypeTarget_ID() == TF_MOrder.NonGSTConsolidatedOrderDocType_ID(getCtx())) {
 				validateInvoiceDate();	
@@ -4781,17 +4782,19 @@ public class TF_MOrder extends MOrder {
 	}
 	
 	public void validateInvoiceDate() {
-		int inv_DocType_ID = getC_DocTypeTarget().getC_DocTypeInvoice_ID();
-		//Invoice should be greater than or equal to running/latest invoice date.
-		String whereClause = "AD_Org_ID = ? AND DocStatus = 'CO' AND DateAcct > ? AND C_DocTypeTarget_ID = ?";
-		TF_MInvoice latestInv = new Query(getCtx(), TF_MInvoice.Table_Name, whereClause, get_TrxName())
-				.setClient_ID()
-				.setParameters(getAD_Org_ID(), getDateOrdered(), inv_DocType_ID)
-				.first();
-		
-		if(latestInv != null) {
-			String datestring = new SimpleDateFormat("dd/MM/yyyy").format(latestInv.getDateAcct());
-			throw new AdempiereException("Current Invoice Date : " + datestring + ". So, please do not enter old invoice date!");
+		if(getInvoiceNo() == null) {
+			int inv_DocType_ID = getC_DocTypeTarget().getC_DocTypeInvoice_ID();
+			//Invoice should be greater than or equal to running/latest invoice date.
+			String whereClause = "AD_Org_ID = ? AND DocStatus = 'CO' AND DateAcct > ? AND C_DocTypeTarget_ID = ?";
+			TF_MInvoice latestInv = new Query(getCtx(), TF_MInvoice.Table_Name, whereClause, get_TrxName())
+					.setClient_ID()
+					.setParameters(getAD_Org_ID(), getDateOrdered(), inv_DocType_ID)
+					.first();
+			
+			if(latestInv != null) {
+				String datestring = new SimpleDateFormat("dd/MM/yyyy").format(latestInv.getDateAcct());
+				throw new AdempiereException("Current Invoice Date : " + datestring + ". So, please do not enter old invoice date!");
+			}
 		}
 	}
 }
