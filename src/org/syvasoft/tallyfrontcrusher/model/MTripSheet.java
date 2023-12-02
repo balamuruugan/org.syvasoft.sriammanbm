@@ -798,9 +798,9 @@ public class MTripSheet extends X_TF_TripSheet {
 				"	 sum(we.netweightunit)netweight, we.C_UOM_ID, COALESCE(max(r.unitrent),0) unitrent\r\n" + 
 				"FROM \r\n" + 
 				"	 tf_weighmententry we INNER JOIN m_product p ON we.m_product_id = p.m_product_id \r\n" + 
-				"	 LEFT JOIN TF_Machinery_RentConfig R ON we.AD_Org_ID = r.AD_Org_ID AND r.WeighmentEntryType IS NULL AND we.m_product_id = r.JobWork_Product_ID \r\n" + 
+				"	 LEFT JOIN TF_Machinery_RentConfig R ON we.AD_Org_ID = r.AD_Org_ID AND we.m_product_id = r.JobWork_Product_ID \r\n" + 
 				"WHERE \r\n" + 
-				"	 we.WeighmentEntryType IN ('3PR','4SR') AND TF_TripSheet_ID = ? \r\n" + 
+				"	 we.WeighmentEntryType IN ('3PR','4SR') AND TF_TripSheet_ID = ? AND R.IsActive = 'Y'\r\n" +
 				"GROUP BY \r\n" + 
 				"	we.m_product_id,p.m_product_category_id,we.quarryproductiontype, we.C_UOM_ID";
 		
@@ -826,6 +826,8 @@ public class MTripSheet extends X_TF_TripSheet {
 				BigDecimal totalmt = rs.getBigDecimal("netweight");
 				
 				product.setTotalMT(totalmt);
+//				if(unitrent.equals(BigDecimal.ZERO))
+//                    throw new AdempiereException("Please fill the Rent amount "+ product.getDescription()); 
 				product.setRateMT(unitrent);
 				product.setRent_Amt(unitrent.multiply(totalmt));
 				product.setDescription("Quarry to Crusher");
