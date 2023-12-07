@@ -2791,11 +2791,12 @@ public class TF_MOrder extends MOrder {
 		MBoulderMovement.deleteByOrder(getC_Order_ID(), get_TrxName());
 		MSubcontractMaterialMovement.deleteSalesEntryMovement(getC_Order_ID(), get_TrxName());
 		//POS Order's MR and Invoice should be reversed.
-		if((!isSOTrx() && MDocType.DOCSUBTYPESO_POSOrder.equals(DocSubTypeSO)) || DocSubTypeSO.equals("IN") ||
+		
+		 if(DocSubTypeSO != null && ((!isSOTrx() && MDocType.DOCSUBTYPESO_POSOrder.equals(DocSubTypeSO)) || DocSubTypeSO.equals("IN") ||
 				getC_DocType_ID() == 1000050 || getC_DocType_ID() == 1000041 || 
 				getC_DocType_ID() == getC_VendorInvoiceDocType_ID() ||
 				getC_DocType_ID() == GSTOrderDocType_ID(getCtx()) || getC_DocType_ID() == NonGSTOrderDocType_ID(getCtx()) ||
-				getC_DocType_ID() == GSTConsolidatedOrderDocType_ID(getCtx()) || getC_DocType_ID() == NonGSTConsolidatedOrderDocType_ID(getCtx())) {
+				getC_DocType_ID() == GSTConsolidatedOrderDocType_ID(getCtx()) || getC_DocType_ID() == NonGSTConsolidatedOrderDocType_ID(getCtx()))) {
 			//MR/Shipment reverse Correct
 			List<MInOut> inOutList = new Query(getCtx(), MInOut.Table_Name, "C_Order_ID=? AND DocStatus=? AND C_DocType_ID != ?", get_TrxName())
 				.setClient_ID().setParameters(getC_Order_ID(),DOCSTATUS_Completed, getC_VendorInvoiceDocType_ID()).list();
@@ -2829,7 +2830,7 @@ public class TF_MOrder extends MOrder {
 			
 			reverseTransportReceiptStatus();			
 		}
-		else if(DocSubTypeSO.equals("SI")) {			
+		else if(DocSubTypeSO != null && DocSubTypeSO.equals("SI")) {			
 			//Invoice reverse Correct
 			List<TF_MInvoice> invList = new Query(getCtx(), TF_MInvoice.Table_Name, "C_Order_ID=? AND DocStatus=?", get_TrxName())
 				.setClient_ID().setParameters(getC_Order_ID(), DOCSTATUS_Completed).list();
@@ -2854,6 +2855,7 @@ public class TF_MOrder extends MOrder {
 				reverseWeighmentEntries();
 			}
 		}
+		
 		
 		if(getTF_DriverTips_Pay_ID() > 0) {
 			TF_MPayment payment = new TF_MPayment(getCtx(), getTF_DriverTips_Pay_ID(), get_TrxName());
