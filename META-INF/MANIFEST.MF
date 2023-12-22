@@ -1,5 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
+Bundle-ClassPath: lib/jakarta.json-api-2.1.2.jar,
+ .
 Bundle-Name: srmk
 Bundle-SymbolicName: org.syvasoft.srmk;singleton:=true
 Bundle-Version: 1.0.0.qualifier
