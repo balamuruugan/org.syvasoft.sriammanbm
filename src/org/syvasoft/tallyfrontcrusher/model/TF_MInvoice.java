@@ -551,6 +551,72 @@ public class TF_MInvoice extends MInvoice {
 	{		
 		return (String)get_Value(COLUMNNAME_TermsAndCondition);
 	}
+	 /** Column name IRN */
+    public static final String COLUMNNAME_IRN = "IRN";
+	/** Set IRN.
+	@param IRN IRN	  */
+	public void setIRN (String IRN)
+	{
+		set_ValueNoCheck (COLUMNNAME_IRN, IRN);
+	}
+	
+	/** Get IRN.
+		@return IRN	  */
+	public String getIRN () 
+	{
+		return (String)get_Value(COLUMNNAME_IRN);
+	}
+
+    /** Column name AckDt */
+    public static final String COLUMNNAME_AckDt = "AckDt";
+    
+	/** Set AckDt.
+	@param AckDt AckDt	  */
+	public void setAckDt (String AckDt)
+	{
+		set_Value (COLUMNNAME_AckDt, AckDt);
+	}
+	
+	/** Get AckDt.
+		@return AckDt	  */
+	public String getAckDt () 
+	{
+		return (String)get_Value(COLUMNNAME_AckDt);
+	}
+	
+	/** Column name AckNo */
+    public static final String COLUMNNAME_AckNo = "AckNo";
+    
+	/** Set AckNo.
+		@param AckNo AckNo	  */
+	public void setAckNo (String AckNo)
+	{
+		set_Value (COLUMNNAME_AckNo, AckNo);
+	}
+	
+	/** Get AckNo.
+		@return AckNo	  */
+	public String getAckNo () 
+	{
+		return (String)get_Value(COLUMNNAME_AckNo);
+	}
+	
+    /** Column name SignedQRCode */
+    public static final String COLUMNNAME_SignedQRCode = "SignedQRCode";
+	/** Set SignedQRCode.
+	@param SignedQRCode SignedQRCode	  */
+	public void setSignedQRCode (String SignedQRCode)
+	{
+		set_Value (COLUMNNAME_SignedQRCode, SignedQRCode);
+	}
+	
+	/** Get SignedQRCode.
+		@return SignedQRCode	  */
+	public String getSignedQRCode () 
+	{
+		return (String)get_Value(COLUMNNAME_SignedQRCode);
+	}
+
 	
 	
 	@Override

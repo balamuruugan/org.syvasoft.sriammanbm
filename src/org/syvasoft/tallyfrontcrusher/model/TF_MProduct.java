@@ -534,6 +534,22 @@ public class TF_MProduct extends MProduct {
 		return (String)get_Value(COLUMNNAME_Barcode);
 	}
 
+	/** Column name HSNCode */
+    public static final String COLUMNNAME_HSNCode = "HSNCode";
+
+	/** Set HSN Code.
+		@param HSNCode HSN Code	  */
+	public void setHSNCode (String HSNCode)
+	{
+		set_Value (COLUMNNAME_HSNCode, HSNCode);
+	}
+
+	/** Get HSN Code.
+		@return HSN Code	  */
+	public String getHSNCode () 
+	{
+		return (String)get_Value(COLUMNNAME_HSNCode);
+	}
 	
 	@Override
 	protected boolean beforeSave(boolean newRecord) {

@@ -859,7 +859,10 @@ public class TF_MPayment extends MPayment {
 			}
 		}
 		
-		return super.beforeSave(newRecord);
+		if(!changeCashAccount)
+			return super.beforeSave(newRecord);
+		else
+			return true;
 	}
 	
 	@Override

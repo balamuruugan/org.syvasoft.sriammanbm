@@ -233,4 +233,185 @@ public class TF_MOrg extends MOrg {
 			 return 0;
 		return ii.intValue();
 	}
+    /** Column name eInvAuthenticationURL */
+    public static final String COLUMNNAME_eInvAuthenticationURL = "eInvAuthenticationURL";
+	/** Set eInvoice Authentication URL.
+		@param eInvAuthenticationURL eInvoice Authentication URL	  */
+	public void seteInvAuthenticationURL (String eInvAuthenticationURL)
+	{
+		set_Value (COLUMNNAME_eInvAuthenticationURL, eInvAuthenticationURL);
+	}
+
+	/** Get eInvoice Authentication URL.
+		@return eInvoice Authentication URL	  */
+	public String geteInvAuthenticationURL () 
+	{
+		return (String)get_Value(COLUMNNAME_eInvAuthenticationURL);
+	}
+    /** Column name eInvoiceBaseURL */
+    public static final String COLUMNNAME_eInvoiceBaseURL = "eInvoiceBaseURL";
+
+	/** Set eInvoice Base URL.
+		@param eInvoiceBaseURL eInvoice Base URL	  */
+	public void seteInvoiceBaseURL (String eInvoiceBaseURL)
+	{
+		set_Value (COLUMNNAME_eInvoiceBaseURL, eInvoiceBaseURL);
+	}
+
+	/** Get eInvoice Base URL.
+		@return eInvoice Base URL	  */
+	public String geteInvoiceBaseURL () 
+	{
+		return (String)get_Value(COLUMNNAME_eInvoiceBaseURL);
+	}
+	 /** Column name EMail */
+    public static final String COLUMNNAME_EMail = "EMail";
+
+	/** Set EMail Address.
+	@param EMail 
+	Electronic Mail Address
+  	*/
+	public void setEMail (String EMail)
+	{
+		set_Value (COLUMNNAME_EMail, EMail);
+	}
+
+	/** Get EMail Address.
+		@return Electronic Mail Address
+  	*/
+	public String getEMail () 
+	{
+		return (String)get_Value(COLUMNNAME_EMail);
+	}
+    /** Column name gstin */
+    public static final String COLUMNNAME_gstin = "gstin";
+
+	/** Set gstin.
+		@param gstin gstin	  */
+	public void setgstin (String gstin)
+	{
+		set_Value (COLUMNNAME_gstin, gstin);
+	}
+
+	/** Get gstin.
+		@return gstin	  */
+	public String getgstin () 
+	{
+		return (String)get_Value(COLUMNNAME_gstin);
+	}
+	  /** Column name UserName */
+    public static final String COLUMNNAME_UserName = "UserName";
+
+	/** Set User Name.
+		@param UserName User Name	  */
+	public void setUserName (String UserName)
+	{
+		set_Value (COLUMNNAME_UserName, UserName);
+	}
+
+	/** Get User Name.
+		@return User Name	  */
+	public String getUserName () 
+	{
+		return (String)get_Value(COLUMNNAME_UserName);
+	}
+    /** Column name Password */
+    public static final String COLUMNNAME_Password = "Password";
+	/** Set Password.
+		@param Password 
+		Password of any length (case sensitive)
+	 */
+	public void setPassword (String Password)
+	{
+		set_Value (COLUMNNAME_Password, Password);
+	}
+
+	/** Get Password.
+		@return Password of any length (case sensitive)
+  	*/
+	public String getPassword () 
+	{
+		return (String)get_Value(COLUMNNAME_Password);
+	}
+    /** Column name IP_Address */
+    public static final String COLUMNNAME_IP_Address = "IP_Address";
+    public void setIP_Address (String IP_Address)
+	{
+		set_Value (COLUMNNAME_IP_Address, IP_Address);
+	}
+
+	/** Get IP Address.
+		@return Defines the IP address to transfer data to
+  	*/
+	public String getIP_Address () 
+	{
+		return (String)get_Value(COLUMNNAME_IP_Address);
+	}
+	 /** Column name ClientValue */
+    public static final String COLUMNNAME_ClientValue = "ClientValue";
+	
+	/** Set Client Key.
+		@param ClientValue 
+		Key of the Client
+	 */
+	public void setClientValue (String ClientValue)
+	{
+		set_Value (COLUMNNAME_ClientValue, ClientValue);
+	}
+
+	/** Get Client Key.
+		@return Key of the Client
+  	*/
+	public String getClientValue () 
+	{
+		return (String)get_Value(COLUMNNAME_ClientValue);
+	}
+    public static final String COLUMNNAME_Client = "Client";
+	/** Set Client.
+	@param Client Client	  */
+	public void setClient (String Client)
+	{
+		set_Value (COLUMNNAME_Client, Client);
+	}
+
+	/** Get Client.
+	@return Client	  */
+	public String getClient () 
+	{
+		return (String)get_Value(COLUMNNAME_Client);
+	} 
+	/** Column name eInvoiceGenerationURL */
+    public static final String COLUMNNAME_eInvoiceGenerationURL = "eInvoiceGenerationURL";
+
+	/** Set eInvoice Generation URL.
+	@param eInvoiceGenerationURL eInvoice Generation URL	  */
+	public void seteInvoiceGenerationURL (String eInvoiceGenerationURL)
+	{
+		set_Value (COLUMNNAME_eInvoiceGenerationURL, eInvoiceGenerationURL);
+	}
+
+	/** Get eInvoice Generation URL.
+		@return eInvoice Generation URL	  */
+	public String geteInvoiceGenerationURL () 
+	{
+		return (String)get_Value(COLUMNNAME_eInvoiceGenerationURL);
+	}
+	/** Column name StateCode */
+    public static final String COLUMNNAME_StateCode = "StateCode";
+
+	/** Set State Code.
+	@param StateCode State Code	  */
+	public void setStateCode (String StateCode)
+	{
+		set_Value (COLUMNNAME_StateCode, StateCode);
+	}
+
+	/** Get State Code.
+		@return State Code	  */
+	public String getStateCode () 
+	{
+		return (String)get_Value(COLUMNNAME_StateCode);
+	}
+
+
 }
