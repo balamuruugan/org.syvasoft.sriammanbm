@@ -37,7 +37,7 @@ public class TF_MPayment extends MPayment {
 	
 	 /** Column name CashType */
     public static final String COLUMNNAME_CashType = "CashType";
-    
+    public boolean changeCashAccount = false;
     /** General Expense = E */
 	public static final String CASHTYPE_GeneralExpense = "E";
 	/** General Receipt = R */
