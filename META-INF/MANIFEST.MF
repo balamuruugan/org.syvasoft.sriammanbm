@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-ClassPath: lib/jakarta.json-api-2.1.2.jar,
  .
 Bundle-Name: srmk
-Bundle-SymbolicName: org.syvasoft.srmk;singleton:=true
+Bundle-SymbolicName: org.syvasoft.kpcons_q360;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.adempiere.base;bundle-version="4.1.0",
