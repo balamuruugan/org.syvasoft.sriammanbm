@@ -372,9 +372,46 @@ public class MWeighmentEntry extends X_TF_WeighmentEntry {
 				if(getQuarryProductionType() != null) {
 					CreateTripSheetForQuarryProductionType();
 				}
-			}			
+			}
 		}
-
+		
+		if(newRecord || is_ValueChanged(COLUMNNAME_TF_Destination_ID)) {
+		
+			if(getWeighmentEntryType().equals(MWeighmentEntry.WEIGHMENTENTRYTYPE_SubcontractProductionReceipt)) {
+				String whereClause = "Name = ?";
+				MDestination destination = new Query(getCtx(), MDestination.Table_Name, whereClause, DayShiftEndTime)
+											.setClient_ID()
+											.setParameters(getNewDestination().trim())
+											.first();
+				
+				if(getC_Project_ID() == 0) {
+					if(destination != null) {
+						if(destination.getC_Project_ID() == 0) {
+							setDescription("ERROR: Please configure subcontract for selected destination.");
+							setStatus(STATUS_Error);
+						}
+						else {
+							TF_MProject project = new TF_MProject(getCtx(), destination.getC_Project_ID(), get_TrxName());
+							
+							setC_Project_ID(destination.getC_Project_ID());
+							setTF_Send_To(destination.getTF_Send_To());
+							setTF_ProductionPlant_ID(destination.getTF_ProductionPlant_ID());
+							setC_BPartner_ID(project.getC_BPartner_ID());
+						}
+					}
+					else if(destination == null) {
+						MDestination newdest = new MDestination(getCtx(), 0, get_TrxName());
+						newdest.setAD_Org_ID(getAD_Org_ID());
+						newdest.setName(getNewDestination().trim());
+						newdest.saveEx();
+						
+						setDescription("ERROR: Please configure subcontract for selected destination.");
+						setStatus(STATUS_Error);
+					}
+				}
+			}
+		}
+		
 		boolean ok = super.beforeSave(newRecord);
 		return ok;
 	}

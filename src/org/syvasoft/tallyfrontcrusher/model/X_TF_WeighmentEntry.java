@@ -34,7 +34,7 @@ public class X_TF_WeighmentEntry extends PO implements I_TF_WeighmentEntry, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231122L;
+	private static final long serialVersionUID = 20231227L;
 
     /** Standard Constructor */
     public X_TF_WeighmentEntry (Properties ctx, int TF_WeighmentEntry_ID, String trxName)
@@ -1079,6 +1079,24 @@ public class X_TF_WeighmentEntry extends PO implements I_TF_WeighmentEntry, I_Pe
 		return false;
 	}
 
+	/** Set IndentNo.
+		@param IndentNo IndentNo
+	*/
+	public void setIndentNo (int IndentNo)
+	{
+		set_Value (COLUMNNAME_IndentNo, Integer.valueOf(IndentNo));
+	}
+
+	/** Get IndentNo.
+		@return IndentNo	  */
+	public int getIndentNo()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_IndentNo);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set Invoice No.
 		@param InvoiceNo Invoice No generated from weighbridge app
 	*/
@@ -1620,6 +1638,24 @@ public class X_TF_WeighmentEntry extends PO implements I_TF_WeighmentEntry, I_Pe
 	public String getNewProduct()
 	{
 		return (String)get_Value(COLUMNNAME_NewProduct);
+	}
+
+	/** Set Opening Meter.
+		@param OpeningMeter Opening Meter
+	*/
+	public void setOpeningMeter (int OpeningMeter)
+	{
+		set_Value (COLUMNNAME_OpeningMeter, Integer.valueOf(OpeningMeter));
+	}
+
+	/** Get Opening Meter.
+		@return Opening Meter	  */
+	public int getOpeningMeter()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_OpeningMeter);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Other Charges.
@@ -2646,6 +2682,8 @@ public class X_TF_WeighmentEntry extends PO implements I_TF_WeighmentEntry, I_Pe
 	public static final String TF_SEND_TO_Production = "P";
 	/** Stock = S */
 	public static final String TF_SEND_TO_Stock = "S";
+	/** Sales = SO */
+	public static final String TF_SEND_TO_Sales = "SO";
 	/** Subcontract Production = T */
 	public static final String TF_SEND_TO_SubcontractProduction = "T";
 	/** Set Send To.
@@ -2841,6 +2879,21 @@ public class X_TF_WeighmentEntry extends PO implements I_TF_WeighmentEntry, I_Pe
 		return bd;
 	}
 
+	/** Set transporter.
+		@param transporter transporter
+	*/
+	public void settransporter (String transporter)
+	{
+		set_ValueNoCheck (COLUMNNAME_transporter, transporter);
+	}
+
+	/** Get transporter.
+		@return transporter	  */
+	public String gettransporter()
+	{
+		return (String)get_Value(COLUMNNAME_transporter);
+	}
+
 	public org.compiere.model.I_C_BPartner getTransporter() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
@@ -2931,6 +2984,10 @@ public class X_TF_WeighmentEntry extends PO implements I_TF_WeighmentEntry, I_Pe
 		return (String)get_Value(COLUMNNAME_VendorDCNo);
 	}
 
+	/** Inward = 12IN */
+	public static final String WEIGHMENTENTRYTYPE_Inward = "12IN";
+	/** Outward = 13OU */
+	public static final String WEIGHMENTENTRYTYPE_Outward = "13OU";
 	/** Sales = 1SO */
 	public static final String WEIGHMENTENTRYTYPE_Sales = "1SO";
 	/** Input = 2PO */

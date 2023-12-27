@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for TF_Destination
  *  @author iDempiere (generated) 
- *  @version Release 4.1
+ *  @version Release 11
  */
 @SuppressWarnings("all")
 public interface I_TF_Destination 
@@ -37,9 +37,9 @@ public interface I_TF_Destination
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
-    /** AccessLevel = 3 - Client - Org 
+    /** AccessLevel = 1 - Org 
      */
-    BigDecimal accessLevel = BigDecimal.valueOf(3);
+    BigDecimal accessLevel = BigDecimal.valueOf(1);
 
     /** Load Meta Data */
 
@@ -63,6 +63,21 @@ public interface I_TF_Destination
 	  * Organizational entity within client
 	  */
 	public int getAD_Org_ID();
+
+    /** Column name C_Project_ID */
+    public static final String COLUMNNAME_C_Project_ID = "C_Project_ID";
+
+	/** Set Subcontract / Project.
+	  * Financial Project
+	  */
+	public void setC_Project_ID (int C_Project_ID);
+
+	/** Get Subcontract / Project.
+	  * Financial Project
+	  */
+	public int getC_Project_ID();
+
+	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -101,6 +116,24 @@ public interface I_TF_Destination
 	  * The record is active in the system
 	  */
 	public boolean isActive();
+
+    /** Column name Latitude */
+    public static final String COLUMNNAME_Latitude = "Latitude";
+
+	/** Set Latitude	  */
+	public void setLatitude (String Latitude);
+
+	/** Get Latitude	  */
+	public String getLatitude();
+
+    /** Column name Longitude */
+    public static final String COLUMNNAME_Longitude = "Longitude";
+
+	/** Set Longitude	  */
+	public void setLongitude (String Longitude);
+
+	/** Get Longitude	  */
+	public String getLongitude();
 
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";
@@ -145,6 +178,26 @@ public interface I_TF_Destination
 
 	/** Get TF_Destination_UU	  */
 	public String getTF_Destination_UU();
+
+    /** Column name TF_ProductionPlant_ID */
+    public static final String COLUMNNAME_TF_ProductionPlant_ID = "TF_ProductionPlant_ID";
+
+	/** Set Production Plant	  */
+	public void setTF_ProductionPlant_ID (int TF_ProductionPlant_ID);
+
+	/** Get Production Plant	  */
+	public int getTF_ProductionPlant_ID();
+
+	public I_TF_ProductionPlant getTF_ProductionPlant() throws RuntimeException;
+
+    /** Column name TF_Send_To */
+    public static final String COLUMNNAME_TF_Send_To = "TF_Send_To";
+
+	/** Set Send To	  */
+	public void setTF_Send_To (String TF_Send_To);
+
+	/** Get Send To	  */
+	public String getTF_Send_To();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

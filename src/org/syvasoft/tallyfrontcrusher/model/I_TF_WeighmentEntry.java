@@ -592,6 +592,15 @@ s Transporter	  */
 	/** Get Include Rent Amount Invoice	  */
 	public boolean isIncludeRentAmtInvoice();
 
+    /** Column name IndentNo */
+    public static final String COLUMNNAME_IndentNo = "IndentNo";
+
+	/** Set IndentNo	  */
+	public void setIndentNo (int IndentNo);
+
+	/** Get IndentNo	  */
+	public int getIndentNo();
+
     /** Column name InvoiceNo */
     public static final String COLUMNNAME_InvoiceNo = "InvoiceNo";
 
@@ -878,6 +887,15 @@ s Transporter	  */
 
 	/** Get New Product	  */
 	public String getNewProduct();
+
+    /** Column name OpeningMeter */
+    public static final String COLUMNNAME_OpeningMeter = "OpeningMeter";
+
+	/** Set Opening Meter	  */
+	public void setOpeningMeter (int OpeningMeter);
+
+	/** Get Opening Meter	  */
+	public int getOpeningMeter();
 
     /** Column name OtherCharges */
     public static final String COLUMNNAME_OtherCharges = "OtherCharges";
@@ -1461,6 +1479,15 @@ s Transporter	  */
 	  * Total Amount
 	  */
 	public BigDecimal getTotalAmt();
+
+    /** Column name transporter */
+    public static final String COLUMNNAME_transporter = "transporter";
+
+	/** Set transporter	  */
+	public void settransporter (String transporter);
+
+	/** Get transporter	  */
+	public String gettransporter();
 
     /** Column name Transporter_ID */
     public static final String COLUMNNAME_Transporter_ID = "Transporter_ID";
