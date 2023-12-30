@@ -132,7 +132,7 @@ public class CreateShipmentForWE extends SvrProcess {
 			inout.setM_Warehouse_ID(we.getM_Warehouse_ID());
 			inout.setTF_WeighmentEntry_ID(we.getTF_WeighmentEntry_ID());
 			inout.setDescription(we.getDescription());
-			
+			inout.setC_Project_ID(we.getC_Project_ID());
 			
 			if(we.getC_OrderLine_ID() > 0)
 				inout.setC_Order_ID(order.getC_Order_ID());

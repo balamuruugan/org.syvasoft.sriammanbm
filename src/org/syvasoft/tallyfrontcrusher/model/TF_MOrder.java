@@ -4403,6 +4403,7 @@ public class TF_MOrder extends MOrder {
 		invoice.setDateInvoiced(getDateAcct());
 		invoice.setDateAcct(getDateAcct());
 		invoice.setVehicleNo(getVehicleNo());
+		invoice.setC_Project_ID(getC_Project_ID());
 		//fetching already generated invoice no in case of reversing and recreating the existing invoices.
 		/*if(getC_DocTypeTarget_ID() == GSTOrderDocType_ID(getCtx())) {
 			invoice.setDocumentNo(weighment.getInvoiceNo());		

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-ClassPath: lib/jakarta.json-api-2.1.2.jar,
  .
-Bundle-Name: srmk
+Bundle-Name: KP Construction
 Bundle-SymbolicName: org.syvasoft.kpcons_q360;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7

@@ -177,7 +177,7 @@ public class CreateSubcontractRawMaterialMovement extends SvrProcess {
 		we.setWeighmentEntryType(MWeighmentEntry.WEIGHMENTENTRYTYPE_Sales);
 		we.setM_Warehouse_ID(entry.getM_Warehouse_ID());
 		we.setC_BPartner_ID(bp.getC_BPartner_ID());
-		we.setPartyName(entry.getPartyName());
+		we.setPartyName(entry.getDescription());
 		we.setPaymentRule(MWeighmentEntry.PAYMENTRULE_Credit);
 		we.setTF_VehicleType_ID(entry.getTF_VehicleType_ID());
 		we.setTF_RentedVehicle_ID(entry.getTF_RentedVehicle_ID());
@@ -193,7 +193,7 @@ public class CreateSubcontractRawMaterialMovement extends SvrProcess {
 		we.setC_UOM_ID(entry.getC_UOM_ID());
 		
 		MPriceListUOM priceUOM = MPriceListUOM.getPriceListUOM(getCtx(), entry.getM_Product_ID(), entry.getC_UOM_ID(), we.getC_BPartner_ID(), entry.getTF_Destination_ID(), true, entry.getGrossWeightTime());
-		
+		we.setPassPricePerUnit(BigDecimal.ZERO);
 		we.setPrice(priceUOM.getPrice());
 		we.setAmount(priceUOM.getPrice().multiply(entry.getNetWeightUnit()));
 		we.setTotalAmt(priceUOM.getPrice().multiply(entry.getNetWeightUnit()));

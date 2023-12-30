@@ -375,16 +375,52 @@ public class MWeighmentEntry extends X_TF_WeighmentEntry {
 			}
 		}
 		
-		if(newRecord || is_ValueChanged(COLUMNNAME_TF_Destination_ID)) {
-		
+		if(newRecord) {		
+			if(getWeighmentEntryType().equals(MWeighmentEntry.WEIGHMENTENTRYTYPE_Sales)) {
+				MDestination destination = new MDestination(getCtx(), getTF_Destination_ID(), get_TrxName());
+				setC_Project_ID(destination.getC_Project_ID());
+			}
+			
 			if(getWeighmentEntryType().equals(MWeighmentEntry.WEIGHMENTENTRYTYPE_SubcontractProductionReceipt)) {
 				String whereClause = "Name = ?";
-				MDestination destination = new Query(getCtx(), MDestination.Table_Name, whereClause, DayShiftEndTime)
+				MDestination destination = new Query(getCtx(), MDestination.Table_Name, whereClause, get_TrxName())
 											.setClient_ID()
 											.setParameters(getNewDestination().trim())
 											.first();
 				
 				if(getC_Project_ID() == 0) {
+					if(destination != null) {
+						if(destination.getC_Project_ID() == 0) {
+							setDescription("ERROR: Please configure subcontract for selected destination.");
+							setStatus(STATUS_Error);
+						}
+						else {
+							TF_MProject project = new TF_MProject(getCtx(), destination.getC_Project_ID(), get_TrxName());
+							
+							setC_Project_ID(destination.getC_Project_ID());
+							setTF_Send_To(destination.getTF_Send_To());
+							setTF_ProductionPlant_ID(destination.getTF_ProductionPlant_ID());
+							setC_BPartner_ID(project.getC_BPartner_ID());
+						}
+					}
+					else if(destination == null) {
+						MDestination newdest = new MDestination(getCtx(), 0, get_TrxName());
+						newdest.setAD_Org_ID(getAD_Org_ID());
+						newdest.setName(getNewDestination().trim());
+						newdest.saveEx();
+						
+						setDescription("ERROR: Please configure subcontract for selected destination.");
+						setStatus(STATUS_Error);
+					}
+				}
+			}
+		}
+		else if(is_ValueChanged(COLUMNNAME_TF_Destination_ID)) {
+			if(getWeighmentEntryType().equals(MWeighmentEntry.WEIGHMENTENTRYTYPE_SubcontractProductionReceipt)) {
+				
+				MDestination destination = new MDestination(getCtx(), getTF_Destination_ID(), get_TrxName());
+				setNewDestination(destination.getName());				 
+				{
 					if(destination != null) {
 						if(destination.getC_Project_ID() == 0) {
 							setDescription("ERROR: Please configure subcontract for selected destination.");
@@ -1217,14 +1253,21 @@ public class MWeighmentEntry extends X_TF_WeighmentEntry {
 				ka.saveEx();
 			}
 			
-			List<MWeighmentEntry> wentries = new Query(getCtx(), MWeighmentEntry.Table_Name, "Ref_WeighmentEntry_ID = ? AND Status  IN ('CO','CL')", get_TrxName())
+			List<MWeighmentEntry> wentries = new Query(getCtx(), MWeighmentEntry.Table_Name, "Ref_WeighmentEntry_ID = ? AND Status  IN ('CO','CL','IP')", get_TrxName())
 					.setClient_ID()
 					.setParameters(getTF_WeighmentEntry_ID())
 					.list();
 			
 			for(MWeighmentEntry we : wentries) {
+				String sql = "SELECT COUNT(*) FROM TF_WeighmentEntry WHERE Ref_WeighmentEntry_ID = ?";
+				int revCount = DB.getSQLValue(get_TrxName(), sql, getTF_WeighmentEntry_ID());
+				revCount = revCount + 1;
+				
 				we.voidWeighmentEntry();
 				we.setStatus(MBoulderReceipt.DOCSTATUS_Voided);
+				we.saveEx();
+				we.setDocumentNo(we.getDocumentNo() + "-"+  revCount);
+				we.setVehicleNo(we.getVehicleNo() + "-"+  revCount);
 				we.saveEx();
 			}
 		}

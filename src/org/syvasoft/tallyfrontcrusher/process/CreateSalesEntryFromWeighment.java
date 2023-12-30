@@ -246,7 +246,7 @@ public class CreateSalesEntryFromWeighment extends SvrProcess {
 		
 		ord.setPaymentRule(wEntry.getPaymentRule());
 		ord.setOnAccount(false);
-
+		ord.setC_Project_ID(wEntry.getC_Project_ID());
 		//Price List
 		int m_M_PriceList_ID = MPriceList.getDefault(getCtx(), true).getM_PriceList_ID();							
 		ord.setM_PriceList_ID(m_M_PriceList_ID);
@@ -406,7 +406,7 @@ public class CreateSalesEntryFromWeighment extends SvrProcess {
 		
 		invoice.setC_PaymentTerm_ID(order.getC_PaymentTerm_ID());
 		//
-		
+		invoice.setC_Project_ID(wEntry.getC_Project_ID());
 		invoice.setBPartner(bp);				
 		invoice.setPaymentRule(order.getPaymentRule());
 		invoice.setVehicleNo(wEntry.getVehicleNo());
