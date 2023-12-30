@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for TF_EmpShift
  *  @author iDempiere (generated) 
- *  @version Release 5.1
+ *  @version Release 11
  */
 @SuppressWarnings("all")
 public interface I_TF_EmpShift 
@@ -32,7 +32,7 @@ public interface I_TF_EmpShift
     /** TableName=TF_EmpShift */
     public static final String Table_Name = "TF_EmpShift";
 
-    /** AD_Table_ID=1000383 */
+    /** AD_Table_ID=1000382 */
     public static final int Table_ID = MTable.getTable_ID(Table_Name);
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
@@ -128,12 +128,12 @@ public interface I_TF_EmpShift
     /** Column name EndTime */
     public static final String COLUMNNAME_EndTime = "EndTime";
 
-	/** Set End Time (HH:MM 24hr fmt).
+	/** Set End Time.
 	  * End of the time span
 	  */
 	public void setEndTime (String EndTime);
 
-	/** Get End Time (HH:MM 24hr fmt).
+	/** Get End Time.
 	  * End of the time span
 	  */
 	public String getEndTime();
@@ -182,6 +182,19 @@ public interface I_TF_EmpShift
 	/** Get Break2	  */
 	public boolean isBreak2();
 
+    /** Column name IsDefault */
+    public static final String COLUMNNAME_IsDefault = "IsDefault";
+
+	/** Set Default.
+	  * Default value
+	  */
+	public void setIsDefault (boolean IsDefault);
+
+	/** Get Default.
+	  * Default value
+	  */
+	public boolean isDefault();
+
     /** Column name IsFlexiShift */
     public static final String COLUMNNAME_IsFlexiShift = "IsFlexiShift";
 
@@ -190,6 +203,24 @@ public interface I_TF_EmpShift
 
 	/** Get Is Flexi Shift	  */
 	public boolean isFlexiShift();
+
+    /** Column name MinHrsFullDay */
+    public static final String COLUMNNAME_MinHrsFullDay = "MinHrsFullDay";
+
+	/** Set Min. Hours for Full Day	  */
+	public void setMinHrsFullDay (BigDecimal MinHrsFullDay);
+
+	/** Get Min. Hours for Full Day	  */
+	public BigDecimal getMinHrsFullDay();
+
+    /** Column name MinHrsHalfDay */
+    public static final String COLUMNNAME_MinHrsHalfDay = "MinHrsHalfDay";
+
+	/** Set Min. Hours for Half Day	  */
+	public void setMinHrsHalfDay (BigDecimal MinHrsHalfDay);
+
+	/** Get Min. Hours for Half Day	  */
+	public BigDecimal getMinHrsHalfDay();
 
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";
@@ -252,6 +283,15 @@ public interface I_TF_EmpShift
 	  * Default is Next Day Shift Begin Time - Punch Begin Duration
 	  */
 	public int getPunchEndAfter();
+
+    /** Column name Shift */
+    public static final String COLUMNNAME_Shift = "Shift";
+
+	/** Set Shift	  */
+	public void setShift (String Shift);
+
+	/** Get Shift	  */
+	public String getShift();
 
     /** Column name SName */
     public static final String COLUMNNAME_SName = "SName";

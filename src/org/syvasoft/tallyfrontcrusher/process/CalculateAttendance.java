@@ -11,28 +11,26 @@ import org.syvasoft.tallyfrontcrusher.model.MBiometricAttedenceLog;
 import org.syvasoft.tallyfrontcrusher.model.MEmployeeAttendance;
 
 public class CalculateAttendance extends SvrProcess {
-	/*
+	
 	private int AD_Org_ID ;
 	private Timestamp dateFrom ;
 	private boolean reCalcualte = false; 
-	*/
+	
 	@Override
 	protected void prepare() {
-		/*
+		
 		ProcessInfoParameter[] para = getParameter();		
 		
 		for (int i = 0; i < para.length; i++)
 		{						
 			String name = para[i].getParameterName();
-			if (name.equals("AD_Org_ID"))
-				AD_Org_ID = para[i].getParameterAsInt();
-			else if (name.equals("DateFrom")) 
+			if (name.equals("DateFrom")) 
 				dateFrom = para[i].getParameterAsTimestamp();
 			else if (name.equals("reCalculate")) 
 				reCalcualte = para[i].getParameterAsBoolean();
 			
 		}
-		*/
+		
 	}
 
 	@Override
@@ -48,7 +46,7 @@ public class CalculateAttendance extends SvrProcess {
 			bLog.saveEx();
 		}
 		
-		int i = MEmployeeAttendance.generateAttendanceRecordsFromBiometricLog(getCtx(), get_TrxName());
+		int i = MEmployeeAttendance.generateAttendanceRecordsFromBiometricLog(getCtx(),dateFrom, get_TrxName());
 		
 		return i + " records created successfully!";
 	}

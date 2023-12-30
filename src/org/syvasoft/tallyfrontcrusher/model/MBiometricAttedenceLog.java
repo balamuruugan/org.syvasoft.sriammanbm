@@ -3,6 +3,8 @@ package org.syvasoft.tallyfrontcrusher.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
+import org.adempiere.exceptions.AdempiereException;
+import org.compiere.model.Query;
 import org.compiere.util.DB;
 
 public class MBiometricAttedenceLog extends X_TF_BiometricAttendence {
@@ -22,9 +24,24 @@ public class MBiometricAttedenceLog extends X_TF_BiometricAttendence {
 	}
 
 	public void setShift() {
-		String sql = "SELECT getTF_EmpShift_ID(?, ? :: timestamp without time zone, ?)";
-		int shift_id = DB.getSQLValue(get_TrxName(), sql, getAD_Org_ID(), getAttendenceTime(), getInOutMode());
-		setTF_EmpShift_ID(shift_id);
+		String whereClause = "AD_Org_ID = ? AND C_BPartner_ID = ? AND DateFrom <= ? AND IsActive = 'Y'";
+		MEmpShiftAssign curShift = new Query(getCtx(), MEmpShiftAssign.Table_Name, whereClause, get_TrxName())
+				.setClient_ID()
+				.setParameters(getAD_Org_ID(), getC_BPartner_ID(), getAttendenceTime())
+				.setOrderBy("DateFrom DESC")
+				.first();
+		
+				
+		//if(curShift == null) {
+		//	setTF_EmpShift_ID(MEmployeeShift.getDefault_ID(getCtx(), getAD_Org_ID()));		
+		//}
+		
+		if(curShift != null) {
+			setTF_EmpShift_ID(curShift.getTF_EmpShift_ID());
+		}
+		else {
+			throw new AdempiereException("Please assign Shift for " + getC_BPartner().getName());
+		}		
 		
 		MEmployeeShift es = new MEmployeeShift(getCtx(), getTF_EmpShift_ID(), get_TrxName());
 		setDateAcct(es.getDateAcct(getAttendenceTime(), getInOutMode()));

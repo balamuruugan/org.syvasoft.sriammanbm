@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for TF_EmployeeAttendance
  *  @author iDempiere (generated) 
- *  @version Release 5.1
+ *  @version Release 11
  */
 @SuppressWarnings("all")
 public interface I_TF_EmployeeAttendance 
@@ -76,12 +76,12 @@ public interface I_TF_EmployeeAttendance
     /** Column name C_BPartner_ID */
     public static final String COLUMNNAME_C_BPartner_ID = "C_BPartner_ID";
 
-	/** Set Business Partner .
+	/** Set Business Partner.
 	  * Identifies a Business Partner
 	  */
 	public void setC_BPartner_ID (int C_BPartner_ID);
 
-	/** Get Business Partner .
+	/** Get Business Partner.
 	  * Identifies a Business Partner
 	  */
 	public int getC_BPartner_ID();
@@ -174,6 +174,28 @@ public interface I_TF_EmployeeAttendance
 	  */
 	public boolean isActive();
 
+    /** Column name IsManual */
+    public static final String COLUMNNAME_IsManual = "IsManual";
+
+	/** Set Manual.
+	  * This is a manual process
+	  */
+	public void setIsManual (boolean IsManual);
+
+	/** Get Manual.
+	  * This is a manual process
+	  */
+	public boolean isManual();
+
+    /** Column name Location */
+    public static final String COLUMNNAME_Location = "Location";
+
+	/** Set Location	  */
+	public void setLocation (String Location);
+
+	/** Get Location	  */
+	public String getLocation();
+
     /** Column name Status */
     public static final String COLUMNNAME_Status = "Status";
 
@@ -242,4 +264,13 @@ public interface I_TF_EmployeeAttendance
 	  * User who updated this records
 	  */
 	public int getUpdatedBy();
+
+    /** Column name WorkingHours */
+    public static final String COLUMNNAME_WorkingHours = "WorkingHours";
+
+	/** Set Working Hours	  */
+	public void setWorkingHours (BigDecimal WorkingHours);
+
+	/** Get Working Hours	  */
+	public BigDecimal getWorkingHours();
 }

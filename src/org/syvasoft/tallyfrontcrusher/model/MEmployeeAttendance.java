@@ -29,11 +29,27 @@ public class MEmployeeAttendance extends X_TF_EmployeeAttendance {
 
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
-		setAttendance();
+		if(isManual()) {
+			if(getStatus().equals(STATUS_Present))
+				setAttendanceUnit(BigDecimal.ONE);
+			else if(getStatus().equals(STATUS_HalfDayPresent))
+				setAttendanceUnit(new BigDecimal(0.5));
+			else if(getStatus().equals(STATUS_Holiday))
+				setAttendanceUnit(BigDecimal.ONE);
+			else
+				setAttendanceUnit(BigDecimal.ZERO);				
+		}
+		else {
+			if(getDateInTime().equals(getDateOutTime()))
+				setDateOutTime(null);
+			
+			calculateAttendanceUnits();
+		}
+		
 		return super.beforeSave(newRecord);
 	}
 	
-	public void setAttendance() {
+	/*public void setAttendance() {
 		if(getStatus().equals(STATUS_HalfDay)) {
 			setAttendanceUnit(new BigDecimal(0.5));
 		}
@@ -44,7 +60,7 @@ public class MEmployeeAttendance extends X_TF_EmployeeAttendance {
 			setAttendanceUnit(BigDecimal.ONE);
 		}
 			
-	}
+	}*/
 	
 	@Override
 	protected boolean beforeDelete() {
@@ -115,20 +131,25 @@ public class MEmployeeAttendance extends X_TF_EmployeeAttendance {
 		//For individual records
 	}
 	
-	public static int generateAttendanceRecordsFromBiometricLog(Properties ctx, String trxName) throws SQLException {
+	public static int generateAttendanceRecordsFromBiometricLog(Properties ctx,Timestamp dateFrom,String trxName) throws SQLException {
 		String sql = "SELECT\r\n" + 
 				"	AD_Org_ID, C_BPartner_ID,DateAcct,TF_EmpShift_ID,\r\n" + 
-				"	MIN(CASE WHEN InOutMode='0' THEN AttendenceTime ELSE NULL END) InTime,\r\n" + 
-				"	MAX(CASE WHEN InOutMode='1' THEN AttendenceTime ELSE NULL END) OutTime,\r\n" + 
-				"	TO_CHAR((MAX(CASE WHEN InOutMode='1' THEN AttendenceTime ELSE NULL END) - \r\n" + 
-				"	MIN(CASE WHEN InOutMode='0' THEN AttendenceTime ELSE NULL END)  ),'HH24:MI') TT\r\n" + 
+				"	MIN(AttendenceTime) InTime,\r\n" + 
+				"	MAX(AttendenceTime) OutTime,\r\n" + 
+				"	TO_CHAR((MAX(AttendenceTime) - \r\n" + 
+				"	MIN(AttendenceTime)),'HH24:MI') TT,\r\n" + 
+				"	Round(TO_CHAR((MAX(AttendenceTime) - \r\n" + 
+				"	MIN(AttendenceTime)),'HH24') :: numeric +\r\n" + 
+				"	TO_CHAR((MAX(AttendenceTime) - \r\n" + 
+				"	MIN(AttendenceTime)),'MI') :: numeric / 60,2) hours\r\n" + 
 				"	\r\n" + 
 				"FROM\r\n" + 
 				"	TF_BiometricAttendence \r\n" + 
 				"WHERE\r\n" + 
-				"	Processed='N'\r\n AND DateAcct IS NOT NULL " + 
-				"GROUP BY\r\n" + 
+				"	Processed='N'\r\n AND DateAcct >= ? " + 
+				" AND DateAcct IS NOT NULL GROUP BY\r\n" + 
 				"	 AD_Org_ID, C_BPartner_ID,DateAcct, TF_EmpShift_ID";
+		
 		
 		PreparedStatement pstmt =  null;
 		ResultSet rs = null;		
@@ -136,6 +157,7 @@ public class MEmployeeAttendance extends X_TF_EmployeeAttendance {
 		try	{	
 			
 			pstmt = DB.prepareStatement (sql, trxName);
+			pstmt.setTimestamp(1, dateFrom);
 			rs = pstmt.executeQuery();
 			while(rs.next()) {
 				int AD_Org_ID = rs.getInt("AD_Org_ID");
@@ -145,7 +167,10 @@ public class MEmployeeAttendance extends X_TF_EmployeeAttendance {
 				Timestamp inTime = rs.getTimestamp("InTime");
 				Timestamp outTime = rs.getTimestamp("OutTime");
 				String duration = rs.getString("tt");
+				BigDecimal hours = rs.getBigDecimal("hours");
 				
+				if(hours == null)
+					hours = BigDecimal.ZERO;
 				//if(dateAcct == null || TF_EmpShift_ID == 0)
 				//	continue;
 				
@@ -154,6 +179,9 @@ public class MEmployeeAttendance extends X_TF_EmployeeAttendance {
 				att.setDateOutTime(outTime);
 				att.setDuration(duration);
 				att.setStatus(outTime != null && inTime != null ? STATUS_Present : STATUS_Unknown);
+				att.setWorkingHours(hours);
+				att.saveEx();
+				att.calculateAttendanceUnits();
 				att.saveEx();
 				
 				String whereClause = "AD_Org_ID = ? AND C_BPartner_ID = ? AND TF_EmpShift_ID = ? AND DateAcct = ? ";
@@ -175,6 +203,28 @@ public class MEmployeeAttendance extends X_TF_EmployeeAttendance {
 			rs = null; pstmt = null;
 		}
 		return i;
+	}
+	
+	private void calculateAttendanceUnits() {
+		MEmployeeShift shift = new MEmployeeShift(getCtx(), getTF_EmpShift_ID(), get_TrxName());
+		if(getWorkingHours().doubleValue() >= shift.getMinHrsFullDay().doubleValue()) {
+			setAttendanceUnit(BigDecimal.ONE);
+			setStatus(STATUS_Present);
+		}
+		else if(getWorkingHours().doubleValue() >= shift.getMinHrsHalfDay().doubleValue() && 
+				getWorkingHours().doubleValue() < shift.getMinHrsFullDay().doubleValue()) {
+			setAttendanceUnit(new BigDecimal(0.5));
+			setStatus(STATUS_HalfDayPresent);
+		}
+		else if(getDateOutTime() == null) {
+			setStatus(STATUS_Unknown);
+			setAttendanceUnit(BigDecimal.ZERO);
+		}
+		else {
+			setAttendanceUnit(BigDecimal.ZERO);
+			setStatus(STATUS_Absent);
+		}
+			
 	}
 	
 	public static BigDecimal getPresentDays(Properties ctx, int AD_Org_ID, int C_BPartner_ID, Timestamp dateFrom, Timestamp dateTo) {
