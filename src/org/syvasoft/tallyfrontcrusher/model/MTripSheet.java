@@ -348,6 +348,7 @@ public class MTripSheet extends X_TF_TripSheet {
 				ms.setC_ElementValue_ID(rentAccount);
 				ms.setTF_TripSheet_ID(getTF_TripSheet_ID());
 				ms.setC_Activity_ID(getC_Activity_ID());
+				ms.setUser1_ID(getUser1_ID());
 				ms.saveEx();
 			}
 			
@@ -519,6 +520,7 @@ public class MTripSheet extends X_TF_TripSheet {
 			ms.setC_ElementValue_ID(rentAccount);
 			ms.setTF_TripSheet_ID(getTF_TripSheet_ID());
 			ms.setC_Activity_ID(rent.getC_Activity_ID());
+			ms.setUser1_ID(getUser1_ID());
 			ms.saveEx();
 			
 			
@@ -548,6 +550,7 @@ public class MTripSheet extends X_TF_TripSheet {
 			ms.setC_ElementValue_ID(rentAccount);
 			ms.setC_Activity_ID(getC_Activity_ID());
 			ms.setTF_TripSheet_ID(getTF_TripSheet_ID());
+			ms.setUser1_ID(getUser1_ID());
 			ms.saveEx();
 			
 			drill.setProcessed(true);

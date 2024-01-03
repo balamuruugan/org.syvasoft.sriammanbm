@@ -26,6 +26,12 @@ public class CalloutFuelIssue_Vehicle implements IColumnCallout {
 		if(IssueType.equals(MFuelIssue.ISSUETYPE_Payment))
 			return null;
 		
+		MMachinery machinery = new MMachinery(ctx, PM_Machinery_ID, null);
+		
+		if(machinery.getUser1_ID() > 0)
+			mTab.setValue(MFuelIssue.COLUMNNAME_User1_ID, machinery.getUser1_ID());
+		else
+			mTab.setValue(MFuelIssue.COLUMNNAME_User1_ID, null);
 		
 		int AD_Org_ID = (int) mTab.getValue(MFuelIssue.COLUMNNAME_AD_Org_ID);
 		

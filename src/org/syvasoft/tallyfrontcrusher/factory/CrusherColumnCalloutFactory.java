@@ -92,6 +92,11 @@ public class CrusherColumnCalloutFactory implements IColumnCalloutFactory {
 				list.add(new CalloutOrder_Org());
 		}
 		
+		if(tableName.equals(TF_MInvoice.Table_Name) && columnName.equals(TF_MInvoice.COLUMNNAME_C_BPartner_ID))
+		{
+			list.add(new CalloutInvoice_SetDepartment());
+		}
+		
 		//TF_MOrder - Set Cash Payment Rule for POS BP
 		if(tableName.equals(TF_MOrder.Table_Name) && columnName.equals(TF_MOrder.COLUMNNAME_C_BPartner_ID))
 		{
@@ -238,6 +243,9 @@ public class CrusherColumnCalloutFactory implements IColumnCalloutFactory {
 		if(tableName.equals(MPayment.Table_Name)) { 
 			if(columnName.equals(TF_MPayment.COLUMNNAME_TF_BPartner_ID)) 
 				list.add(new CalloutPayment_TFBPartner());
+			
+			if(columnName.equals(TF_MPayment.COLUMNNAME_PM_Machinery_ID))
+				list.add(new CalloutPayment_SetDepartment());
 			if(columnName.equals(TF_MPayment.COLUMNNAME_C_ElementValue_ID) || columnName.equals(TF_MPayment.COLUMNNAME_DateTrx)) {
 				list.add(new CalloutPayment_ElementValue());
 				list.add(new CalloutPayment_CalcSalaryBalannceAmts());

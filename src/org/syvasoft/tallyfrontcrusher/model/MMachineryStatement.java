@@ -23,6 +23,14 @@ public class MMachineryStatement extends X_PM_MachineStmt {
 		// TODO Auto-generated constructor stub
 	}
 
+	protected boolean beforeSave(boolean newRecord) {
+		if(newRecord) {
+			if(getUser1_ID() == 0) {
+				setUser1_ID(getPM_Machinery().getUser1_ID());
+			}
+		}
+		return super.beforeSave(newRecord);
+	}
 	
 	public static void deleteTripSheetEntries(Properties ctx, int TF_TripSheet_ID, String trxName) {
 		String whereClause="TF_TripSheet_ID=?";

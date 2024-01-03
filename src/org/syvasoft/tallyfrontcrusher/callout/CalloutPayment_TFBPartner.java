@@ -27,24 +27,28 @@ public class CalloutPayment_TFBPartner implements IColumnCallout {
 			isEmployee = bp.isEmployee();
 			if(isEmployee) {
 				int AD_Org_ID = (int) mTab.getValue(TF_MPayment.COLUMNNAME_AD_Org_ID);
-				MJobworkAssignedEmployee jwEmp = MJobworkAssignedEmployee.getJobwork(AD_Org_ID, bPartnerID);
+				/*MJobworkAssignedEmployee jwEmp = MJobworkAssignedEmployee.getJobwork(AD_Org_ID, bPartnerID);
 				if(jwEmp != null) {
 					mTab.setValue(TF_MPayment.COLUMNNAME_C_Project_ID, jwEmp.getC_Project_ID());
 				}
 				else {
 					mTab.setValue(TF_MPayment.COLUMNNAME_C_Project_ID, null);
-				}
+				}*/
 			}
 			else {
 				int AD_Org_ID = (int) mTab.getValue(TF_MPayment.COLUMNNAME_AD_Org_ID);
 				MJobworkAssignedBPartner jwBP = MJobworkAssignedBPartner.getJobwork(AD_Org_ID, bPartnerID);
-				if(jwBP != null) {
+				/*if(jwBP != null) {
 					mTab.setValue(TF_MPayment.COLUMNNAME_C_Project_ID, jwBP.getC_Project_ID());
 				}
 				else {
 					mTab.setValue(TF_MPayment.COLUMNNAME_C_Project_ID, null);
-				}
+				}*/
 			}
+			if(bp.getUser1_ID() > 0)
+				mTab.setValue(TF_MPayment.COLUMNNAME_User1_ID, bp.getUser1_ID());
+			else
+				mTab.setValue(TF_MPayment.COLUMNNAME_User1_ID, null);
 		}
 		else {
 			MUser user = MUser.get(ctx, Env.getAD_User_ID(ctx));				

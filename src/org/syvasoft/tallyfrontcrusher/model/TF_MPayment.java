@@ -1365,6 +1365,7 @@ public class TF_MPayment extends MPayment {
 		mStatement.setPM_Machinery_ID(getPM_Machinery_ID());
 		mStatement.setPM_Job_ID(getPM_Job_ID());
 		mStatement.setC_ElementValue_ID(getC_ElementValue_ID());
+		mStatement.setUser1_ID(getUser1_ID());
 		if(!isReceipt()) {
 			mStatement.setExpense(getPayAmt());
 		}

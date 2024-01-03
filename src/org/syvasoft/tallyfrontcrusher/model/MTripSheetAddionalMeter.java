@@ -42,7 +42,9 @@ public class MTripSheetAddionalMeter extends X_TF_TripSheet_AM {
 		MMachineryType mt = (MMachineryType) getPM_Machinery().getPM_MachineryType();
 		if(mt.getC_ElementValueExpenses_ID() ==0)
 			throw new AdempiereException("Please specify Machinery Expense Account in the Machinery Type: " + mt.getName());
-				
+			
+		MTripSheet ts = (MTripSheet) getTF_TripSheet();
+		
 		MMachineryStatement st = new MMachineryStatement(getCtx(), 0, get_TrxName());
 		st = new MMachineryStatement(getCtx(), 0, get_TrxName());
 		st.setAD_Org_ID(getAD_Org_ID());
@@ -56,6 +58,7 @@ public class MTripSheetAddionalMeter extends X_TF_TripSheet_AM {
 		BigDecimal amount = getAmount();
 		st.setExpense(amount);
 		st.setTF_TripSheet_ID(getTF_TripSheet_ID());		
+		st.setUser1_ID(ts.getUser1_ID());
 		st.saveEx();
 	}
 	
