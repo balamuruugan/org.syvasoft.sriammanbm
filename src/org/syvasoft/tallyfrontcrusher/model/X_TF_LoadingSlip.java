@@ -31,7 +31,7 @@ public class X_TF_LoadingSlip extends PO implements I_TF_LoadingSlip, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211029L;
+	private static final long serialVersionUID = 20230327L;
 
     /** Standard Constructor */
     public X_TF_LoadingSlip (Properties ctx, int TF_LoadingSlip_ID, String trxName)
@@ -106,6 +106,23 @@ public class X_TF_LoadingSlip extends PO implements I_TF_LoadingSlip, I_Persiste
 		return ii.intValue();
 	}
 
+	/** Set Description.
+		@param Description 
+		Optional short description of the record
+	  */
+	public void setDescription (String Description)
+	{
+		set_Value (COLUMNNAME_Description, Description);
+	}
+
+	/** Get Description.
+		@return Optional short description of the record
+	  */
+	public String getDescription () 
+	{
+		return (String)get_Value(COLUMNNAME_Description);
+	}
+
 	/** Set Document No.
 		@param DocumentNo 
 		Document sequence number of the document
@@ -135,6 +152,23 @@ public class X_TF_LoadingSlip extends PO implements I_TF_LoadingSlip, I_Persiste
 	public Timestamp getLoadedTime () 
 	{
 		return (Timestamp)get_Value(COLUMNNAME_LoadedTime);
+	}
+
+	/** Set Loading Count.
+		@param LoadingCount Loading Count	  */
+	public void setLoadingCount (int LoadingCount)
+	{
+		set_Value (COLUMNNAME_LoadingCount, Integer.valueOf(LoadingCount));
+	}
+
+	/** Get Loading Count.
+		@return Loading Count	  */
+	public int getLoadingCount () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_LoadingCount);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Processed.
@@ -190,6 +224,8 @@ public class X_TF_LoadingSlip extends PO implements I_TF_LoadingSlip, I_Persiste
 	public static final String STATUS_UnderReview = "UR";
 	/** Primary DC void = PV */
 	public static final String STATUS_PrimaryDCVoid = "PV";
+	/** Error = ER */
+	public static final String STATUS_Error = "ER";
 	/** Set Status.
 		@param Status 
 		Status of the currently running check
