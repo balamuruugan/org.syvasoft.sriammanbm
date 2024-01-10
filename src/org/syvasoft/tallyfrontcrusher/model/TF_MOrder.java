@@ -4379,6 +4379,18 @@ public class TF_MOrder extends MOrder {
 		int DocType_ID = MSysConfig.getIntValue("ROYALTY_PASS_DOCTYPE_ID", 1000062, Env.getAD_Client_ID(ctx));
 		return DocType_ID;
 	}
+	
+	public static int BoulderSalesOrderDocType_ID(Properties ctx) {
+		//int DocType_ID = MSysConfig.getIntValue("GST_ORDER_ID", 1000063, Env.getAD_Client_ID(ctx));
+		int DocType_ID = MSysConfig.getIntValue("BOULDER_SALES_INVOICE_ORDER_ID", 1000099, Env.getAD_Client_ID(ctx));
+		return DocType_ID;
+	}
+	
+//	public static int BoulderSalesInvoiceDocType_ID(Properties ctx) {
+//		//int DocType_ID = MSysConfig.getIntValue("GST_ORDER_ID", 1000063, Env.getAD_Client_ID(ctx));
+//		int DocType_ID = MSysConfig.getIntValue("BOULDER_SALES_INVOICE_ID", 1000100, Env.getAD_Client_ID(ctx));
+//		return DocType_ID;
+//	}
 
 	public boolean firstInvoice = true;
 	public void createInvoiceCustomer() {
@@ -4389,7 +4401,8 @@ public class TF_MOrder extends MOrder {
 				getC_DocTypeTarget_ID() != TF_MOrder.NonGSTOrderDocType_ID(getCtx()) && 
 				getC_DocTypeTarget_ID() != TF_MOrder.GSTConsolidatedOrderDocType_ID(getCtx()) && 
 				getC_DocTypeTarget_ID() != TF_MOrder.NonGSTConsolidatedOrderDocType_ID(getCtx()) &&
-				getC_DocTypeTarget_ID() != TF_MOrder.RoyaltyPassOrderDocType_ID(getCtx()))
+				getC_DocTypeTarget_ID() != TF_MOrder.RoyaltyPassOrderDocType_ID(getCtx()) &&
+				getC_DocTypeTarget_ID() != TF_MOrder.BoulderSalesOrderDocType_ID(getCtx()))
 			return;
 		
 		//Invoice Header

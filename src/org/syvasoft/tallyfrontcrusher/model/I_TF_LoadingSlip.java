@@ -32,7 +32,7 @@ public interface I_TF_LoadingSlip
     /** TableName=TF_LoadingSlip */
     public static final String Table_Name = "TF_LoadingSlip";
 
-    /** AD_Table_ID=1000381 */
+    /** AD_Table_ID=1000450 */
     public static final int Table_ID = MTable.getTable_ID(Table_Name);
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
@@ -95,6 +95,19 @@ public interface I_TF_LoadingSlip
 	  */
 	public int getCreatedBy();
 
+    /** Column name Description */
+    public static final String COLUMNNAME_Description = "Description";
+
+	/** Set Description.
+	  * Optional short description of the record
+	  */
+	public void setDescription (String Description);
+
+	/** Get Description.
+	  * Optional short description of the record
+	  */
+	public String getDescription();
+
     /** Column name DocumentNo */
     public static final String COLUMNNAME_DocumentNo = "DocumentNo";
 
@@ -129,6 +142,15 @@ public interface I_TF_LoadingSlip
 
 	/** Get Loaded Time	  */
 	public Timestamp getLoadedTime();
+
+    /** Column name LoadingCount */
+    public static final String COLUMNNAME_LoadingCount = "LoadingCount";
+
+	/** Set Loading Count	  */
+	public void setLoadingCount (int LoadingCount);
+
+	/** Get Loading Count	  */
+	public int getLoadingCount();
 
     /** Column name Processed */
     public static final String COLUMNNAME_Processed = "Processed";
