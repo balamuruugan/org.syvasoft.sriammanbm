@@ -373,6 +373,8 @@ public class CrusherModelFactory implements IModelFactory {
 			return MTripSheetDetails.class;
 		else if(MEmpShiftAssign.Table_Name.equals(tableName))
 			return MEmpShiftAssign.class;
+		else if(MVehicleTypeSalary.Table_Name.equals(tableName))
+			return MVehicleTypeSalary.class;
 		return null;
 	}
 
@@ -739,6 +741,8 @@ public class CrusherModelFactory implements IModelFactory {
 			return new MTripSheetDetails(ctx, Record_ID, trxName);
 		else if(MEmpShiftAssign.Table_Name.equals(tableName))
 			return new MEmpShiftAssign(ctx, Record_ID, trxName);
+		else if(MVehicleTypeSalary.Table_Name.equals(tableName))
+			return new MVehicleTypeSalary(ctx, Record_ID, trxName);
 		return null;
 	}
 
@@ -1107,6 +1111,8 @@ public class CrusherModelFactory implements IModelFactory {
 			return new MTripSheetDetails(ctx, rs, trxName);
 		else if(MEmpShiftAssign.Table_Name.equals(tableName))
 			return new MEmpShiftAssign(ctx, rs, trxName);
+		else if(MVehicleTypeSalary.Table_Name.equals(tableName))
+			return new MVehicleTypeSalary(ctx, rs, trxName);
 		return null;
 	}
 }

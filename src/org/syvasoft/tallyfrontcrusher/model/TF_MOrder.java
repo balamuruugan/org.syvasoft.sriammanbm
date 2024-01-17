@@ -4813,4 +4813,59 @@ public class TF_MOrder extends MOrder {
 			}
 		}
 	}
+	
+public void postDriverSalary() {
+		
+		MWeighmentEntry we = new MWeighmentEntry(getCtx(), getTF_WeighmentEntry_ID(), get_TrxName());
+		
+		if(we.getC_BPDriver_ID() == 0)
+			return;
+		
+		MRentedVehicle rv=new MRentedVehicle(getCtx(), getTF_RentedVehicle_ID(), get_TrxName());
+		MDestination dest = new MDestination(getCtx(), we.getTF_Destination_ID(), get_TrxName());
+		
+		if(dest.getDistance().doubleValue() == 0)
+			throw new AdempiereException("Please configure distance for Destination - " + dest.getName());
+		
+		MVehicleType vType=new MVehicleType(getCtx(), rv.getTF_VehicleType_ID(), get_TrxName());
+		BigDecimal Wage=vType.getWage(getDateAcct(), dest.getDistance());
+		
+		if(Wage.doubleValue() == 0)
+			throw new AdempiereException("Please configure Wage for Driver salary " + getDocumentNo());
+		
+		BigDecimal RentAmt= getItem1_Qty().add(getItem2_Qty()).multiply(we.getGrossRent());
+		BigDecimal DriverSalary=RentAmt.multiply(Wage);
+		
+		if(RentAmt.doubleValue() == 0)
+			return;
+		
+		MEmployeeSalaryOld salary = new MEmployeeSalaryOld(getCtx(), 0, get_TrxName());
+		
+		salary.setAD_Org_ID(getAD_Org_ID());
+		salary.setDateAcct(getDateAcct());
+		salary.setPresent_Days(BigDecimal.ONE);
+		salary.setC_BPartner_ID(we.getC_BPDriver_ID());				
+		salary.setSalary_Amt(DriverSalary);
+		salary.setIncentive(BigDecimal.ZERO);
+		salary.setDescription(getDocumentNo());
+		salary.setDocStatus(MEmployeeSalaryOld.DOCSTATUS_Drafted);
+		salary.setC_Order_ID(getC_Order_ID());		
+		salary.saveEx();
+		
+		salary.processIt(DocAction.ACTION_Complete);
+		salary.saveEx();
+	}
+	
+	public void reverseDriverSalary() {
+		String whereClause = "C_Order_ID = ? AND DocStatus = 'CO'";
+		MEmployeeSalary salary = new Query(getCtx(), MEmployeeSalary.Table_Name, whereClause, get_TrxName())
+				.setClient_ID()
+				.setParameters(getC_Order_ID())
+				.first();
+		if(salary != null) {
+			salary.reverseIt();
+			salary.saveEx();
+		}
+			
+	}
 }
