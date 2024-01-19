@@ -2703,7 +2703,7 @@ public class TF_MOrder extends MOrder {
 		closeYardEntry();
 		createInvoiceCustomer();
 		createInvoiceVendor();
-		
+		postDriverSalary();
 		if(getC_DocTypeTarget_ID() == GSTConsolidatedOrderDocType_ID(getCtx())) {
 			createConsolidatedTaxInvoice();
 		}
@@ -2895,7 +2895,7 @@ public class TF_MOrder extends MOrder {
 			reverseAdditionalTransactions();
 			reverseConsolidateInvoice(false);
 		}
-		
+		reverseDriverSalary();
 		reverseMixedPayment();
 		
 		return super.voidIt();
@@ -3006,6 +3006,7 @@ public class TF_MOrder extends MOrder {
 		voidTaxInvoice();
 		voidTR_TaxInvoice();
 		reverseConsolidateInvoice(true);
+		reverseDriverSalary();
 		
 		if(getC_DocTypeTarget_ID() == TF_MOrder.GSTConsolidatedOrderDocType_ID(getCtx()) || getC_DocTypeTarget_ID() == TF_MOrder.NonGSTConsolidatedOrderDocType_ID(getCtx())) {
 			reverseWeighmentEntries();
@@ -4833,11 +4834,6 @@ public void postDriverSalary() {
 		if(Wage.doubleValue() == 0)
 			throw new AdempiereException("Please configure Wage for Driver salary " + getDocumentNo());
 		
-		BigDecimal RentAmt= getItem1_Qty().add(getItem2_Qty()).multiply(we.getGrossRent());
-		BigDecimal DriverSalary=RentAmt.multiply(Wage);
-		
-		if(RentAmt.doubleValue() == 0)
-			return;
 		
 		MEmployeeSalaryOld salary = new MEmployeeSalaryOld(getCtx(), 0, get_TrxName());
 		
@@ -4845,11 +4841,12 @@ public void postDriverSalary() {
 		salary.setDateAcct(getDateAcct());
 		salary.setPresent_Days(BigDecimal.ONE);
 		salary.setC_BPartner_ID(we.getC_BPDriver_ID());				
-		salary.setSalary_Amt(DriverSalary);
+		salary.setSalary_Amt(Wage);
 		salary.setIncentive(BigDecimal.ZERO);
 		salary.setDescription(getDocumentNo());
 		salary.setDocStatus(MEmployeeSalaryOld.DOCSTATUS_Drafted);
-		salary.setC_Order_ID(getC_Order_ID());		
+		salary.setC_Order_ID(getC_Order_ID());	
+		salary.setTF_WeighmentEntry_ID(getTF_WeighmentEntry_ID());
 		salary.saveEx();
 		
 		salary.processIt(DocAction.ACTION_Complete);
@@ -4858,13 +4855,13 @@ public void postDriverSalary() {
 	
 	public void reverseDriverSalary() {
 		String whereClause = "C_Order_ID = ? AND DocStatus = 'CO'";
-		MEmployeeSalary salary = new Query(getCtx(), MEmployeeSalary.Table_Name, whereClause, get_TrxName())
+		MEmployeeSalaryOld salary = new Query(getCtx(), MEmployeeSalaryOld.Table_Name, whereClause, get_TrxName())
 				.setClient_ID()
 				.setParameters(getC_Order_ID())
 				.first();
 		if(salary != null) {
 			salary.reverseIt();
-			salary.saveEx();
+			salary.deleteEx(true);
 		}
 			
 	}

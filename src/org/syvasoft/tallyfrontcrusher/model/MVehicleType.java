@@ -32,7 +32,7 @@ public class MVehicleType extends X_TF_VehicleType {
 	}
 	
 	public BigDecimal getWage(Timestamp dateAcct, BigDecimal distance) {
-		String whereClause = "TF_VehicleType_ID = ? AND DateFrom <= ? and MinKM > ? AND MaxKM <= ?";
+		String whereClause = "TF_VehicleType_ID = ? AND DateFrom <= ? and MinKM < ? AND MaxKM >= ?";
 		MVehicleTypeSalary wagePercent = new Query(getCtx(), MVehicleTypeSalary.Table_Name, whereClause, get_TrxName())
 				.setClient_ID()
 				.setParameters(getTF_VehicleType_ID(), dateAcct, distance, distance)

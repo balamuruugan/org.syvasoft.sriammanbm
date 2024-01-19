@@ -34,7 +34,7 @@ public class X_TF_Employee_Salary extends PO implements I_TF_Employee_Salary, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20240117L;
+	private static final long serialVersionUID = 20240118L;
 
     /** Standard Constructor */
     public X_TF_Employee_Salary (Properties ctx, int TF_Employee_Salary_ID, String trxName)
@@ -808,6 +808,33 @@ public class X_TF_Employee_Salary extends PO implements I_TF_Employee_Salary, I_
 	public int getTF_VehicleType_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_TF_VehicleType_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public I_TF_WeighmentEntry getTF_WeighmentEntry() throws RuntimeException
+	{
+		return (I_TF_WeighmentEntry)MTable.get(getCtx(), I_TF_WeighmentEntry.Table_ID)
+			.getPO(getTF_WeighmentEntry_ID(), get_TrxName());
+	}
+
+	/** Set Weighment Entry.
+		@param TF_WeighmentEntry_ID Weighment Entry
+	*/
+	public void setTF_WeighmentEntry_ID (int TF_WeighmentEntry_ID)
+	{
+		if (TF_WeighmentEntry_ID < 1)
+			set_Value (COLUMNNAME_TF_WeighmentEntry_ID, null);
+		else
+			set_Value (COLUMNNAME_TF_WeighmentEntry_ID, Integer.valueOf(TF_WeighmentEntry_ID));
+	}
+
+	/** Get Weighment Entry.
+		@return Weighment Entry	  */
+	public int getTF_WeighmentEntry_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_TF_WeighmentEntry_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

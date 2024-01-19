@@ -448,6 +448,17 @@ public interface I_TF_Employee_Salary
 
 	public I_TF_VehicleType getTF_VehicleType() throws RuntimeException;
 
+    /** Column name TF_WeighmentEntry_ID */
+    public static final String COLUMNNAME_TF_WeighmentEntry_ID = "TF_WeighmentEntry_ID";
+
+	/** Set Weighment Entry	  */
+	public void setTF_WeighmentEntry_ID (int TF_WeighmentEntry_ID);
+
+	/** Get Weighment Entry	  */
+	public int getTF_WeighmentEntry_ID();
+
+	public I_TF_WeighmentEntry getTF_WeighmentEntry() throws RuntimeException;
+
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
 
