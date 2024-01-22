@@ -26,19 +26,42 @@ import org.compiere.util.Env;
 
 /** Generated Model for TF_Employee_Salary
  *  @author iDempiere (generated) 
- *  @version Release 5.1 - $Id$ */
+ *  @version Release 11 - $Id$ */
+@org.adempiere.base.Model(table="TF_Employee_Salary")
 public class X_TF_Employee_Salary extends PO implements I_TF_Employee_Salary, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220630L;
+	private static final long serialVersionUID = 20240118L;
 
     /** Standard Constructor */
     public X_TF_Employee_Salary (Properties ctx, int TF_Employee_Salary_ID, String trxName)
     {
       super (ctx, TF_Employee_Salary_ID, trxName);
+      /** if (TF_Employee_Salary_ID == 0)
+        {
+			setC_BPartner_ID (0);
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+			setIncentive (Env.ZERO);
+// 0
+			setIsBiometricAttendance (false);
+// N
+			setIsCalculated (true);
+// Y
+			setProcessed (false);
+			setProductionBonus (Env.ZERO);
+// 0
+			setSalary_Amt (Env.ZERO);
+			setTF_Employee_Salary_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_TF_Employee_Salary (Properties ctx, int TF_Employee_Salary_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, TF_Employee_Salary_ID, trxName, virtualColumns);
       /** if (TF_Employee_Salary_ID == 0)
         {
 			setC_BPartner_ID (0);
@@ -80,32 +103,32 @@ public class X_TF_Employee_Salary extends PO implements I_TF_Employee_Salary, I_
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_TF_Employee_Salary[")
+      StringBuilder sb = new StringBuilder ("X_TF_Employee_Salary[")
         .append(get_ID()).append("]");
       return sb.toString();
     }
 
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
-			.getPO(getC_BPartner_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
+	}
 
 	/** Set Business Partner .
-		@param C_BPartner_ID 
-		Identifies a Business Partner
-	  */
+		@param C_BPartner_ID Identifies a Business Partner
+	*/
 	public void setC_BPartner_ID (int C_BPartner_ID)
 	{
-		if (C_BPartner_ID < 1) 
+		if (C_BPartner_ID < 1)
 			set_Value (COLUMNNAME_C_BPartner_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
 	}
 
 	/** Get Business Partner .
 		@return Identifies a Business Partner
 	  */
-	public int getC_BPartner_ID () 
+	public int getC_BPartner_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
 		if (ii == null)
@@ -114,26 +137,26 @@ public class X_TF_Employee_Salary extends PO implements I_TF_Employee_Salary, I_
 	}
 
 	public org.compiere.model.I_C_ElementValue getC_ElementValue() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_Name)
-			.getPO(getC_ElementValue_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
+			.getPO(getC_ElementValue_ID(), get_TrxName());
+	}
 
 	/** Set Account Element.
-		@param C_ElementValue_ID 
-		Account Element
-	  */
+		@param C_ElementValue_ID Account Element
+	*/
 	public void setC_ElementValue_ID (int C_ElementValue_ID)
 	{
-		if (C_ElementValue_ID < 1) 
+		if (C_ElementValue_ID < 1)
 			set_Value (COLUMNNAME_C_ElementValue_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_ElementValue_ID, Integer.valueOf(C_ElementValue_ID));
 	}
 
 	/** Get Account Element.
 		@return Account Element
 	  */
-	public int getC_ElementValue_ID () 
+	public int getC_ElementValue_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_ElementValue_ID);
 		if (ii == null)
@@ -142,26 +165,26 @@ public class X_TF_Employee_Salary extends PO implements I_TF_Employee_Salary, I_
 	}
 
 	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Invoice)MTable.get(getCtx(), org.compiere.model.I_C_Invoice.Table_Name)
-			.getPO(getC_Invoice_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Invoice)MTable.get(getCtx(), org.compiere.model.I_C_Invoice.Table_ID)
+			.getPO(getC_Invoice_ID(), get_TrxName());
+	}
 
 	/** Set Invoice.
-		@param C_Invoice_ID 
-		Invoice Identifier
-	  */
+		@param C_Invoice_ID Invoice Identifier
+	*/
 	public void setC_Invoice_ID (int C_Invoice_ID)
 	{
-		if (C_Invoice_ID < 1) 
+		if (C_Invoice_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Invoice_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Invoice_ID, Integer.valueOf(C_Invoice_ID));
 	}
 
 	/** Get Invoice.
 		@return Invoice Identifier
 	  */
-	public int getC_Invoice_ID () 
+	public int getC_Invoice_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Invoice_ID);
 		if (ii == null)
@@ -169,27 +192,55 @@ public class X_TF_Employee_Salary extends PO implements I_TF_Employee_Salary, I_
 		return ii.intValue();
 	}
 
+	public org.compiere.model.I_C_Order getC_Order() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_Order)MTable.get(getCtx(), org.compiere.model.I_C_Order.Table_ID)
+			.getPO(getC_Order_ID(), get_TrxName());
+	}
+
+	/** Set Order.
+		@param C_Order_ID Order
+	*/
+	public void setC_Order_ID (int C_Order_ID)
+	{
+		if (C_Order_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_C_Order_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_C_Order_ID, Integer.valueOf(C_Order_ID));
+	}
+
+	/** Get Order.
+		@return Order
+	  */
+	public int getC_Order_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Order_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Project)MTable.get(getCtx(), org.compiere.model.I_C_Project.Table_Name)
-			.getPO(getC_Project_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Project)MTable.get(getCtx(), org.compiere.model.I_C_Project.Table_ID)
+			.getPO(getC_Project_ID(), get_TrxName());
+	}
 
 	/** Set Subcontract / Project.
-		@param C_Project_ID 
-		Financial Project
-	  */
+		@param C_Project_ID Financial Project
+	*/
 	public void setC_Project_ID (int C_Project_ID)
 	{
-		if (C_Project_ID < 1) 
+		if (C_Project_ID < 1)
 			set_Value (COLUMNNAME_C_Project_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Project_ID, Integer.valueOf(C_Project_ID));
 	}
 
 	/** Get Subcontract / Project.
 		@return Financial Project
 	  */
-	public int getC_Project_ID () 
+	public int getC_Project_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Project_ID);
 		if (ii == null)
@@ -198,9 +249,8 @@ public class X_TF_Employee_Salary extends PO implements I_TF_Employee_Salary, I_
 	}
 
 	/** Set Account Date.
-		@param DateAcct 
-		Accounting Date
-	  */
+		@param DateAcct Accounting Date
+	*/
 	public void setDateAcct (Timestamp DateAcct)
 	{
 		set_Value (COLUMNNAME_DateAcct, DateAcct);
@@ -209,15 +259,14 @@ public class X_TF_Employee_Salary extends PO implements I_TF_Employee_Salary, I_
 	/** Get Account Date.
 		@return Accounting Date
 	  */
-	public Timestamp getDateAcct () 
+	public Timestamp getDateAcct()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateAcct);
 	}
 
 	/** Set Date From.
-		@param DateFrom 
-		Starting date for a range
-	  */
+		@param DateFrom Starting date for a range
+	*/
 	public void setDateFrom (Timestamp DateFrom)
 	{
 		set_Value (COLUMNNAME_DateFrom, DateFrom);
@@ -226,15 +275,14 @@ public class X_TF_Employee_Salary extends PO implements I_TF_Employee_Salary, I_
 	/** Get Date From.
 		@return Starting date for a range
 	  */
-	public Timestamp getDateFrom () 
+	public Timestamp getDateFrom()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateFrom);
 	}
 
 	/** Set Date To.
-		@param DateTo 
-		End date of a date range
-	  */
+		@param DateTo End date of a date range
+	*/
 	public void setDateTo (Timestamp DateTo)
 	{
 		set_Value (COLUMNNAME_DateTo, DateTo);
@@ -243,15 +291,14 @@ public class X_TF_Employee_Salary extends PO implements I_TF_Employee_Salary, I_
 	/** Get Date To.
 		@return End date of a date range
 	  */
-	public Timestamp getDateTo () 
+	public Timestamp getDateTo()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateTo);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -260,55 +307,58 @@ public class X_TF_Employee_Salary extends PO implements I_TF_Employee_Salary, I_
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** DocStatus AD_Reference_ID=131 */
 	public static final int DOCSTATUS_AD_Reference_ID=131;
-	/** Drafted = DR */
-	public static final String DOCSTATUS_Drafted = "DR";
-	/** Completed = CO */
-	public static final String DOCSTATUS_Completed = "CO";
-	/** Approved = AP */
-	public static final String DOCSTATUS_Approved = "AP";
-	/** Not Approved = NA */
-	public static final String DOCSTATUS_NotApproved = "NA";
-	/** Voided = VO */
-	public static final String DOCSTATUS_Voided = "VO";
-	/** Invalid = IN */
-	public static final String DOCSTATUS_Invalid = "IN";
-	/** Reversed = RE */
-	public static final String DOCSTATUS_Reversed = "RE";
-	/** Closed = CL */
-	public static final String DOCSTATUS_Closed = "CL";
 	/** Unknown = ?? */
 	public static final String DOCSTATUS_Unknown = "??";
-	/** In Progress = IP */
-	public static final String DOCSTATUS_InProgress = "IP";
-	/** Waiting Payment = WP */
-	public static final String DOCSTATUS_WaitingPayment = "WP";
-	/** Waiting Confirmation = WC */
-	public static final String DOCSTATUS_WaitingConfirmation = "WC";
-	/** Suspended = SU */
-	public static final String DOCSTATUS_Suspended = "SU";
 	/** Activated = AC */
 	public static final String DOCSTATUS_Activated = "AC";
+	/** Approved = AP */
+	public static final String DOCSTATUS_Approved = "AP";
 	/** Canceled = CA */
 	public static final String DOCSTATUS_Canceled = "CA";
-	/** Overdue = OD */
-	public static final String DOCSTATUS_Overdue = "OD";
+	/** Closed = CL */
+	public static final String DOCSTATUS_Closed = "CL";
+	/** Completed = CO */
+	public static final String DOCSTATUS_Completed = "CO";
+	/** Drafted = DR */
+	public static final String DOCSTATUS_Drafted = "DR";
 	/** Due = DU */
 	public static final String DOCSTATUS_Due = "DU";
-	/** Upcoming = UP */
-	public static final String DOCSTATUS_Upcoming = "UP";
+	/** Invalid = IN */
+	public static final String DOCSTATUS_Invalid = "IN";
+	/** In Progress = IP */
+	public static final String DOCSTATUS_InProgress = "IP";
+	/** Not Approved = NA */
+	public static final String DOCSTATUS_NotApproved = "NA";
+	/** Overdue = OD */
+	public static final String DOCSTATUS_Overdue = "OD";
 	/** Partially Billed = PB */
 	public static final String DOCSTATUS_PartiallyBilled = "PB";
+	/** Pending = PE */
+	public static final String DOCSTATUS_Pending = "PE";
+	/** Reversed = RE */
+	public static final String DOCSTATUS_Reversed = "RE";
+	/** Rejected = RJ */
+	public static final String DOCSTATUS_Rejected = "RJ";
+	/** Suspended = SU */
+	public static final String DOCSTATUS_Suspended = "SU";
+	/** Upcoming = UP */
+	public static final String DOCSTATUS_Upcoming = "UP";
+	/** Voided = VO */
+	public static final String DOCSTATUS_Voided = "VO";
+	/** Waiting Confirmation = WC */
+	public static final String DOCSTATUS_WaitingConfirmation = "WC";
+	/** Waiting Payment = WP */
+	public static final String DOCSTATUS_WaitingPayment = "WP";
 	/** Set Document Status.
-		@param DocStatus 
-		The current status of the document
-	  */
+		@param DocStatus The current status of the document
+	*/
 	public void setDocStatus (String DocStatus)
 	{
 
@@ -318,15 +368,14 @@ public class X_TF_Employee_Salary extends PO implements I_TF_Employee_Salary, I_
 	/** Get Document Status.
 		@return The current status of the document
 	  */
-	public String getDocStatus () 
+	public String getDocStatus()
 	{
 		return (String)get_Value(COLUMNNAME_DocStatus);
 	}
 
 	/** Set Document No.
-		@param DocumentNo 
-		Document sequence number of the document
-	  */
+		@param DocumentNo Document sequence number of the document
+	*/
 	public void setDocumentNo (String DocumentNo)
 	{
 		set_ValueNoCheck (COLUMNNAME_DocumentNo, DocumentNo);
@@ -335,32 +384,32 @@ public class X_TF_Employee_Salary extends PO implements I_TF_Employee_Salary, I_
 	/** Get Document No.
 		@return Document sequence number of the document
 	  */
-	public String getDocumentNo () 
+	public String getDocumentNo()
 	{
 		return (String)get_Value(COLUMNNAME_DocumentNo);
 	}
 
 	public org.compiere.model.I_GL_Journal getGL_Journal() throws RuntimeException
-    {
-		return (org.compiere.model.I_GL_Journal)MTable.get(getCtx(), org.compiere.model.I_GL_Journal.Table_Name)
-			.getPO(getGL_Journal_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_GL_Journal)MTable.get(getCtx(), org.compiere.model.I_GL_Journal.Table_ID)
+			.getPO(getGL_Journal_ID(), get_TrxName());
+	}
 
 	/** Set Journal.
-		@param GL_Journal_ID 
-		General Ledger Journal
-	  */
+		@param GL_Journal_ID General Ledger Journal
+	*/
 	public void setGL_Journal_ID (int GL_Journal_ID)
 	{
-		if (GL_Journal_ID < 1) 
+		if (GL_Journal_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_GL_Journal_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_GL_Journal_ID, Integer.valueOf(GL_Journal_ID));
 	}
 
 	/** Get Journal.
 		@return General Ledger Journal
 	  */
-	public int getGL_Journal_ID () 
+	public int getGL_Journal_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_GL_Journal_ID);
 		if (ii == null)
@@ -369,7 +418,8 @@ public class X_TF_Employee_Salary extends PO implements I_TF_Employee_Salary, I_
 	}
 
 	/** Set Incentive / OT.
-		@param Incentive Incentive / OT	  */
+		@param Incentive Incentive / OT
+	*/
 	public void setIncentive (BigDecimal Incentive)
 	{
 		set_Value (COLUMNNAME_Incentive, Incentive);
@@ -377,7 +427,7 @@ public class X_TF_Employee_Salary extends PO implements I_TF_Employee_Salary, I_
 
 	/** Get Incentive / OT.
 		@return Incentive / OT	  */
-	public BigDecimal getIncentive () 
+	public BigDecimal getIncentive()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Incentive);
 		if (bd == null)
@@ -386,7 +436,8 @@ public class X_TF_Employee_Salary extends PO implements I_TF_Employee_Salary, I_
 	}
 
 	/** Set Incentive Days.
-		@param IncentiveDays Incentive Days	  */
+		@param IncentiveDays Incentive Days
+	*/
 	public void setIncentiveDays (BigDecimal IncentiveDays)
 	{
 		set_Value (COLUMNNAME_IncentiveDays, IncentiveDays);
@@ -394,7 +445,7 @@ public class X_TF_Employee_Salary extends PO implements I_TF_Employee_Salary, I_
 
 	/** Get Incentive Days.
 		@return Incentive Days	  */
-	public BigDecimal getIncentiveDays () 
+	public BigDecimal getIncentiveDays()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_IncentiveDays);
 		if (bd == null)
@@ -403,7 +454,8 @@ public class X_TF_Employee_Salary extends PO implements I_TF_Employee_Salary, I_
 	}
 
 	/** Set Incentive Eligible Days.
-		@param IncentiveEligibleDays Incentive Eligible Days	  */
+		@param IncentiveEligibleDays Incentive Eligible Days
+	*/
 	public void setIncentiveEligibleDays (BigDecimal IncentiveEligibleDays)
 	{
 		set_Value (COLUMNNAME_IncentiveEligibleDays, IncentiveEligibleDays);
@@ -411,7 +463,7 @@ public class X_TF_Employee_Salary extends PO implements I_TF_Employee_Salary, I_
 
 	/** Get Incentive Eligible Days.
 		@return Incentive Eligible Days	  */
-	public BigDecimal getIncentiveEligibleDays () 
+	public BigDecimal getIncentiveEligibleDays()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_IncentiveEligibleDays);
 		if (bd == null)
@@ -420,7 +472,8 @@ public class X_TF_Employee_Salary extends PO implements I_TF_Employee_Salary, I_
 	}
 
 	/** Set Biometric Attendance.
-		@param IsBiometricAttendance Biometric Attendance	  */
+		@param IsBiometricAttendance Biometric Attendance
+	*/
 	public void setIsBiometricAttendance (boolean IsBiometricAttendance)
 	{
 		set_Value (COLUMNNAME_IsBiometricAttendance, Boolean.valueOf(IsBiometricAttendance));
@@ -428,7 +481,7 @@ public class X_TF_Employee_Salary extends PO implements I_TF_Employee_Salary, I_
 
 	/** Get Biometric Attendance.
 		@return Biometric Attendance	  */
-	public boolean isBiometricAttendance () 
+	public boolean isBiometricAttendance()
 	{
 		Object oo = get_Value(COLUMNNAME_IsBiometricAttendance);
 		if (oo != null) 
@@ -441,9 +494,8 @@ public class X_TF_Employee_Salary extends PO implements I_TF_Employee_Salary, I_
 	}
 
 	/** Set Calculated.
-		@param IsCalculated 
-		The value is calculated by the system
-	  */
+		@param IsCalculated The value is calculated by the system
+	*/
 	public void setIsCalculated (boolean IsCalculated)
 	{
 		set_Value (COLUMNNAME_IsCalculated, Boolean.valueOf(IsCalculated));
@@ -452,7 +504,7 @@ public class X_TF_Employee_Salary extends PO implements I_TF_Employee_Salary, I_
 	/** Get Calculated.
 		@return The value is calculated by the system
 	  */
-	public boolean isCalculated () 
+	public boolean isCalculated()
 	{
 		Object oo = get_Value(COLUMNNAME_IsCalculated);
 		if (oo != null) 
@@ -465,7 +517,8 @@ public class X_TF_Employee_Salary extends PO implements I_TF_Employee_Salary, I_
 	}
 
 	/** Set Monthly Salary.
-		@param MonthlySalaryAmt Monthly Salary	  */
+		@param MonthlySalaryAmt Monthly Salary
+	*/
 	public void setMonthlySalaryAmt (BigDecimal MonthlySalaryAmt)
 	{
 		set_Value (COLUMNNAME_MonthlySalaryAmt, MonthlySalaryAmt);
@@ -473,7 +526,7 @@ public class X_TF_Employee_Salary extends PO implements I_TF_Employee_Salary, I_
 
 	/** Get Monthly Salary.
 		@return Monthly Salary	  */
-	public BigDecimal getMonthlySalaryAmt () 
+	public BigDecimal getMonthlySalaryAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_MonthlySalaryAmt);
 		if (bd == null)
@@ -482,7 +535,8 @@ public class X_TF_Employee_Salary extends PO implements I_TF_Employee_Salary, I_
 	}
 
 	/** Set Present Days.
-		@param Present_Days Present Days	  */
+		@param Present_Days Present Days
+	*/
 	public void setPresent_Days (BigDecimal Present_Days)
 	{
 		set_Value (COLUMNNAME_Present_Days, Present_Days);
@@ -490,7 +544,7 @@ public class X_TF_Employee_Salary extends PO implements I_TF_Employee_Salary, I_
 
 	/** Get Present Days.
 		@return Present Days	  */
-	public BigDecimal getPresent_Days () 
+	public BigDecimal getPresent_Days()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Present_Days);
 		if (bd == null)
@@ -499,9 +553,8 @@ public class X_TF_Employee_Salary extends PO implements I_TF_Employee_Salary, I_
 	}
 
 	/** Set Processed.
-		@param Processed 
-		The document has been processed
-	  */
+		@param Processed The document has been processed
+	*/
 	public void setProcessed (boolean Processed)
 	{
 		set_Value (COLUMNNAME_Processed, Boolean.valueOf(Processed));
@@ -510,7 +563,7 @@ public class X_TF_Employee_Salary extends PO implements I_TF_Employee_Salary, I_
 	/** Get Processed.
 		@return The document has been processed
 	  */
-	public boolean isProcessed () 
+	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
 		if (oo != null) 
@@ -523,7 +576,8 @@ public class X_TF_Employee_Salary extends PO implements I_TF_Employee_Salary, I_
 	}
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -531,7 +585,7 @@ public class X_TF_Employee_Salary extends PO implements I_TF_Employee_Salary, I_
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 
@@ -544,7 +598,8 @@ public class X_TF_Employee_Salary extends PO implements I_TF_Employee_Salary, I_
 	}
 
 	/** Set Production Bonus.
-		@param ProductionBonus Production Bonus	  */
+		@param ProductionBonus Production Bonus
+	*/
 	public void setProductionBonus (BigDecimal ProductionBonus)
 	{
 		set_Value (COLUMNNAME_ProductionBonus, ProductionBonus);
@@ -552,7 +607,7 @@ public class X_TF_Employee_Salary extends PO implements I_TF_Employee_Salary, I_
 
 	/** Get Production Bonus.
 		@return Production Bonus	  */
-	public BigDecimal getProductionBonus () 
+	public BigDecimal getProductionBonus()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_ProductionBonus);
 		if (bd == null)
@@ -561,7 +616,8 @@ public class X_TF_Employee_Salary extends PO implements I_TF_Employee_Salary, I_
 	}
 
 	/** Set Earned Salary.
-		@param Salary_Amt Earned Salary	  */
+		@param Salary_Amt Earned Salary
+	*/
 	public void setSalary_Amt (BigDecimal Salary_Amt)
 	{
 		set_Value (COLUMNNAME_Salary_Amt, Salary_Amt);
@@ -569,7 +625,7 @@ public class X_TF_Employee_Salary extends PO implements I_TF_Employee_Salary, I_
 
 	/** Get Earned Salary.
 		@return Earned Salary	  */
-	public BigDecimal getSalary_Amt () 
+	public BigDecimal getSalary_Amt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Salary_Amt);
 		if (bd == null)
@@ -578,7 +634,8 @@ public class X_TF_Employee_Salary extends PO implements I_TF_Employee_Salary, I_
 	}
 
 	/** Set Standard Days.
-		@param Std_Days Standard Days	  */
+		@param Std_Days Standard Days
+	*/
 	public void setStd_Days (BigDecimal Std_Days)
 	{
 		set_Value (COLUMNNAME_Std_Days, Std_Days);
@@ -586,7 +643,7 @@ public class X_TF_Employee_Salary extends PO implements I_TF_Employee_Salary, I_
 
 	/** Get Standard Days.
 		@return Standard Days	  */
-	public BigDecimal getStd_Days () 
+	public BigDecimal getStd_Days()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Std_Days);
 		if (bd == null)
@@ -595,7 +652,8 @@ public class X_TF_Employee_Salary extends PO implements I_TF_Employee_Salary, I_
 	}
 
 	/** Set Wage / day.
-		@param Std_Wage Wage / day	  */
+		@param Std_Wage Wage / day
+	*/
 	public void setStd_Wage (BigDecimal Std_Wage)
 	{
 		set_Value (COLUMNNAME_Std_Wage, Std_Wage);
@@ -603,7 +661,7 @@ public class X_TF_Employee_Salary extends PO implements I_TF_Employee_Salary, I_
 
 	/** Get Wage / day.
 		@return Wage / day	  */
-	public BigDecimal getStd_Wage () 
+	public BigDecimal getStd_Wage()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Std_Wage);
 		if (bd == null)
@@ -612,18 +670,19 @@ public class X_TF_Employee_Salary extends PO implements I_TF_Employee_Salary, I_
 	}
 
 	/** Set Employee Salary.
-		@param TF_Employee_Salary_ID Employee Salary	  */
+		@param TF_Employee_Salary_ID Employee Salary
+	*/
 	public void setTF_Employee_Salary_ID (int TF_Employee_Salary_ID)
 	{
-		if (TF_Employee_Salary_ID < 1) 
+		if (TF_Employee_Salary_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_TF_Employee_Salary_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_TF_Employee_Salary_ID, Integer.valueOf(TF_Employee_Salary_ID));
 	}
 
 	/** Get Employee Salary.
 		@return Employee Salary	  */
-	public int getTF_Employee_Salary_ID () 
+	public int getTF_Employee_Salary_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_TF_Employee_Salary_ID);
 		if (ii == null)
@@ -632,7 +691,8 @@ public class X_TF_Employee_Salary extends PO implements I_TF_Employee_Salary, I_
 	}
 
 	/** Set TF_Employee_Salary_UU.
-		@param TF_Employee_Salary_UU TF_Employee_Salary_UU	  */
+		@param TF_Employee_Salary_UU TF_Employee_Salary_UU
+	*/
 	public void setTF_Employee_Salary_UU (String TF_Employee_Salary_UU)
 	{
 		set_ValueNoCheck (COLUMNNAME_TF_Employee_Salary_UU, TF_Employee_Salary_UU);
@@ -640,29 +700,31 @@ public class X_TF_Employee_Salary extends PO implements I_TF_Employee_Salary, I_
 
 	/** Get TF_Employee_Salary_UU.
 		@return TF_Employee_Salary_UU	  */
-	public String getTF_Employee_Salary_UU () 
+	public String getTF_Employee_Salary_UU()
 	{
 		return (String)get_Value(COLUMNNAME_TF_Employee_Salary_UU);
 	}
 
 	public I_TF_Quarry getTF_Quarry() throws RuntimeException
-    {
-		return (I_TF_Quarry)MTable.get(getCtx(), I_TF_Quarry.Table_Name)
-			.getPO(getTF_Quarry_ID(), get_TrxName());	}
+	{
+		return (I_TF_Quarry)MTable.get(getCtx(), I_TF_Quarry.Table_ID)
+			.getPO(getTF_Quarry_ID(), get_TrxName());
+	}
 
 	/** Set Quarry.
-		@param TF_Quarry_ID Quarry	  */
+		@param TF_Quarry_ID Quarry
+	*/
 	public void setTF_Quarry_ID (int TF_Quarry_ID)
 	{
-		if (TF_Quarry_ID < 1) 
+		if (TF_Quarry_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_TF_Quarry_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_TF_Quarry_ID, Integer.valueOf(TF_Quarry_ID));
 	}
 
 	/** Get Quarry.
 		@return Quarry	  */
-	public int getTF_Quarry_ID () 
+	public int getTF_Quarry_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_TF_Quarry_ID);
 		if (ii == null)
@@ -671,23 +733,25 @@ public class X_TF_Employee_Salary extends PO implements I_TF_Employee_Salary, I_
 	}
 
 	public I_TF_SalaryHdr getTF_SalaryHdr() throws RuntimeException
-    {
-		return (I_TF_SalaryHdr)MTable.get(getCtx(), I_TF_SalaryHdr.Table_Name)
-			.getPO(getTF_SalaryHdr_ID(), get_TrxName());	}
+	{
+		return (I_TF_SalaryHdr)MTable.get(getCtx(), I_TF_SalaryHdr.Table_ID)
+			.getPO(getTF_SalaryHdr_ID(), get_TrxName());
+	}
 
 	/** Set Monthly Salary.
-		@param TF_SalaryHdr_ID Monthly Salary	  */
+		@param TF_SalaryHdr_ID Monthly Salary
+	*/
 	public void setTF_SalaryHdr_ID (int TF_SalaryHdr_ID)
 	{
-		if (TF_SalaryHdr_ID < 1) 
+		if (TF_SalaryHdr_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_TF_SalaryHdr_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_TF_SalaryHdr_ID, Integer.valueOf(TF_SalaryHdr_ID));
 	}
 
 	/** Get Monthly Salary.
 		@return Monthly Salary	  */
-	public int getTF_SalaryHdr_ID () 
+	public int getTF_SalaryHdr_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_TF_SalaryHdr_ID);
 		if (ii == null)
@@ -696,23 +760,25 @@ public class X_TF_Employee_Salary extends PO implements I_TF_Employee_Salary, I_
 	}
 
 	public I_TF_TripSheet getTF_TripSheet() throws RuntimeException
-    {
-		return (I_TF_TripSheet)MTable.get(getCtx(), I_TF_TripSheet.Table_Name)
-			.getPO(getTF_TripSheet_ID(), get_TrxName());	}
+	{
+		return (I_TF_TripSheet)MTable.get(getCtx(), I_TF_TripSheet.Table_ID)
+			.getPO(getTF_TripSheet_ID(), get_TrxName());
+	}
 
 	/** Set Trip Sheet.
-		@param TF_TripSheet_ID Trip Sheet	  */
+		@param TF_TripSheet_ID Trip Sheet
+	*/
 	public void setTF_TripSheet_ID (int TF_TripSheet_ID)
 	{
-		if (TF_TripSheet_ID < 1) 
+		if (TF_TripSheet_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_TF_TripSheet_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_TF_TripSheet_ID, Integer.valueOf(TF_TripSheet_ID));
 	}
 
 	/** Get Trip Sheet.
 		@return Trip Sheet	  */
-	public int getTF_TripSheet_ID () 
+	public int getTF_TripSheet_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_TF_TripSheet_ID);
 		if (ii == null)
@@ -721,23 +787,25 @@ public class X_TF_Employee_Salary extends PO implements I_TF_Employee_Salary, I_
 	}
 
 	public I_TF_VehicleType getTF_VehicleType() throws RuntimeException
-    {
-		return (I_TF_VehicleType)MTable.get(getCtx(), I_TF_VehicleType.Table_Name)
-			.getPO(getTF_VehicleType_ID(), get_TrxName());	}
+	{
+		return (I_TF_VehicleType)MTable.get(getCtx(), I_TF_VehicleType.Table_ID)
+			.getPO(getTF_VehicleType_ID(), get_TrxName());
+	}
 
 	/** Set Vehicle Type.
-		@param TF_VehicleType_ID Vehicle Type	  */
+		@param TF_VehicleType_ID Vehicle Type
+	*/
 	public void setTF_VehicleType_ID (int TF_VehicleType_ID)
 	{
-		if (TF_VehicleType_ID < 1) 
+		if (TF_VehicleType_ID < 1)
 			set_Value (COLUMNNAME_TF_VehicleType_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_TF_VehicleType_ID, Integer.valueOf(TF_VehicleType_ID));
 	}
 
 	/** Get Vehicle Type.
 		@return Vehicle Type	  */
-	public int getTF_VehicleType_ID () 
+	public int getTF_VehicleType_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_TF_VehicleType_ID);
 		if (ii == null)
@@ -745,27 +813,54 @@ public class X_TF_Employee_Salary extends PO implements I_TF_Employee_Salary, I_
 		return ii.intValue();
 	}
 
+	public I_TF_WeighmentEntry getTF_WeighmentEntry() throws RuntimeException
+	{
+		return (I_TF_WeighmentEntry)MTable.get(getCtx(), I_TF_WeighmentEntry.Table_ID)
+			.getPO(getTF_WeighmentEntry_ID(), get_TrxName());
+	}
+
+	/** Set Weighment Entry.
+		@param TF_WeighmentEntry_ID Weighment Entry
+	*/
+	public void setTF_WeighmentEntry_ID (int TF_WeighmentEntry_ID)
+	{
+		if (TF_WeighmentEntry_ID < 1)
+			set_Value (COLUMNNAME_TF_WeighmentEntry_ID, null);
+		else
+			set_Value (COLUMNNAME_TF_WeighmentEntry_ID, Integer.valueOf(TF_WeighmentEntry_ID));
+	}
+
+	/** Get Weighment Entry.
+		@return Weighment Entry	  */
+	public int getTF_WeighmentEntry_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_TF_WeighmentEntry_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	public org.compiere.model.I_C_ElementValue getUser1() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_Name)
-			.getPO(getUser1_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
+			.getPO(getUser1_ID(), get_TrxName());
+	}
 
 	/** Set Department.
-		@param User1_ID 
-		User defined list element #1
-	  */
+		@param User1_ID User defined list element #1
+	*/
 	public void setUser1_ID (int User1_ID)
 	{
-		if (User1_ID < 1) 
+		if (User1_ID < 1)
 			set_Value (COLUMNNAME_User1_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_User1_ID, Integer.valueOf(User1_ID));
 	}
 
 	/** Get Department.
 		@return User defined list element #1
 	  */
-	public int getUser1_ID () 
+	public int getUser1_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_User1_ID);
 		if (ii == null)

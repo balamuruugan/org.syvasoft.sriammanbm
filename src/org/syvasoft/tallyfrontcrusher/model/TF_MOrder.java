@@ -2703,7 +2703,7 @@ public class TF_MOrder extends MOrder {
 		closeYardEntry();
 		createInvoiceCustomer();
 		createInvoiceVendor();
-		
+		postDriverSalary();
 		if(getC_DocTypeTarget_ID() == GSTConsolidatedOrderDocType_ID(getCtx())) {
 			createConsolidatedTaxInvoice();
 		}
@@ -2895,7 +2895,7 @@ public class TF_MOrder extends MOrder {
 			reverseAdditionalTransactions();
 			reverseConsolidateInvoice(false);
 		}
-		
+		reverseDriverSalary();
 		reverseMixedPayment();
 		
 		return super.voidIt();
@@ -3006,6 +3006,7 @@ public class TF_MOrder extends MOrder {
 		voidTaxInvoice();
 		voidTR_TaxInvoice();
 		reverseConsolidateInvoice(true);
+		reverseDriverSalary();
 		
 		if(getC_DocTypeTarget_ID() == TF_MOrder.GSTConsolidatedOrderDocType_ID(getCtx()) || getC_DocTypeTarget_ID() == TF_MOrder.NonGSTConsolidatedOrderDocType_ID(getCtx())) {
 			reverseWeighmentEntries();
@@ -4379,6 +4380,18 @@ public class TF_MOrder extends MOrder {
 		int DocType_ID = MSysConfig.getIntValue("ROYALTY_PASS_DOCTYPE_ID", 1000062, Env.getAD_Client_ID(ctx));
 		return DocType_ID;
 	}
+	
+	public static int BoulderSalesOrderDocType_ID(Properties ctx) {
+		//int DocType_ID = MSysConfig.getIntValue("GST_ORDER_ID", 1000063, Env.getAD_Client_ID(ctx));
+		int DocType_ID = MSysConfig.getIntValue("BOULDER_SALES_INVOICE_ORDER_ID", 1000099, Env.getAD_Client_ID(ctx));
+		return DocType_ID;
+	}
+	
+//	public static int BoulderSalesInvoiceDocType_ID(Properties ctx) {
+//		//int DocType_ID = MSysConfig.getIntValue("GST_ORDER_ID", 1000063, Env.getAD_Client_ID(ctx));
+//		int DocType_ID = MSysConfig.getIntValue("BOULDER_SALES_INVOICE_ID", 1000100, Env.getAD_Client_ID(ctx));
+//		return DocType_ID;
+//	}
 
 	public boolean firstInvoice = true;
 	public void createInvoiceCustomer() {
@@ -4389,7 +4402,8 @@ public class TF_MOrder extends MOrder {
 				getC_DocTypeTarget_ID() != TF_MOrder.NonGSTOrderDocType_ID(getCtx()) && 
 				getC_DocTypeTarget_ID() != TF_MOrder.GSTConsolidatedOrderDocType_ID(getCtx()) && 
 				getC_DocTypeTarget_ID() != TF_MOrder.NonGSTConsolidatedOrderDocType_ID(getCtx()) &&
-				getC_DocTypeTarget_ID() != TF_MOrder.RoyaltyPassOrderDocType_ID(getCtx()))
+				getC_DocTypeTarget_ID() != TF_MOrder.RoyaltyPassOrderDocType_ID(getCtx()) &&
+				getC_DocTypeTarget_ID() != TF_MOrder.BoulderSalesOrderDocType_ID(getCtx()))
 			return;
 		
 		//Invoice Header
@@ -4799,5 +4813,56 @@ public class TF_MOrder extends MOrder {
 				throw new AdempiereException("Current Invoice Date : " + datestring + ". So, please do not enter old invoice date!");
 			}
 		}
+	}
+	
+public void postDriverSalary() {
+		
+		MWeighmentEntry we = new MWeighmentEntry(getCtx(), getTF_WeighmentEntry_ID(), get_TrxName());
+		
+		if(we.getC_BPDriver_ID() == 0)
+			return;
+		
+		MRentedVehicle rv=new MRentedVehicle(getCtx(), getTF_RentedVehicle_ID(), get_TrxName());
+		MDestination dest = new MDestination(getCtx(), we.getTF_Destination_ID(), get_TrxName());
+		
+		if(dest.getDistance().doubleValue() == 0)
+			throw new AdempiereException("Please configure distance for Destination - " + dest.getName());
+		
+		MVehicleType vType=new MVehicleType(getCtx(), rv.getTF_VehicleType_ID(), get_TrxName());
+		BigDecimal Wage=vType.getWage(getDateAcct(), dest.getDistance());
+		
+		if(Wage.doubleValue() == 0)
+			throw new AdempiereException("Please configure Wage for Driver salary " + getDocumentNo());
+		
+		
+		MEmployeeSalaryOld salary = new MEmployeeSalaryOld(getCtx(), 0, get_TrxName());
+		
+		salary.setAD_Org_ID(getAD_Org_ID());
+		salary.setDateAcct(getDateAcct());
+		salary.setPresent_Days(BigDecimal.ONE);
+		salary.setC_BPartner_ID(we.getC_BPDriver_ID());				
+		salary.setSalary_Amt(Wage);
+		salary.setIncentive(BigDecimal.ZERO);
+		salary.setDescription(getDocumentNo());
+		salary.setDocStatus(MEmployeeSalaryOld.DOCSTATUS_Drafted);
+		salary.setC_Order_ID(getC_Order_ID());	
+		salary.setTF_WeighmentEntry_ID(getTF_WeighmentEntry_ID());
+		salary.saveEx();
+		
+		salary.processIt(DocAction.ACTION_Complete);
+		salary.saveEx();
+	}
+	
+	public void reverseDriverSalary() {
+		String whereClause = "C_Order_ID = ? AND DocStatus = 'CO'";
+		MEmployeeSalaryOld salary = new Query(getCtx(), MEmployeeSalaryOld.Table_Name, whereClause, get_TrxName())
+				.setClient_ID()
+				.setParameters(getC_Order_ID())
+				.first();
+		if(salary != null) {
+			salary.reverseIt();
+			salary.deleteEx(true);
+		}
+			
 	}
 }

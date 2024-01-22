@@ -27,7 +27,7 @@ public class MLoadingSlip extends X_TF_LoadingSlip {
 	protected boolean beforeSave(boolean newRecord) {
 		if(!newRecord) {
 			String oldSTatus = get_ValueOld(COLUMNNAME_Status).toString();
-			if(oldSTatus.equals(STATUS_Unbilled) && is_ValueChanged(COLUMNNAME_LoadedTime))
+			if(isProcessed() && oldSTatus.equals(STATUS_Unbilled) && is_ValueChanged(COLUMNNAME_LoadedTime))
 				throw new AdempiereException("It is already completed by other loader!");
 			if(getStatus().equals(STATUS_Unbilled))
 				setProcessed(true);
@@ -41,8 +41,11 @@ public class MLoadingSlip extends X_TF_LoadingSlip {
 				weighment.setLoader_User_ID(getAD_User_ID());
 				weighment.saveEx();
 			}
+			
+			if(is_ValueChanged(COLUMNNAME_Status))
+				setLoadingCount(getLoadingCount() + 1);
 		}
-		
+
 		return super.beforeSave(newRecord);
 	}
 }

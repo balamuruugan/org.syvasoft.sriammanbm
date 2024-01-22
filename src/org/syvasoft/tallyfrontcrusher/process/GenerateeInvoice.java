@@ -3,7 +3,6 @@ package org.syvasoft.tallyfrontcrusher.process;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
-import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.HttpURLConnection;
@@ -30,13 +29,6 @@ import org.syvasoft.tallyfrontcrusher.model.TF_MBPartner;
 import org.syvasoft.tallyfrontcrusher.model.TF_MInvoice;
 import org.syvasoft.tallyfrontcrusher.model.TF_MOrg;
 import org.syvasoft.tallyfrontcrusher.model.TF_MProduct;
-
-import jakarta.json.Json;
-import jakarta.json.JsonArrayBuilder;
-import jakarta.json.JsonObject;
-import jakarta.json.JsonObjectBuilder;
-import jakarta.json.JsonValue;
-import jakarta.json.JsonWriter;
 
 public class GenerateeInvoice extends SvrProcess{
 
@@ -76,7 +68,7 @@ public class GenerateeInvoice extends SvrProcess{
 				break;
 			
 			org = new TF_MOrg(getCtx(), inv.getAD_Org_ID(), get_TrxName());
-			eInvoiceAuthentication();
+			
 			
 			Trx trx = Trx.get(get_TrxName(), false);
 			try {
@@ -85,6 +77,7 @@ public class GenerateeInvoice extends SvrProcess{
 					addLog(printJSONObject(inv));
 				}
 				else {
+					eInvoiceAuthentication();
 					generateeInvoice(inv);
 				}
 				
@@ -207,7 +200,7 @@ public class GenerateeInvoice extends SvrProcess{
 				String AckNo = jsonObjchild.getString("AckNo");
 				String AckDt = jsonObjchild.getString("AckDt");
 				String SignedQRCode = jsonObjchild.getString("SignedQRCode");
-			
+								
 				eLog.setAckNo(AckNo);
 				eLog.setAckDt(AckDt);
 				eLog.setSignedQRCode(SignedQRCode);
@@ -236,29 +229,21 @@ public class GenerateeInvoice extends SvrProcess{
 	    eLog.saveEx();
 		return "";//"ewayBillNo:"+ewayBillNo+";ewayBillDate: "+ewayBillDate+";validUpto:"+validUpto;
 	}
+	 
+		    
 	public String printJSONObject(TF_MInvoice inv) {
-		JsonArrayBuilder jsonArrayBuilderItemList = Json.createArrayBuilder();
-//		JsonArrayBuilder jsonArrayBuilderAttributelist = Json.createArrayBuilder();
-//		JsonArrayBuilder jsonArrayBuilderPrecDocDtls = Json.createArrayBuilder();
-		JsonObjectBuilder jsb = null;
-//		 JsonObjectBuilder js = Json.createObjectBuilder().add("InvNo",inv.getDocumentNo()).add("InvDt","09/04/2022").add("OthRefNo","123456");
-//		 jsonArrayBuilderPrecDocDtls.add(js);
-		 
-//		 JsonObjectBuilder js1 = Json.createObjectBuilder().add("RecAdvRefr","DOC/002").add("RecAdvDt","09/04/2022").add("Tendrefr","Abc001").add("Contrrefr","Co123").add("Extrefr","Yo456").add("Projrefr","Doc-456").add("Porefr","Doc-789").add("PoRefDt","09/04/2022");
-//		 jsonArrayBuilderContrDtls.add(js1);
-//		 
-//		 JsonObjectBuilder js2 = Json.createObjectBuilder().add("Url","https://einv-apisandbox.nic.in").add("Docs","Test Doc").add("Info","Document Test");
-//		 jsonArrayBuilderAddlDocDtls.add(js2);
-		 
-//		 JsonObjectBuilder js3 = Json.createObjectBuilder().add("Nm","Rice").add("Val","10000");
-//		 jsonArrayBuilderAttributelist.add(js3);
+		
+		
+		JSONObject jo = new JSONObject();
+		jo.put("Version", "1.1");
+		
 		 TF_MBPartner bp = new TF_MBPartner(getCtx(),inv.getC_BPartner_ID(),get_TrxName());
 		 boolean hasTCS = bp.isApplyTCS();
 		 TF_MOrg org = new TF_MOrg(getCtx(),inv.getAD_Org_ID(),get_TrxName());
 		 MOrgInfo orginfo = org.getInfo();
 		 MLocation loc = new MLocation(getCtx(),orginfo.getC_Location_ID(),get_TrxName());
 		 MInvoiceLine[] lines = inv.getLines(true);
-		 JsonObjectBuilder jsi = null;
+		 JSONObject jsi = new JSONObject();
 		 BigDecimal IGSTAmt = Env.ZERO;
 		 BigDecimal CGSTAmt = Env.ZERO;
 		 BigDecimal TotalCGST = Env.ZERO;
@@ -301,31 +286,31 @@ public class GenerateeInvoice extends SvrProcess{
 			try {
 			String slNo = (i+1) + "";
 				String IsServc = prod.getProductType().equals(TF_MProduct.PRODUCTTYPE_Item) ? "N" : "Y";
-				jsi = Json.createObjectBuilder().add("SlNo",slNo).add("IsServc",IsServc).add("PrdDesc",prod.getName()).add("HsnCd",prod.getHSNCode()).add("Barcde",prod.getHSNCode());
-				 jsi.add("Qty",line.getQtyEntered().setScale(2, RoundingMode.HALF_EVEN))
-				 .add("FreeQty",0)
-				 .add("Unit",line.getC_UOM().getUOMSymbol())
-				 .add("UnitPrice",line.getPriceEntered().setScale(2, RoundingMode.HALF_EVEN))
-				 .add("TotAmt",line.getLineNetAmt())
-				 .add("Discount",0)
-				 .add("PreTaxVal",1)
-				 .add("AssAmt",line.getLineNetAmt().setScale(2, RoundingMode.HALF_EVEN))
-				 .add("GstRt",tax.getRate())
-				 .add("SgstAmt",CGSTAmt)
-				 .add("IgstAmt",IGSTAmt)
-				 .add("CgstAmt",CGSTAmt)
-				 .add("CesRt",0)
-				 .add("CesAmt",0)
-				 .add("CesNonAdvlAmt",0)
-				 .add("StateCesRt",0)
-				 .add("StateCesAmt",0)
-				 .add("StateCesNonAdvlAmt",0)
-				 .add("OthChrg",0)
-				 .add("TotItemVal",line.getLineNetAmt().add(CGSTAmt).add(CGSTAmt).add(IGSTAmt).setScale(2, RoundingMode.HALF_EVEN))
-				 .add("OrdLineRef",JsonValue.NULL)
-				 .add("OrgCntry",JsonValue.NULL)
-				 .add("PrdSlNo",JsonValue.NULL);
-				 jsonArrayBuilderItemList.add(jsi);
+				jsi = jsi.put("SlNo",slNo).put("IsServc",IsServc).put("PrdDesc",prod.getName()).put("HsnCd",prod.getHSNCode()).put("Barcde",prod.getHSNCode());
+				 jsi.put("Qty",line.getQtyEntered().setScale(2, RoundingMode.HALF_EVEN))
+				 .put("FreeQty",0)
+				 .put("Unit",line.getC_UOM().getUOMSymbol())
+				 .put("UnitPrice",line.getPriceEntered().setScale(2, RoundingMode.HALF_EVEN))
+				 .put("TotAmt",line.getLineNetAmt())
+				 .put("Discount",0)
+				 .put("PreTaxVal",1)
+				 .put("AssAmt",line.getLineNetAmt().setScale(2, RoundingMode.HALF_EVEN))
+				 .put("GstRt",tax.getRate())
+				 .put("SgstAmt",CGSTAmt)
+				 .put("IgstAmt",IGSTAmt)
+				 .put("CgstAmt",CGSTAmt)
+				 .put("CesRt",0)
+				 .put("CesAmt",0)
+				 .put("CesNonAdvlAmt",0)
+				 .put("StateCesRt",0)
+				 .put("StateCesAmt",0)
+				 .put("StateCesNonAdvlAmt",0)
+				 .put("OthChrg",0)
+				 .put("TotItemVal",line.getLineNetAmt().add(CGSTAmt).add(CGSTAmt).add(IGSTAmt).setScale(2, RoundingMode.HALF_EVEN))
+				 .put("OrdLineRef",JSONObject.NULL)
+				 .put("OrgCntry",JSONObject.NULL)
+				 .put("PrdSlNo",JSONObject.NULL);
+				 //jsonArrayBuilderItemList.add(jsi);
 			}
 			catch(Exception ex) {
 				addLog("Incomplete Information in Product or Invoice Line #" + (i+1));
@@ -334,42 +319,41 @@ public class GenerateeInvoice extends SvrProcess{
 		}
 		 
 		 DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-		 JsonObjectBuilder builder = Json.createObjectBuilder()
-		 .add("Version","1.1");
+		 
 		 try {		
-		 builder.add("TranDtls",
-		 Json.createObjectBuilder().add("TaxSch", "GST")
-         .add("SupTyp", "B2B")
-         .add("RegRev", "N")
-         .add("EcmGstin", JsonValue.NULL)
-         .add("IgstOnIntra", "N"))
-		 .add("DocDtls",
-		 Json.createObjectBuilder().add("Typ", "INV")
-		 .add("No", inv.getDocumentNo())
-		 .add("Dt", inv.getDateAcct().toLocalDateTime().format(FORMATTER)))
-		 .add("SellerDtls",
-		 Json.createObjectBuilder().add("Gstin",org.getgstin())
-		 .add("LglNm",org.getName())
-		 .add("TrdNm",org.getName())
-		 .add("Addr1",loc.getAddress1())
-		 .add("Addr2",loc.getAddress2())
-		 .add("Loc",loc.getCity())
-		 .add("Pin",Integer.parseInt(org.getInfo().getC_Location().getPostal()))
-		 .add("Stcd",org.getStateCode())
-		 .add("Ph",orginfo.getPhone())
-		 .add("Em",orginfo.getEMail()))
-		 .add("BuyerDtls",
-		 Json.createObjectBuilder().add("Gstin",bp.getTaxID())
-		 .add("LglNm",bp.getName())
-		 .add("TrdNm",bp.getName())
-		 .add("Pos",bp.getStateCode())
-		 .add("Addr1",bp.getAddress1())
-		 .add("Addr2",bp.getAddress2())
-		 .add("Loc",bp.getCity())
-		 .add("Pin",Integer.parseInt(bp.getPostal()))
-		 .add("Stcd",bp.getStateCode())
-		 .add("Ph",bp.getPhone())
-		 .add("Em",JsonValue.NULL));
+		 jo.put("TranDtls",
+		 (new JSONObject()).put("TaxSch", "GST")
+         .put("SupTyp", "B2B")
+         .put("RegRev", "N")
+         .put("EcmGstin", JSONObject.NULL)
+         .put("IgstOnIntra", "N"))
+		 .put("DocDtls",
+		 (new JSONObject()).put("Typ", "INV")
+		 .put("No", inv.getDocumentNo())
+		 .put("Dt", inv.getDateAcct().toLocalDateTime().format(FORMATTER)))
+		 .put("SellerDtls",
+		 (new JSONObject()).put("Gstin",org.getgstin())
+		 .put("LglNm",org.getName())
+		 .put("TrdNm",org.getName())
+		 .put("Addr1",loc.getAddress1())
+		 .put("Addr2",loc.getAddress2())
+		 .put("Loc",loc.getCity())
+		 .put("Pin",Integer.parseInt(org.getInfo().getC_Location().getPostal()))
+		 .put("Stcd",org.getStateCode())
+		 .put("Ph",orginfo.getPhone())
+		 .put("Em",orginfo.getEMail()))
+		 .put("BuyerDtls",
+		 (new JSONObject()).put("Gstin",bp.getTaxID())
+		 .put("LglNm",bp.getName())
+		 .put("TrdNm",bp.getName())
+		 .put("Pos",bp.getStateCode())
+		 .put("Addr1",bp.getAddress1())
+		 .put("Addr2",bp.getAddress2())
+		 .put("Loc",bp.getCity())
+		 .put("Pin",Integer.parseInt(bp.getPostal()))
+		 .put("Stcd",bp.getStateCode())
+		 .put("Ph",bp.getPhone())
+		 .put("Em",JSONObject.NULL));
 		 }
 		 catch(Exception ex) {
 			 addLog("Incomplate Information in the Organization or Business Partner level");
@@ -382,29 +366,26 @@ public class GenerateeInvoice extends SvrProcess{
 			 rndOff = OtherCharges;
 			 OtherCharges = BigDecimal.ZERO;
 		 }
-		 builder.add("ItemList", jsonArrayBuilderItemList)
-		 .add("ValDtls",Json.createObjectBuilder().add("AssVal",inv.getTotalLines())
-		 .add("CgstVal",TotalCGST)
-		 .add("SgstVal",TotalCGST)
-		 .add("IgstVal",TotalIGST)
-		 .add("CesVal",0)
-		 .add("StCesVal",0)
-		 .add("Discount",0)
-		 .add("OthChrg",OtherCharges)
-		 .add("RndOffAmt",rndOff)
-		 .add("TotInvVal",inv.getGrandTotal())
-		 .add("TotInvValFc",inv.getGrandTotal())
-		 .build());
-	
-		
-		 JsonObject data = builder.build();
-	      StringWriter sw = new StringWriter();
-	      JsonWriter jw = Json.createWriter(sw);
-	      jw.writeObject(data);
-	      jw.close();
 		 
-		  System.out.println("JSON================>"+sw.toString());
-		 return sw.toString();
+		 jo.put("ItemList", jsi) //jsonArrayBuilderItemList)
+		 .put("ValDtls",(new JSONObject()).put("AssVal",inv.getTotalLines())
+		 .put("CgstVal",TotalCGST)
+		 .put("SgstVal",TotalCGST)
+		 .put("IgstVal",TotalIGST)
+		 .put("CesVal",0)
+		 .put("StCesVal",0)
+		 .put("Discount",0)
+		 .put("OthChrg",OtherCharges)
+		 .put("RndOffAmt",rndOff)
+		 .put("TotInvVal",inv.getGrandTotal())
+		 .put("TotInvValFc",inv.getGrandTotal())
+		 );
+	
+	
+
+		 
+		 System.out.println("JSON================>"+jo.toString());
+		 return jo.toString();
 	}
 
 
