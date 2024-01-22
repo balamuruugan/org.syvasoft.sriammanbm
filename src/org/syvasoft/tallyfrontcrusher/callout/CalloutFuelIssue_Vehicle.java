@@ -13,7 +13,9 @@ public class CalloutFuelIssue_Vehicle implements IColumnCallout {
 
 	@Override
 	public String start(Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value, Object oldValue) {
-		String IssueType = (String) mTab.getValue(MFuelIssue.COLUMNNAME_IssueType);
+		String IssueType = null ;
+		if(mTab.getValue(MFuelIssue.COLUMNNAME_IssueType) != null)
+		    IssueType = (String) mTab.getValue(MFuelIssue.COLUMNNAME_IssueType);
 		int Vehicle_ID = 0;
 		int PM_Machinery_ID = 0;
 		if(mTab.getValue(MFuelIssue.COLUMNNAME_Vehicle_ID) != null) 
@@ -22,9 +24,11 @@ public class CalloutFuelIssue_Vehicle implements IColumnCallout {
 			PM_Machinery_ID = MMachinery.getPM_Machinery_ID(ctx, Vehicle_ID, null);
 		}
 		mTab.setValue(MFuelIssue.COLUMNNAME_PM_Machinery_ID, PM_Machinery_ID > 0 ? PM_Machinery_ID : null);
-		
-		if(IssueType.equals(MFuelIssue.ISSUETYPE_Payment))
-			return null;
+		if(IssueType != null) {
+		   if(IssueType.equals(MFuelIssue.ISSUETYPE_Payment)) {
+     		return null;
+		   }
+		}
 		
 		MMachinery machinery = new MMachinery(ctx, PM_Machinery_ID, null);
 		
