@@ -206,6 +206,7 @@ public class CreateSalesEntryFromWeighment extends SvrProcess {
 					wEntry.setStatus(MWeighmentEntry.STATUS_Error);
 					wEntry.saveEx();					
 				}
+				//throw new AdempiereException(ex);
 				addLog(wEntry.get_Table_ID(), wEntry.getGrossWeightTime(), null, ex.getMessage(), wEntry.get_Table_ID(), wEntry.get_ID());
 			}
 		}

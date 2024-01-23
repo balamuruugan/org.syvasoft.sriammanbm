@@ -87,10 +87,10 @@ public class MEmployeeSalaryOld extends X_TF_Employee_Salary {
 			String description = getDocumentNo();
 			if(getDescription() != null)
 				description = getDescription() + " | " + description;
-				
+			MGLPostingConfig glConfig = MGLPostingConfig.getMGLPostingConfig(getCtx());
 			j.setDescription(description);
 			j.setC_AcctSchema_ID(Env.getContextAsInt(getCtx(), "$C_AcctSchema_ID"));
-			j.setC_Currency_ID(Env.getContextAsInt(getCtx(), "$C_Currency_ID"));
+			j.setC_Currency_ID(glConfig.getC_AcctSchema().getC_Currency_ID());
 			j.setPostingType(MJournal.POSTINGTYPE_Actual);
 			j.setC_DocType_ID(1000000);
 			j.setDateDoc(getDateAcct());
