@@ -377,6 +377,10 @@ public class CrusherModelFactory implements IModelFactory {
 			return MVehicleTypeSalary.class;
 		else if(TF_MBankStatementLine.Table_Name.equals(tableName))
 			return TF_MBankStatementLine.class;
+		else if(MPowerFactor.Table_Name.equals(tableName))
+			return MPowerFactor.class;
+		else if(MPowerFactorLine.Table_Name.equals(tableName))
+			return MPowerFactorLine.class;
 		return null;
 	}
 
@@ -747,6 +751,10 @@ public class CrusherModelFactory implements IModelFactory {
 			return new MVehicleTypeSalary(ctx, Record_ID, trxName);
 		else if(TF_MBankStatementLine.Table_Name.equals(tableName))
 			return new TF_MBankStatementLine(ctx, Record_ID, trxName);
+		else if(MPowerFactor.Table_Name.equals(tableName))
+			return new MPowerFactor(ctx, Record_ID, trxName);
+		else if(MPowerFactorLine.Table_Name.equals(tableName))
+			return new MPowerFactorLine(ctx, Record_ID, trxName);
 		return null;
 	}
 
@@ -1119,6 +1127,10 @@ public class CrusherModelFactory implements IModelFactory {
 			return new MVehicleTypeSalary(ctx, rs, trxName);
 		else if(TF_MBankStatementLine.Table_Name.equals(tableName))
 			return new TF_MBankStatementLine(ctx, rs, trxName);
+		else if(MPowerFactor.Table_Name.equals(tableName))
+			return new MPowerFactor(ctx, rs, trxName);
+		else if(MPowerFactorLine.Table_Name.equals(tableName))
+			return new MPowerFactorLine(ctx, rs, trxName);
 		return null;
 	}
 }
