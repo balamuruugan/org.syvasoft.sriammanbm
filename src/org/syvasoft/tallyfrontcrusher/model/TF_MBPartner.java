@@ -1098,16 +1098,30 @@ public class TF_MBPartner extends MBPartner {
 			int Customer_Seq=(int) MSysConfig.getIntValue("CUSTOMER_SEQ",1000303);
 			int Employee_Seq=(int) MSysConfig.getIntValue("EMPLOYEE_SEQ",1000555);
 			int Vendor_Seq=(int) MSysConfig.getIntValue("VENDOR_SEQ",1000554);
+			int N_Customer_Seq=(int) MSysConfig.getIntValue("N_CUSTOMER_SEQ",1000107);
+			int N_Vendor_Seq=(int) MSysConfig.getIntValue("N_VENDOR_SEQ",1000108);
 			
 			if(isVendor()) {
-				MSequence seq = new MSequence(getCtx(), Vendor_Seq, get_TrxName());
+				MSequence seq = null;
+				
+				if(isPermitSales())
+					seq = new MSequence(getCtx(), Vendor_Seq, get_TrxName());
+				else
+					seq = new MSequence(getCtx(), N_Vendor_Seq, get_TrxName());
+				
 				String documentNo = MSequence.getDocumentNoFromSeq(seq, get_TrxName(), this);
 				setValue(documentNo);
 				setC_BP_Group_ID(1000003);
 			}
 			
 			if(isCustomer()){
-				MSequence seq = new MSequence(getCtx(), Customer_Seq, get_TrxName());
+				MSequence seq = null;
+				
+				if(isPermitSales())
+					seq = new MSequence(getCtx(), Customer_Seq, get_TrxName());
+				else
+					seq = new MSequence(getCtx(), N_Customer_Seq, get_TrxName());
+				
 				String documentNo = MSequence.getDocumentNoFromSeq(seq, get_TrxName(), this);
 				setValue(documentNo);
 				setC_BP_Group_ID(1000001);
