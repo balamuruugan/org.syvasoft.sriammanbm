@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_BPartner
  *  @author iDempiere (generated) 
- *  @version Release 5.1
+ *  @version Release 11
  */
 @SuppressWarnings("all")
 public interface I_C_BPartner 
@@ -118,12 +118,12 @@ public interface I_C_BPartner
 	/** Set Linked Organization.
 	  * The Business Partner is another Organization for explicit Inter-Org transactions
 	  */
-	public void setAD_OrgBP_ID (String AD_OrgBP_ID);
+	public void setAD_OrgBP_ID (int AD_OrgBP_ID);
 
 	/** Get Linked Organization.
 	  * The Business Partner is another Organization for explicit Inter-Org transactions
 	  */
-	public String getAD_OrgBP_ID();
+	public int getAD_OrgBP_ID();
 
     /** Column name AD_User_ID */
     public static final String COLUMNNAME_AD_User_ID = "AD_User_ID";
@@ -201,13 +201,35 @@ public interface I_C_BPartner
 	/** Get Apply TCS	  */
 	public boolean isApplyTCS();
 
+    /** Column name BankAccountNo */
+    public static final String COLUMNNAME_BankAccountNo = "BankAccountNo";
+
+	/** Set Bank Account No.
+	  * Bank Account Number
+	  */
+	public void setBankAccountNo (String BankAccountNo);
+
+	/** Get Bank Account No.
+	  * Bank Account Number
+	  */
+	public String getBankAccountNo();
+
+    /** Column name BankName */
+    public static final String COLUMNNAME_BankName = "BankName";
+
+	/** Set Bank Name	  */
+	public void setBankName (String BankName);
+
+	/** Get Bank Name	  */
+	public String getBankName();
+
     /** Column name BasicSalary */
     public static final String COLUMNNAME_BasicSalary = "BasicSalary";
 
-	/** Set Monthly Salary	  */
+	/** Set Basic Salary	  */
 	public void setBasicSalary (BigDecimal BasicSalary);
 
-	/** Get Monthly Salary	  */
+	/** Get Basic Salary	  */
 	public BigDecimal getBasicSalary();
 
     /** Column name BillPriceGST */
@@ -232,6 +254,15 @@ public interface I_C_BPartner
 	  */
 	public int getBPartner_Parent_ID();
 
+    /** Column name BranchCode */
+    public static final String COLUMNNAME_BranchCode = "BranchCode";
+
+	/** Set Branch Code	  */
+	public void setBranchCode (String BranchCode);
+
+	/** Get Branch Code	  */
+	public String getBranchCode();
+
     /** Column name C_BP_Group_ID */
     public static final String COLUMNNAME_C_BP_Group_ID = "C_BP_Group_ID";
 
@@ -250,12 +281,12 @@ public interface I_C_BPartner
     /** Column name C_BPartner_ID */
     public static final String COLUMNNAME_C_BPartner_ID = "C_BPartner_ID";
 
-	/** Set Business Partner .
+	/** Set Business Partner.
 	  * Identifies a Business Partner
 	  */
 	public void setC_BPartner_ID (int C_BPartner_ID);
 
-	/** Get Business Partner .
+	/** Get Business Partner.
 	  * Identifies a Business Partner
 	  */
 	public int getC_BPartner_ID();
@@ -373,6 +404,21 @@ public interface I_C_BPartner
 	public int getC_PaymentTerm_ID();
 
 	public org.compiere.model.I_C_PaymentTerm getC_PaymentTerm() throws RuntimeException;
+
+    /** Column name C_Period_ID */
+    public static final String COLUMNNAME_C_Period_ID = "C_Period_ID";
+
+	/** Set Period.
+	  * Period of the Calendar
+	  */
+	public void setC_Period_ID (int C_Period_ID);
+
+	/** Get Period.
+	  * Period of the Calendar
+	  */
+	public int getC_Period_ID();
+
+	public org.compiere.model.I_C_Period getC_Period() throws RuntimeException;
 
     /** Column name C_TaxGroup_ID */
     public static final String COLUMNNAME_C_TaxGroup_ID = "C_TaxGroup_ID";
@@ -557,12 +603,14 @@ public interface I_C_BPartner
     public static final String COLUMNNAME_DUNS = "DUNS";
 
 	/** Set D-U-N-S.
-	  * Dun & Bradstreet Number
+	  * Dun &amp;
+ Bradstreet Number
 	  */
 	public void setDUNS (String DUNS);
 
 	/** Get D-U-N-S.
-	  * Dun & Bradstreet Number
+	  * Dun &amp;
+ Bradstreet Number
 	  */
 	public String getDUNS();
 
@@ -635,6 +683,15 @@ public interface I_C_BPartner
 	  * Method for charging Freight
 	  */
 	public String getFreightCostRule();
+
+    /** Column name IncrementAmt */
+    public static final String COLUMNNAME_IncrementAmt = "IncrementAmt";
+
+	/** Set Increment Amount	  */
+	public void setIncrementAmt (BigDecimal IncrementAmt);
+
+	/** Get Increment Amount	  */
+	public BigDecimal getIncrementAmt();
 
     /** Column name Invoice_PrintFormat_ID */
     public static final String COLUMNNAME_Invoice_PrintFormat_ID = "Invoice_PrintFormat_ID";
@@ -843,10 +900,10 @@ public interface I_C_BPartner
     /** Column name IsRequiredTaxInvoicePerLoad */
     public static final String COLUMNNAME_IsRequiredTaxInvoicePerLoad = "IsRequiredTaxInvoicePerLoad";
 
-	/** Set Require Taxinvoice per load	  */
+	/** Set Required Taxinvoice per load	  */
 	public void setIsRequiredTaxInvoicePerLoad (boolean IsRequiredTaxInvoicePerLoad);
 
-	/** Get Require Taxinvoice per load	  */
+	/** Get Required Taxinvoice per load	  */
 	public boolean isRequiredTaxInvoicePerLoad();
 
     /** Column name IsSalesRep */
@@ -926,6 +983,15 @@ public interface I_C_BPartner
 	  * Indicates if this Business Partner is a Vendor
 	  */
 	public boolean isVendor();
+
+    /** Column name Location */
+    public static final String COLUMNNAME_Location = "Location";
+
+	/** Set Location	  */
+	public void setLocation (String Location);
+
+	/** Get Location	  */
+	public String getLocation();
 
     /** Column name Logo_ID */
     public static final String COLUMNNAME_Logo_ID = "Logo_ID";
@@ -1030,11 +1096,20 @@ public interface I_C_BPartner
     /** Column name OpeningDate */
     public static final String COLUMNNAME_OpeningDate = "OpeningDate";
 
-	/** Set AS On	  */
+	/** Set Opening Date	  */
 	public void setOpeningDate (Timestamp OpeningDate);
 
-	/** Get AS On	  */
+	/** Get Opening Date	  */
 	public Timestamp getOpeningDate();
+
+    /** Column name PanNo */
+    public static final String COLUMNNAME_PanNo = "PanNo";
+
+	/** Set PanNo	  */
+	public void setPanNo (String PanNo);
+
+	/** Get PanNo	  */
+	public String getPanNo();
 
     /** Column name PaymentRule */
     public static final String COLUMNNAME_PaymentRule = "PaymentRule";
@@ -1117,12 +1192,12 @@ public interface I_C_BPartner
     /** Column name PO_PriceList_ID */
     public static final String COLUMNNAME_PO_PriceList_ID = "PO_PriceList_ID";
 
-	/** Set Purchase Pricelist.
+	/** Set Purchase Price List.
 	  * Price List used by this Business Partner
 	  */
 	public void setPO_PriceList_ID (int PO_PriceList_ID);
 
-	/** Get Purchase Pricelist.
+	/** Get Purchase Price List.
 	  * Price List used by this Business Partner
 	  */
 	public int getPO_PriceList_ID();
@@ -1185,12 +1260,14 @@ public interface I_C_BPartner
     public static final String COLUMNNAME_ReferenceNo = "ReferenceNo";
 
 	/** Set Reference No.
-	  * Your customer or vendor number at the Business Partner's site
+	  * Your customer or vendor number at the Business Partner&#039;
+s site
 	  */
 	public void setReferenceNo (String ReferenceNo);
 
 	/** Get Reference No.
-	  * Your customer or vendor number at the Business Partner's site
+	  * Your customer or vendor number at the Business Partner&#039;
+s site
 	  */
 	public String getReferenceNo();
 
@@ -1207,14 +1284,14 @@ public interface I_C_BPartner
 	  */
 	public String getRegionName();
 
-    /** Column name SalaryPayment2Bank */
-    public static final String COLUMNNAME_SalaryPayment2Bank = "SalaryPayment2Bank";
+    /** Column name ReverseCharge */
+    public static final String COLUMNNAME_ReverseCharge = "ReverseCharge";
 
-	/** Set Payment through Bank	  */
-	public void setSalaryPayment2Bank (BigDecimal SalaryPayment2Bank);
+	/** Set Reverse Charge	  */
+	public void setReverseCharge (boolean ReverseCharge);
 
-	/** Get Payment through Bank	  */
-	public BigDecimal getSalaryPayment2Bank();
+	/** Get Reverse Charge	  */
+	public boolean isReverseCharge();
 
     /** Column name SalesRep_ID */
     public static final String COLUMNNAME_SalesRep_ID = "SalesRep_ID";
@@ -1274,12 +1351,14 @@ public interface I_C_BPartner
     public static final String COLUMNNAME_ShareOfCustomer = "ShareOfCustomer";
 
 	/** Set Share.
-	  * Share of Customer's business as a percentage
+	  * Share of Customer&#039;
+s business as a percentage
 	  */
 	public void setShareOfCustomer (int ShareOfCustomer);
 
 	/** Get Share.
-	  * Share of Customer's business as a percentage
+	  * Share of Customer&#039;
+s business as a percentage
 	  */
 	public int getShareOfCustomer();
 
