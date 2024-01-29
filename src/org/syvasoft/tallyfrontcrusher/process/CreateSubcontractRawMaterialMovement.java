@@ -191,9 +191,10 @@ public class CreateSubcontractRawMaterialMovement extends SvrProcess {
 		we.setNetWeight(entry.getNetWeight());
 		we.setNetWeightUnit(entry.getNetWeightUnit());
 		we.setC_UOM_ID(entry.getC_UOM_ID());
-		
+		we.setIsPermitSales(true);
 		MPriceListUOM priceUOM = MPriceListUOM.getPriceListUOM(getCtx(), entry.getM_Product_ID(), entry.getC_UOM_ID(), we.getC_BPartner_ID(), entry.getTF_Destination_ID(), true, entry.getGrossWeightTime());
 		we.setPassPricePerUnit(BigDecimal.ZERO);
+		we.setGrossPrice(priceUOM.getPrice());
 		we.setPrice(priceUOM.getPrice());
 		we.setAmount(priceUOM.getPrice().multiply(entry.getNetWeightUnit()));
 		we.setTotalAmt(priceUOM.getPrice().multiply(entry.getNetWeightUnit()));

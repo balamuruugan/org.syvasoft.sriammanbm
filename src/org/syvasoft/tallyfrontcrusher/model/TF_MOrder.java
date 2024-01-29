@@ -4429,13 +4429,13 @@ public class TF_MOrder extends MOrder {
 		}*/
 		
 		//
-		
-		if(getC_DocTypeTarget_ID() == GSTConsolidatedOrderDocType_ID(getCtx()) || getC_DocTypeTarget_ID() == NonGSTConsolidatedOrderDocType_ID(getCtx())) {
+		invoice.setDocumentNo(getInvoiceNo());
+	/*	if(getC_DocTypeTarget_ID() == GSTConsolidatedOrderDocType_ID(getCtx()) || getC_DocTypeTarget_ID() == NonGSTConsolidatedOrderDocType_ID(getCtx())) {
 			
 			if(getInvoiceNo() != null)
 				invoice.setDocumentNo(getInvoiceNo());
 			//invoice.setDocumentNo(weighment.getInvoiceNo());
-		}
+		}*/
 		invoice.setSalesRep_ID(Env.getAD_User_ID(getCtx()));		
 		
 		invoice.setC_PaymentTerm_ID(getC_PaymentTerm_ID());

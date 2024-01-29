@@ -43,16 +43,17 @@ public class MWeighmentPayment extends X_TF_WeighmentEntry_Payment {
 	*/
 	 
 	private void validatePayment() {
-		MWeighmentEntry we = (MWeighmentEntry) getTF_WeighmentEntry();
-		
-		if(!we.getPaymentRule().equals(MWeighmentEntry.PAYMENTRULE_MixedPayment))
-			throw new AdempiereException("Mixed Tender Payment cannot be saved due to invalid payment rule!");
-		
-		BigDecimal SalesAmount = we.getSalesTotalAmount();
-		BigDecimal TotalMixedPayment = we.getTotalMixedPayment();
-		
-		if(SalesAmount.add(BigDecimal.ONE).doubleValue() < TotalMixedPayment.doubleValue())
-			throw new AdempiereException("Mixed Tender Payments exceeds the sales amount!");
-		
+		if(getTF_WeighmentEntry_ID() > 0) {
+			MWeighmentEntry we = (MWeighmentEntry) getTF_WeighmentEntry();
+			
+			if(!we.getPaymentRule().equals(MWeighmentEntry.PAYMENTRULE_MixedPayment))
+				throw new AdempiereException("Mixed Tender Payment cannot be saved due to invalid payment rule!");
+			
+			BigDecimal SalesAmount = we.getSalesTotalAmount();
+			BigDecimal TotalMixedPayment = we.getTotalMixedPayment();
+			
+			if(SalesAmount.add(BigDecimal.ONE).doubleValue() < TotalMixedPayment.doubleValue())
+				throw new AdempiereException("Mixed Tender Payments exceeds the sales amount!");
+		}
 	}
 }

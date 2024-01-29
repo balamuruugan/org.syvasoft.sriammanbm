@@ -844,12 +844,12 @@ public class MWeighmentEntry extends X_TF_WeighmentEntry {
 	public int getC_DocType_ID(String WeighmentEntryType) {
 		
 		if(WeighmentEntryType.equals(WEIGHMENTENTRYTYPE_Sales)) {
-			if(isGST() && getRef_WeighmentEntry() != null)
+			if(isGST() && getRef_WeighmentEntry_ID() > 0)
 				return TF_MOrder.BoulderSalesOrderDocType_ID(getCtx());
-			else if(isGST() && getRef_WeighmentEntry() == null)
-				return TF_MOrder.GSTConsolidatedOrderDocType_ID(getCtx());
+			else if(isGST() && getRef_WeighmentEntry_ID() == 0)
+				return TF_MOrder.GSTOrderDocType_ID(getCtx());
 			else
-				return TF_MOrder.NonGSTConsolidatedOrderDocType_ID(getCtx());
+				return TF_MOrder.NonGSTOrderDocType_ID(getCtx());
 		}
 		else if(WeighmentEntryType.equals(WEIGHMENTENTRYTYPE_Input)) {
 			if(isGST())
