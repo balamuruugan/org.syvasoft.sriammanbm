@@ -375,6 +375,8 @@ public class CrusherModelFactory implements IModelFactory {
 			return MEmpShiftAssign.class;
 		else if(MVehicleTypeSalary.Table_Name.equals(tableName))
 			return MVehicleTypeSalary.class;
+		else if(TF_MBankStatementLine.Table_Name.equals(tableName))
+			return TF_MBankStatementLine.class;
 		return null;
 	}
 
@@ -743,6 +745,8 @@ public class CrusherModelFactory implements IModelFactory {
 			return new MEmpShiftAssign(ctx, Record_ID, trxName);
 		else if(MVehicleTypeSalary.Table_Name.equals(tableName))
 			return new MVehicleTypeSalary(ctx, Record_ID, trxName);
+		else if(TF_MBankStatementLine.Table_Name.equals(tableName))
+			return new TF_MBankStatementLine(ctx, Record_ID, trxName);
 		return null;
 	}
 
@@ -1113,6 +1117,8 @@ public class CrusherModelFactory implements IModelFactory {
 			return new MEmpShiftAssign(ctx, rs, trxName);
 		else if(MVehicleTypeSalary.Table_Name.equals(tableName))
 			return new MVehicleTypeSalary(ctx, rs, trxName);
+		else if(TF_MBankStatementLine.Table_Name.equals(tableName))
+			return new TF_MBankStatementLine(ctx, rs, trxName);
 		return null;
 	}
 }

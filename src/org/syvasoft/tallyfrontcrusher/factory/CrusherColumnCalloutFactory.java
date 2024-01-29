@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.adempiere.base.IColumnCallout;
 import org.adempiere.base.IColumnCalloutFactory;
+import org.compiere.model.MBankStatementLine;
 import org.compiere.model.MInventoryLine;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MJournalLine;
@@ -235,6 +236,11 @@ public class CrusherColumnCalloutFactory implements IColumnCalloutFactory {
 				list.add(new CalloutTripSheetAM_CalcAmount());
 			}
 				
+		}
+		
+		if(tableName.equals(MBankStatementLine.Table_Name)) { 
+			if(columnName.equals(TF_MPayment.COLUMNNAME_TF_BPartner_ID)) 
+				list.add(new CalloutBankStatementLine_TFMBPartner());
 		}
 		
 		//C_Payment - Cash Type

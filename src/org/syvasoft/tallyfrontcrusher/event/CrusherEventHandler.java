@@ -11,6 +11,7 @@ import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MBank;
 import org.compiere.model.MBankAccount;
+import org.compiere.model.MBankStatementLine;
 import org.compiere.model.MClient;
 import org.compiere.model.MCost;
 import org.compiere.model.MCostDetail;
@@ -65,6 +66,7 @@ import org.syvasoft.tallyfrontcrusher.model.MVehicleType;
 import org.syvasoft.tallyfrontcrusher.model.MWeighmentEntry;
 import org.syvasoft.tallyfrontcrusher.model.TF_MBPartner;
 import org.syvasoft.tallyfrontcrusher.model.TF_MBankAccount;
+import org.syvasoft.tallyfrontcrusher.model.TF_MBankStatementLine;
 import org.syvasoft.tallyfrontcrusher.model.TF_MCharge;
 import org.syvasoft.tallyfrontcrusher.model.TF_MInOut;
 import org.syvasoft.tallyfrontcrusher.model.TF_MInOutLine;
@@ -105,6 +107,8 @@ public class CrusherEventHandler extends AbstractEventHandler {
 		registerTableEvent(IEventTopics.PO_BEFORE_NEW, MJournal.Table_Name);
 		registerTableEvent(IEventTopics.PO_BEFORE_NEW, MMatchInv.Table_Name);
 		registerTableEvent(IEventTopics.PO_BEFORE_NEW, MInOutLine.Table_Name);
+		registerTableEvent(IEventTopics.PO_BEFORE_NEW, MBankStatementLine.Table_Name);
+		registerTableEvent(IEventTopics.PO_BEFORE_CHANGE , MBankStatementLine.Table_Name);
 		registerEvent(IEventTopics.AFTER_LOGIN);		
 
 	}
@@ -288,6 +292,53 @@ public class CrusherEventHandler extends AbstractEventHandler {
 						iLine.set_ValueOfColumn("M_Locator_ID", oLine.get_ValueAsInt("M_Locator_ID"));					
 				}
 			}
+		}
+		else if(po.get_TableName().equals(MBankStatementLine.Table_Name)) {
+			MBankStatementLine line = (MBankStatementLine) po;
+			
+			int C_ElementValue_ID = line.get_ValueAsInt(TF_MBankStatementLine.COLUMNNAME_C_ElementValue_ID);
+			int TF_BPartner_ID = line.get_ValueAsInt(TF_MBankStatementLine.COLUMNNAME_TF_BPartner_ID);
+			
+			if(C_ElementValue_ID > 0 && TF_BPartner_ID == 0 && line.getC_BPartner_ID() == 0) {
+				MUser user = MUser.get(line.getCtx(), Env.getAD_User_ID(line.getCtx()));				
+				int bPartnerID = user.getC_BPartner_ID();
+				line.setC_BPartner_ID(bPartnerID);
+			}
+			
+			if(line.getC_BPartner_ID() > 0 && TF_BPartner_ID ==0) {
+				line.set_ValueOfColumn(TF_MBankStatementLine.COLUMNNAME_TF_BPartner_ID, Integer.valueOf(line.getC_BPartner_ID()));
+				line.set_ValueOfColumn("IsEmployee", line.getC_BPartner().isEmployee() ? "Y" : "N");
+			}
+			
+			//set receipt and payment
+			if(line.getStmtAmt() != null) {
+				if(line.getStmtAmt().doubleValue() > 0) {
+					line.set_ValueOfColumn(TF_MBankStatementLine.COLUMNNAME_Receipt, line.getStmtAmt());
+					line.set_ValueOfColumn(TF_MBankStatementLine.COLUMNNAME_Payment, BigDecimal.ZERO);
+				}
+				else if(line.getStmtAmt().doubleValue() < 0) {
+					line.set_ValueOfColumn(TF_MBankStatementLine.COLUMNNAME_Receipt, BigDecimal.ZERO);
+					line.set_ValueOfColumn(TF_MBankStatementLine.COLUMNNAME_Payment, line.getStmtAmt());						
+				}
+				else {
+					line.set_ValueOfColumn(TF_MBankStatementLine.COLUMNNAME_Receipt, BigDecimal.ZERO);
+					line.set_ValueOfColumn(TF_MBankStatementLine.COLUMNNAME_Payment, BigDecimal.ZERO);
+				}
+			}
+			
+			if(line.getC_Payment_ID() > 0) {
+				TF_MPayment p = new TF_MPayment(line.getCtx(), line.getC_Payment_ID(), line.get_TrxName());
+				line.setC_Payment_ID(p.getC_Payment_ID());
+				line.set_ValueOfColumn(TF_MBankStatementLine.COLUMNNAME_C_ElementValue_ID, Integer.valueOf(p.getC_ElementValue_ID()));
+				line.setC_Charge_ID(p.getC_Charge_ID());
+			}
+			
+			if(line.getC_Charge_ID() == 0 && C_ElementValue_ID > 0 ) {				
+				TF_MCharge charge = TF_MCharge.createChargeFromAccount(line.getCtx(), C_ElementValue_ID, line.get_TrxName());
+				if(charge != null )
+					line.setC_Charge_ID(charge.get_ID());				
+			}
+				
 		}
 		else if(po instanceof MOrder) {
 			MOrder ord = (MOrder) po;
