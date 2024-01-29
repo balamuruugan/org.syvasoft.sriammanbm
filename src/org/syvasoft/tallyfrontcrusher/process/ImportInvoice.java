@@ -35,6 +35,8 @@ import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.syvasoft.tallyfrontcrusher.model.TF_MInvoice;
+import org.syvasoft.tallyfrontcrusher.model.TF_MOrder;
 
 /**
  *	Import Invoice from I_Invoice
@@ -211,25 +213,25 @@ public class ImportInvoice extends SvrProcess
 		sql = new StringBuilder ("UPDATE I_Invoice o ")
 			  .append("SET M_PriceList_ID=(SELECT MAX(M_PriceList_ID) FROM M_PriceList p WHERE p.IsDefault='Y'")
 			  .append(" AND p.C_Currency_ID=o.C_Currency_ID AND p.IsSOPriceList=o.IsSOTrx AND o.AD_Client_ID=p.AD_Client_ID) ")
-			  .append("WHERE M_PriceList_ID IS NULL AND I_IsImported<>'Y'").append (clientCheck);
+			  .append("WHERE I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (log.isLoggable(Level.FINE)) log.fine("Set Default Currency PriceList=" + no);
 		sql = new StringBuilder ("UPDATE I_Invoice o ")
 			  .append("SET M_PriceList_ID=(SELECT MAX(M_PriceList_ID) FROM M_PriceList p WHERE p.IsDefault='Y'")
 			  .append(" AND p.IsSOPriceList=o.IsSOTrx AND o.AD_Client_ID=p.AD_Client_ID) ")
-			  .append("WHERE M_PriceList_ID IS NULL AND C_Currency_ID IS NULL AND I_IsImported<>'Y'").append (clientCheck);
+			  .append("WHERE C_Currency_ID IS NULL AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (log.isLoggable(Level.FINE)) log.fine("Set Default PriceList=" + no);
 		sql = new StringBuilder ("UPDATE I_Invoice o ")
 			  .append("SET M_PriceList_ID=(SELECT MAX(M_PriceList_ID) FROM M_PriceList p ")
 			  .append(" WHERE p.C_Currency_ID=o.C_Currency_ID AND p.IsSOPriceList=o.IsSOTrx AND o.AD_Client_ID=p.AD_Client_ID) ")
-			  .append("WHERE M_PriceList_ID IS NULL AND I_IsImported<>'Y'").append (clientCheck);
+			  .append("WHERE I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (log.isLoggable(Level.FINE)) log.fine("Set Currency PriceList=" + no);
 		sql = new StringBuilder ("UPDATE I_Invoice o ")
 			  .append("SET M_PriceList_ID=(SELECT MAX(M_PriceList_ID) FROM M_PriceList p ")
 			  .append(" WHERE p.IsSOPriceList=o.IsSOTrx AND o.AD_Client_ID=p.AD_Client_ID) ")
-			  .append("WHERE M_PriceList_ID IS NULL AND C_Currency_ID IS NULL AND I_IsImported<>'Y'").append (clientCheck);
+			  .append("WHERE C_Currency_ID IS NULL AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (log.isLoggable(Level.FINE)) log.fine("Set PriceList=" + no);
 		//
@@ -329,7 +331,7 @@ public class ImportInvoice extends SvrProcess
 		//	BP from Value
 		sql = new StringBuilder ("UPDATE I_Invoice o ")
 			  .append("SET C_BPartner_ID=(SELECT MAX(C_BPartner_ID) FROM C_BPartner bp")
-			  .append(" WHERE o.BPartnerValue=bp.Value AND o.AD_Client_ID=bp.AD_Client_ID) ")
+			  .append(" WHERE o.BPartnerValue=bp.name AND o.AD_Client_ID=bp.AD_Client_ID) ")
 			  .append("WHERE C_BPartner_ID IS NULL AND BPartnerValue IS NOT NULL")
 			  .append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
@@ -426,7 +428,7 @@ public class ImportInvoice extends SvrProcess
 		//	Product
 		sql = new StringBuilder ("UPDATE I_Invoice o ")
 			  .append("SET M_Product_ID=(SELECT MAX(M_Product_ID) FROM M_Product p")
-			  .append(" WHERE o.ProductValue=p.Value AND o.AD_Client_ID=p.AD_Client_ID) ")
+			  .append(" WHERE o.ProductValue=p.name AND o.AD_Client_ID=p.AD_Client_ID) ")
 			  .append("WHERE M_Product_ID IS NULL AND ProductValue IS NOT NULL")
 			  .append(" AND I_IsImported<>'Y'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
@@ -494,16 +496,24 @@ public class ImportInvoice extends SvrProcess
 		if (no != 0)
 			log.warning ("Invalid C_1099Box_Value=" + no);
 		
+		sql = new StringBuilder ("UPDATE I_Invoice ")
+				.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid Business Partner, ' ")
+				.append("WHERE C_BPartner_ID IS NULL")
+				.append(" AND I_IsImported<>'Y' AND IsSOTrx='N'").append (clientCheck);
+		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		if (no != 0)
+			log.warning ("Invalid Business Partner=" + no);
+		
 		commitEx();
 		
 		//	-- New BPartner ---------------------------------------------------
 
 		//	Go through Invoice Records w/o C_BPartner_ID
-		sql = new StringBuilder ("SELECT * FROM I_Invoice ")
-			  .append("WHERE I_IsImported='N' AND C_BPartner_ID IS NULL").append (clientCheck);
+		//sql = new StringBuilder ("SELECT * FROM I_Invoice ")
+			//  .append("WHERE I_IsImported='N' AND C_BPartner_ID IS NULL").append (clientCheck);
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		try
+		/*try
 		{
 			pstmt = DB.prepareStatement (sql.toString(), get_TrxName());
 			rs = pstmt.executeQuery ();
@@ -632,7 +642,7 @@ public class ImportInvoice extends SvrProcess
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.warning ("No BPartner=" + no);
-		
+		*/
 		commitEx();
 		
 		//	-- New Invoices -----------------------------------------------------
@@ -731,6 +741,8 @@ public class ImportInvoice extends SvrProcess
 						}
 						imp.setC_Invoice_ID (invoice.getC_Invoice_ID());
 						//	New InvoiceLine
+						TF_MOrder.addProductPricingIfNot(imp.getM_Product_ID(), invoice.getM_PriceList_ID(), invoice.getC_BPartner_ID(), 
+								imp.getQtyOrdered(), imp.getPriceActual(), invoice.getDateInvoiced(), invoice.isSOTrx());
 						MInvoiceLine line = new MInvoiceLine (invoice);
 						if (imp.getLineDescription() != null)
 							line.setDescription(imp.getLineDescription());
