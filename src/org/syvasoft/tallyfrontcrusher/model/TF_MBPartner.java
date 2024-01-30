@@ -1183,9 +1183,9 @@ public class TF_MBPartner extends MBPartner {
 		if(IsRequiredTaxInvoicePerLoad()) {
 			setTF_TaxInvoiceCycle_ID(0);
 		}
-		String Whereclause = " iscustomer = 'Y' and TaxID = '"+getTaxID()+"'";
+		String Whereclause = " iscustomer = 'Y' and TaxID = '"+getTaxID()+"' and C_Bpartner_ID != "+getC_BPartner_ID();
 		TF_MBPartner bpcustomer = new Query(getCtx(), TF_MBPartner.Table_Name, Whereclause, get_TrxName()).first();
-		String Whereclause1 = " isvendor = 'Y' and TaxID = '"+getTaxID()+"'";
+		String Whereclause1 = " isvendor = 'Y' and TaxID = '"+getTaxID()+"' and C_Bpartner_ID !="+getC_BPartner_ID();
 		TF_MBPartner bpvendor = new Query(getCtx(), TF_MBPartner.Table_Name, Whereclause1, get_TrxName()).first();
 		if(bpcustomer!=null&&isCustomer()) {
 			throw new AdempiereException("GST No Already Exists");
@@ -1195,9 +1195,9 @@ public class TF_MBPartner extends MBPartner {
 		}
 		String panno = (String) get_Value("PanNo");
 		
-		String Whereclause2 = " iscustomer = 'Y' and PanNo = '"+panno+"'";
+		String Whereclause2 = " iscustomer = 'Y' and PanNo = '"+panno+"' C_Bpartner_ID !="+getC_BPartner_ID();
 		TF_MBPartner pancustomer = new Query(getCtx(), TF_MBPartner.Table_Name, Whereclause2, get_TrxName()).first();
-		String Whereclause3 = " isvendor = 'Y' and PanNo = '"+panno+"'";
+		String Whereclause3 = " isvendor = 'Y' and PanNo = '"+panno+"' C_Bpartner_ID !="+getC_BPartner_ID();
 		TF_MBPartner panvendor = new Query(getCtx(), TF_MBPartner.Table_Name, Whereclause3, get_TrxName()).first();
 		if(pancustomer!=null&&isCustomer()) {
 			throw new AdempiereException("Pan No Already Exists");
