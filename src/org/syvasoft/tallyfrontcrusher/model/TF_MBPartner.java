@@ -1195,9 +1195,9 @@ public class TF_MBPartner extends MBPartner {
 		}
 		String panno = (String) get_Value("PanNo");
 		
-		String Whereclause2 = " iscustomer = 'Y' and PanNo = '"+panno+"' C_Bpartner_ID !="+getC_BPartner_ID();
+		String Whereclause2 = " iscustomer = 'Y' and PanNo = '"+panno+"' and C_Bpartner_ID !="+getC_BPartner_ID();
 		TF_MBPartner pancustomer = new Query(getCtx(), TF_MBPartner.Table_Name, Whereclause2, get_TrxName()).first();
-		String Whereclause3 = " isvendor = 'Y' and PanNo = '"+panno+"' C_Bpartner_ID !="+getC_BPartner_ID();
+		String Whereclause3 = " isvendor = 'Y' and PanNo = '"+panno+"' and C_Bpartner_ID !="+getC_BPartner_ID();
 		TF_MBPartner panvendor = new Query(getCtx(), TF_MBPartner.Table_Name, Whereclause3, get_TrxName()).first();
 		if(pancustomer!=null&&isCustomer()) {
 			throw new AdempiereException("Pan No Already Exists");
