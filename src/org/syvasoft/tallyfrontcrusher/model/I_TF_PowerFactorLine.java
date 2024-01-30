@@ -219,6 +219,51 @@ public interface I_TF_PowerFactorLine
 
 	/** Get unit	  */
 	public BigDecimal getunit();
+	
+	/** Column name Tonnage */
+    public static final String COLUMNNAME_Tonnage = "Tonnage";
+
+	/** Set Tonnage	  */
+	public void setTonnage (BigDecimal Tonnage);
+
+	/** Get Tonnage	  */
+	public BigDecimal getTonnage();
+	
+	/** Column name Unit_Price */
+    public static final String COLUMNNAME_Unit_Price = "Unit_Price";
+
+	/** Set Unit Price	  */
+	public void setUnit_Price (BigDecimal Unit_Price);
+
+	/** Get Unit Price	  */
+	public BigDecimal getUnit_Price();
+	
+	/** Column name Units */
+    public static final String COLUMNNAME_Units = "Units";
+
+	/** Set Units	  */
+	public void setUnits (BigDecimal Units);
+
+	/** Get Units	  */
+	public BigDecimal getUnits();
+	
+	/** Column name UnitPerMT */
+    public static final String COLUMNNAME_UnitPerMT = "UnitPerMT";
+
+	/** Set Unit Per MT	  */
+	public void setUnitPerMT (BigDecimal UnitPerMT);
+
+	/** Get Unit Per MT	  */
+	public BigDecimal getUnitPerMT();
+	
+	/** Column name EBCost */
+    public static final String COLUMNNAME_EBCost = "EBCost";
+
+	/** Set EB Cost	  */
+	public void setEBCost (BigDecimal EBCost);
+
+	/** Get EB Cost	  */
+	public BigDecimal getEBCost();
 
     /** Column name UnitFactor */
     public static final String COLUMNNAME_UnitFactor = "UnitFactor";
