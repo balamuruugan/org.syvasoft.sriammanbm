@@ -344,4 +344,64 @@ public class X_TF_PowerFactorLine extends PO implements I_TF_PowerFactorLine, I_
 			 return Env.ZERO;
 		return bd;
 	}
+
+	@Override
+	public void setTonnage(BigDecimal Tonnage) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public BigDecimal getTonnage() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setUnit_Price(BigDecimal Unit_Price) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public BigDecimal getUnit_Price() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setUnits(BigDecimal Units) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public BigDecimal getUnits() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setUnitPerMT(BigDecimal UnitPerMT) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public BigDecimal getUnitPerMT() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setEBCost(BigDecimal EBCost) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public BigDecimal getEBCost() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

@@ -37,6 +37,7 @@ import org.syvasoft.tallyfrontcrusher.model.MLabourWageIssue;
 import org.syvasoft.tallyfrontcrusher.model.MMeterLog;
 import org.syvasoft.tallyfrontcrusher.model.MPMSchedule;
 import org.syvasoft.tallyfrontcrusher.model.MPermitPurchase;
+import org.syvasoft.tallyfrontcrusher.model.MPowerFactorLine;
 import org.syvasoft.tallyfrontcrusher.model.MPriceListUOM;
 import org.syvasoft.tallyfrontcrusher.model.MSalaryHdr;
 import org.syvasoft.tallyfrontcrusher.model.MTRTaxInvoice;
@@ -930,6 +931,22 @@ public class CrusherColumnCalloutFactory implements IColumnCalloutFactory {
 				list.add(new CalloutTripsheet_time());
 			}
 		}
+		
+		if(tableName.equals(MPowerFactorLine.Table_Name)) {
+			if(columnName.equals(MPowerFactorLine.COLUMNNAME_DateAcct))
+				list.add(new CalloutPowerFactorLine_SetOpeningMeter());
+			
+			if(columnName.equals(MPowerFactorLine.COLUMNNAME_openingkvah) ||
+					columnName.equals(MPowerFactorLine.COLUMNNAME_openingkwh) ||
+					columnName.equals(MPowerFactorLine.COLUMNNAME_closingkvah) ||
+					columnName.equals(MPowerFactorLine.COLUMNNAME_closingkwh) || 
+					columnName.equals(MPowerFactorLine.COLUMNNAME_DateAcct) ||
+					columnName.equals(MPowerFactorLine.COLUMNNAME_Tonnage) ||
+					columnName.equals(MPowerFactorLine.COLUMNNAME_Unit_Price)) {
+				list.add(new CalloutPowerFactorLine_PowerFactor());
+			}			
+		}
+		
 		return list != null ? list.toArray(new IColumnCallout[0]) : new IColumnCallout[0];
 	}
 }
