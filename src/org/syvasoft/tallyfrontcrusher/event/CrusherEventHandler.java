@@ -109,6 +109,7 @@ public class CrusherEventHandler extends AbstractEventHandler {
 		registerTableEvent(IEventTopics.PO_BEFORE_NEW, MInOutLine.Table_Name);
 		registerTableEvent(IEventTopics.PO_BEFORE_NEW, MBankStatementLine.Table_Name);
 		registerTableEvent(IEventTopics.PO_BEFORE_CHANGE , MBankStatementLine.Table_Name);
+		registerTableEvent(IEventTopics.PO_BEFORE_NEW, TF_MBankStatementLine.Table_Name);
 		registerEvent(IEventTopics.AFTER_LOGIN);		
 
 	}
@@ -324,12 +325,21 @@ public class CrusherEventHandler extends AbstractEventHandler {
 					line.set_ValueOfColumn(TF_MBankStatementLine.COLUMNNAME_Receipt, BigDecimal.ZERO);
 					line.set_ValueOfColumn(TF_MBankStatementLine.COLUMNNAME_Payment, BigDecimal.ZERO);
 				}
+				if(event.getTopic().equals(IEventTopics.PO_BEFORE_NEW))
+					line.setTrxAmt(line.getStmtAmt());
 			}
+			
+//			if(event.getTopic().equals(IEventTopics.PO_BEFORE_NEW)){
+//				line.setTrxAmt(line.getStmtAmt());
+//			}
 			
 			if(line.getC_Payment_ID() > 0) {
 				TF_MPayment p = new TF_MPayment(line.getCtx(), line.getC_Payment_ID(), line.get_TrxName());
 				line.setC_Payment_ID(p.getC_Payment_ID());
-				line.set_ValueOfColumn(TF_MBankStatementLine.COLUMNNAME_C_ElementValue_ID, Integer.valueOf(p.getC_ElementValue_ID()));
+				if(C_ElementValue_ID > 0)
+					line.set_ValueOfColumn(TF_MBankStatementLine.COLUMNNAME_C_ElementValue_ID, Integer.valueOf(p.getC_ElementValue_ID()));
+				else 
+					line.set_ValueOfColumn(TF_MBankStatementLine.COLUMNNAME_C_ElementValue_ID, null);
 				line.setC_Charge_ID(p.getC_Charge_ID());
 			}
 			

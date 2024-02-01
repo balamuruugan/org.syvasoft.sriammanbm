@@ -381,6 +381,8 @@ public class CrusherModelFactory implements IModelFactory {
 			return MPowerFactor.class;
 		else if(MPowerFactorLine.Table_Name.equals(tableName))
 			return MPowerFactorLine.class;
+		else if(TF_MBankStatement.Table_Name.equals(tableName))
+			return TF_MBankStatement.class;
 		return null;
 	}
 
@@ -755,6 +757,8 @@ public class CrusherModelFactory implements IModelFactory {
 			return new MPowerFactor(ctx, Record_ID, trxName);
 		else if(MPowerFactorLine.Table_Name.equals(tableName))
 			return new MPowerFactorLine(ctx, Record_ID, trxName);
+		else if(TF_MBankStatement.Table_Name.equals(tableName))
+			return new TF_MBankStatement(ctx, Record_ID, trxName);
 		return null;
 	}
 
@@ -1131,6 +1135,8 @@ public class CrusherModelFactory implements IModelFactory {
 			return new MPowerFactor(ctx, rs, trxName);
 		else if(MPowerFactorLine.Table_Name.equals(tableName))
 			return new MPowerFactorLine(ctx, rs, trxName);
+		else if(TF_MBankStatement.Table_Name.equals(tableName))
+			return new TF_MBankStatement(ctx, rs, trxName);
 		return null;
 	}
 }

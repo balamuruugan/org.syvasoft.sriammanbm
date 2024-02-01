@@ -127,7 +127,7 @@ public class BankStatementPayment extends SvrProcess
 			TF_MBankStatementLine l = new TF_MBankStatementLine(getCtx(), line.getC_BankStatementLine_ID(), get_TrxName());
 			if (line.getC_Payment_ID() == 0
 				&& line.getTrxAmt().signum() > 0
-				&& line.getC_Invoice_ID() > 0
+//				&& line.getC_Invoice_ID() > 0
 				&& line.getC_BPartner_ID() > 0) {
 				createPayment(l);
 				count++;

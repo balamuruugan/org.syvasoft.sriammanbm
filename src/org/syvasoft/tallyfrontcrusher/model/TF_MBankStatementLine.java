@@ -126,12 +126,22 @@ public class TF_MBankStatementLine extends MBankStatementLine {
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
 		
+		TF_MBankStatement bs = new TF_MBankStatement(getCtx(), getC_BankStatement_ID(), get_TrxName());
 		
-		if(getStmtAmt().doubleValue() == 0) {
-			if(getReceipt().doubleValue() > 0)
-				setStmtAmt(getReceipt());
-			else
-				setStmtAmt(getPayment().negate());
+		if(bs.getDocStatus().equals(TF_MBankStatement.DOCSTATUS_Drafted) || bs.getDocStatus().equals(TF_MBankStatement.DOCSTATUS_InProgress)) {
+			if(getStmtAmt().doubleValue() == 0) {
+				if(getReceipt().doubleValue() > 0)
+					setStmtAmt(getReceipt());
+				else
+					setStmtAmt(getPayment().negate());
+			}
+		}
+		if(newRecord) {
+			setTrxAmt(getStmtAmt());
+		}
+		if(getC_Payment_ID() > 0) {
+			TF_MPayment pay = new TF_MPayment(getCtx(), getC_Payment_ID(), get_TrxName());
+			setDescription(pay.getDescription());
 		}
 		
 		return super.beforeSave(newRecord);
