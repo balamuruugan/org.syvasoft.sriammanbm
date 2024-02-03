@@ -294,7 +294,8 @@ public class CreateShipmentForWE extends SvrProcess {
 							lumpsumConfig = null;
 					}
 				
-					if(lumpsumConfig != null) {
+					//if(lumpsumConfig != null) 
+					{
 						ioLine = new TF_MInOutLine(inout);
 						ioLine.setM_Product_ID(rv.getM_Product_ID());
 						ioLine.setC_UOM_ID(Rent_UOM_ID);

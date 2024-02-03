@@ -2,6 +2,7 @@ package org.syvasoft.tallyfrontcrusher.process;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.sql.Savepoint;
 import java.util.List;
@@ -30,6 +31,7 @@ import org.syvasoft.tallyfrontcrusher.model.MWeighmentEntry;
 import org.syvasoft.tallyfrontcrusher.model.TF_MBPartner;
 import org.syvasoft.tallyfrontcrusher.model.TF_MInvoice;
 import org.syvasoft.tallyfrontcrusher.model.TF_MOrder;
+import org.syvasoft.tallyfrontcrusher.model.TF_MOrderLine;
 import org.syvasoft.tallyfrontcrusher.model.TF_MProduct;
 
 public class CreateSalesEntryFromWeighment extends SvrProcess {
@@ -179,8 +181,9 @@ public class CreateSalesEntryFromWeighment extends SvrProcess {
 						createInvoiceCustomer(wEntry, billQty, true, trx);
 					
 					//if(MSysConfig.getValue("INCLUDE_PASS_AMOUNT_IN_INVOICE", wEntry.getAD_Client_ID(), wEntry.getAD_Org_ID()).equals("N")) {
-					if(!wEntry.isIncludePassAmtInvoice() && !wEntry.isRoyaltyPassInclusive()) {
-						if(wEntry.getPermitPassAmount().doubleValue() > 0) {
+					if((!wEntry.isIncludePassAmtInvoice() && !wEntry.isRoyaltyPassInclusive()) || 
+						(!wEntry.isIncludeRentAmtInvoice() && !wEntry.isRentInclusive())	) {
+						if(wEntry.getPermitPassAmount().doubleValue() > 0 || wEntry.getRent_Amt().doubleValue() > 0) {
 							createSalesQuickEntryForRoyaltyPass(wEntry, wEntry.getPermitIssuedQty(), true, trx);
 						}
 					}
@@ -511,42 +514,87 @@ public class CreateSalesEntryFromWeighment extends SvrProcess {
 		ord.setTF_Destination_ID(wEntry.getTF_Destination_ID());
 		ord.setVehicleNo(wEntry.getVehicleNo());
 		ord.setTF_RentedVehicle_ID(wEntry.getTF_RentedVehicle_ID());
-		
-		//Item
-		ord.setItem1_IsPermitSales(wEntry.isHasBalance());
-		ord.setItem1_VehicleType_ID(wEntry.getTF_VehicleType_ID());
-		ord.setItem1_ID(wEntry.getM_Product_Pass_ID());
-		
-		TF_MProduct product = new TF_MProduct(getCtx(),wEntry.getM_Product_Pass_ID(),get_TrxName());
-		
-		int uom_id = product.getC_UOM_ID();
-		
-		ord.setItem1_UOM_ID(product.getC_UOM_ID());
-		ord.setItem1_Tax_ID(product.getTax_ID(false, bp.isInterState(), ord.isReverseCharge()));
-		BigDecimal qty = wEntry.getPermitIssuedQty();
-		if(billedQty != null)
-			qty = billedQty;
-		
-		if(qty.doubleValue() == 0)
-			throw new AdempiereException("Invalid Billing Qty!");
-		
-		//BigDecimal qty = wEntry.getNetWeight();
-		//if(uom_id == tonnage_uom_id)
-		//	qty = qty.divide(new BigDecimal(1000));
-		//else
-		//	qty = wEntry.getNetWeightUnit();
-		ord.setTonnage(qty);
-		ord.setItem1_TotalLoad(BigDecimal.ONE);
-		
-		ord.setItem1_Qty(qty);
-		BigDecimal price = wEntry.getPassPricePerUnit();
-		ord.setItem1_Price(price);
-		ord.setItem1_UnitPrice(price);
-		ord.setItem1_Amt(ord.getItem1_Qty().multiply(ord.getItem1_Price()));
-			
 	
 		ord.setProcessed(false);		
-		ord.saveEx();				
+		ord.saveEx();	
+		if(wEntry.getRent_Amt().doubleValue() > 0 && (!wEntry.isIncludeRentAmtInvoice() && !wEntry.isRentInclusive()))
+		{
+			int Load_UOM_ID = MSysConfig.getIntValue("LOAD_UOM", 1000072, wEntry.getAD_Client_ID());
+			int MT_UOM = MSysConfig.getIntValue("MT_UOM", 1000069, wEntry.getAD_Client_ID());
+			int KM_UOM_ID = MSysConfig.getIntValue("KM_UOM", 1000071, wEntry.getAD_Client_ID());
+			int MT_KM_UOM_ID = MSysConfig.getIntValue("MT_KM_UOM", 1000071, wEntry.getAD_Client_ID());
+			MDestination dest = new MDestination(getCtx(), wEntry.getTF_Destination_ID(), get_TrxName());
+			
+			BigDecimal qty = BigDecimal.ZERO;
+			BigDecimal price = BigDecimal.ZERO;
+			BigDecimal RateMTKM = BigDecimal.ZERO;
+			
+			if(!wEntry.isRentInclusive()) {
+				price = wEntry.getFreightPrice();
+				if(wEntry.getFreightRule_ID() == Load_UOM_ID)
+				{
+					qty = BigDecimal.ONE;							
+				}
+				else if(wEntry.getFreightRule_ID() == KM_UOM_ID)
+				{
+					qty = dest.getDistance();							
+				}
+				else if(wEntry.getFreightRule_ID() == MT_KM_UOM_ID)
+				{
+					qty = wEntry.getMT().multiply(dest.getDistance()).setScale(2, RoundingMode.HALF_EVEN);;
+				}
+				else if(wEntry.getFreightRule_ID() == MT_UOM)
+				{
+					qty = wEntry.getMT();		
+				}
+				else
+				{
+					qty = wEntry.getNetWeightUnit();							
+				}
+			}
+			
+			MRentedVehicle rentedvehicle = new MRentedVehicle(getCtx(), wEntry.getTF_RentedVehicle_ID(), get_TrxName());
+			TF_MOrderLine ordLine = new TF_MOrderLine(ord);
+			ordLine.setM_Product_ID(rentedvehicle.getM_Product_ID(), true);
+			ordLine.setC_UOM_ID(wEntry.getFreightRule_ID());								
+			ordLine.setQty(qty);
+			ordLine.setPriceActual(wEntry.getFreightPrice());
+			ordLine.setPriceList(wEntry.getFreightPrice());
+			ordLine.setPriceLimit(wEntry.getFreightPrice());
+			ordLine.setPriceEntered(wEntry.getFreightPrice());
+			ordLine.setC_Order_ID(ord.getC_Order_ID());
+			TF_MProduct prod = new TF_MProduct(getCtx(), rentedvehicle.getM_Product_ID(), get_TrxName());
+			ordLine.setC_Tax_ID(1000000);
+			ordLine.saveEx();
+		}
+		
+		if(wEntry.getPermitPassAmount().doubleValue() > 0 && (!wEntry.isIncludePassAmtInvoice() && !wEntry.isRoyaltyPassInclusive()))
+		{
+			TF_MProduct product = new TF_MProduct(getCtx(),wEntry.getM_Product_Pass_ID(),get_TrxName());
+			
+			int uom_id = product.getC_UOM_ID();
+			
+			TF_MOrderLine ordLine = new TF_MOrderLine(ord);
+			ordLine.setM_Product_ID(wEntry.getM_Product_Pass_ID(), true);
+			ordLine.setC_UOM_ID(uom_id);								
+			
+			BigDecimal price = wEntry.getPassPricePerUnit();
+			BigDecimal qty = wEntry.getPassQtyIssued();
+			
+			if(qty.doubleValue() == 0)
+				throw new AdempiereException("Invalid Billing Qty!");
+			
+			ordLine.setQty(qty);
+			ordLine.setPriceActual(price);
+			ordLine.setPriceList(price);
+			ordLine.setPriceLimit(price);
+			ordLine.setPriceEntered(price);
+			ordLine.setC_Order_ID(ord.getC_Order_ID());
+			ordLine.setC_Tax_ID(1000000);
+			ordLine.saveEx();
+		}		
+	
+					
 		
 		sp = trx.setSavepoint(wEntry.getDocumentNo());
 		ord.setDocAction(DocAction.ACTION_Complete);

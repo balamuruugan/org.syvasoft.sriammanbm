@@ -2703,7 +2703,7 @@ public class TF_MOrder extends MOrder {
 		closeYardEntry();
 		createInvoiceCustomer();
 		createInvoiceVendor();
-		postDriverSalary();
+		//postDriverSalary();
 		if(getC_DocTypeTarget_ID() == GSTConsolidatedOrderDocType_ID(getCtx())) {
 			createConsolidatedTaxInvoice();
 		}

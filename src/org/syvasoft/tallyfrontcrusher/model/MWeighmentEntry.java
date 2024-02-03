@@ -382,7 +382,7 @@ public class MWeighmentEntry extends X_TF_WeighmentEntry {
 			}
 			
 			if(getWeighmentEntryType().equals(MWeighmentEntry.WEIGHMENTENTRYTYPE_SubcontractProductionReceipt)) {
-				String whereClause = "Name = ?";
+				/*String whereClause = "Name = ?";
 				
 				if(getNewDestination() != null) {
 					MDestination destination = new Query(getCtx(), MDestination.Table_Name, whereClause, get_TrxName())
@@ -415,13 +415,13 @@ public class MWeighmentEntry extends X_TF_WeighmentEntry {
 							setStatus(STATUS_Error);
 						}
 					}
-				}
+				}*/
 			}
 		}
 		else if(is_ValueChanged(COLUMNNAME_TF_Destination_ID)) {
 			if(getWeighmentEntryType().equals(MWeighmentEntry.WEIGHMENTENTRYTYPE_SubcontractProductionReceipt)) {
 				
-				MDestination destination = new MDestination(getCtx(), getTF_Destination_ID(), get_TrxName());
+				/*MDestination destination = new MDestination(getCtx(), getTF_Destination_ID(), get_TrxName());
 				setNewDestination(destination.getName());				 
 				{
 					if(destination != null) {
@@ -447,7 +447,7 @@ public class MWeighmentEntry extends X_TF_WeighmentEntry {
 						setDescription("ERROR: Please configure subcontract for selected destination.");
 						setStatus(STATUS_Error);
 					}
-				}
+				}*/
 			}
 		}
 		
@@ -1110,11 +1110,11 @@ public class MWeighmentEntry extends X_TF_WeighmentEntry {
 		
 		//Incomplete Functionality
 		//if(MSysConfig.getValue("INCLUDE_RENT_AMOUNT_IN_INVOICE").equals("Y"))
-		//if(isIncludeRentAmtInvoice()) {
-		if(getWeighmentEntryType().equals(WEIGHMENTENTRYTYPE_Sales)) {
-			unitRent = getRent_Amt().divide(getNetWeightUnit(), 2,RoundingMode.HALF_EVEN);
+		if(isIncludeRentAmtInvoice()) {
+			if(getWeighmentEntryType().equals(WEIGHMENTENTRYTYPE_Sales)) {
+				unitRent = getRent_Amt().divide(getNetWeightUnit(), 2,RoundingMode.HALF_EVEN);
+			}
 		}
-		
 		return getPrice().add(unitRent);
 	}
 	

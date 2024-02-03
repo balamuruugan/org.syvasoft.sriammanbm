@@ -395,7 +395,7 @@ public class TF_MInOut extends MInOut {
 		int MT_UOM = MSysConfig.getIntValue("MT_UOM", 1000069, we.getAD_Client_ID());
 		
 		BigDecimal RateMTKM = BigDecimal.ZERO;
-		BigDecimal Distance = BigDecimal.ZERO;
+		BigDecimal Distance  = dest.getDistance();
 		//Get Vehicle Rent from Shipment Line
 		String whereClause = "M_InOut_ID = ? AND M_Product_ID = ? ";
 		TF_MInOutLine srcLine = new Query(getCtx(), TF_MInOutLine.Table_Name, whereClause, get_TrxName())
@@ -424,12 +424,12 @@ public class TF_MInOut extends MInOut {
 					else if(lumpsumConfig.getC_UOM_ID() == KM_UOM_ID)
 					{
 						Rent_UOM_ID = KM_UOM_ID;
-						qty = dest.getDistance();									
+						qty = Distance;									
 					}
 					else if(lumpsumConfig.getC_UOM_ID() == MT_KM_UOM_ID)
 					{
 						Rent_UOM_ID = MT_KM_UOM_ID;
-						qty = we.getMT();									
+						qty = we.getMT().multiply(Distance).setScale(2, RoundingMode.HALF_EVEN);						
 						RateMTKM = price;
 					}
 					else if(lumpsumConfig.getC_UOM_ID() == MT_UOM)
