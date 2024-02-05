@@ -173,7 +173,7 @@ public class CreateShipmentForWE extends SvrProcess {
 				ioLine.setC_UOM_ID(passproduct.getC_UOM_ID());
 				ioLine.set_ValueOfColumn("Price", we.getPassPricePerUnit());
 				ioLine.setQty(we.getPermitIssuedQty());
-				ioLine.setM_Locator_ID(we.getPassQtyIssued());
+				ioLine.setM_Locator_ID(we.getPermitIssuedQty());
 				ioLine.saveEx(get_TrxName());
 			}
 			
@@ -405,7 +405,7 @@ public class CreateShipmentForWE extends SvrProcess {
 				ioLine.setC_UOM_ID(passproduct.getC_UOM_ID());
 				
 				ioLine.setQty(we.getPermitIssuedQty());
-				ioLine.setM_Locator_ID(we.getPassQtyIssued());
+				ioLine.setM_Locator_ID(we.getPermitIssuedQty());
 				ioLine.saveEx(get_TrxName());
 			}
 			

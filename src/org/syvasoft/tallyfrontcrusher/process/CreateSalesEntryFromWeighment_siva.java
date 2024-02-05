@@ -239,7 +239,7 @@ public class CreateSalesEntryFromWeighment_siva extends SvrProcess {
 		
 		if(wEntry.getM_Product2() != null && wEntry.getM_Product2_ID()>0) {
 			ord.setItem2_ID(wEntry.getM_Product2_ID());
-			ord.setItem2_Qty(wEntry.getPassQtyIssued());	
+			ord.setItem2_Qty(wEntry.getPermitIssuedQty());	
 			ord.setItem2_UOM_ID(wEntry.getC_UOM_ID());
 			ord.setItem2_Price(wEntry.getPassPricePerUnit());
 			ord.setItem2_Amt(wEntry.getPermitPassAmount());

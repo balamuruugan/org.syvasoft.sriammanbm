@@ -307,7 +307,7 @@ public class CreateSalesEntryFromWeighment extends SvrProcess {
 		
 		if(wEntry.getM_Product2() != null && wEntry.getM_Product2_ID()>0) {
 			ord.setItem2_ID(wEntry.getM_Product2_ID());
-			ord.setItem2_Qty(wEntry.getPassQtyIssued());	
+			ord.setItem2_Qty(wEntry.getPermitIssuedQty());	
 			ord.setItem2_UOM_ID(wEntry.getC_UOM_ID());
 			ord.setItem2_Price(wEntry.getPassPricePerUnit());
 			ord.setItem2_Amt(wEntry.getPermitPassAmount());
@@ -579,7 +579,7 @@ public class CreateSalesEntryFromWeighment extends SvrProcess {
 			ordLine.setC_UOM_ID(uom_id);								
 			
 			BigDecimal price = wEntry.getPassPricePerUnit();
-			BigDecimal qty = wEntry.getPassQtyIssued();
+			BigDecimal qty = wEntry.getPermitIssuedQty();
 			
 			if(qty.doubleValue() == 0)
 				throw new AdempiereException("Invalid Billing Qty!");
