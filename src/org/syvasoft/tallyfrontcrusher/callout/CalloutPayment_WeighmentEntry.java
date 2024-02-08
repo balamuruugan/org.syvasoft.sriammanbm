@@ -1,10 +1,12 @@
 package org.syvasoft.tallyfrontcrusher.callout;
 
+import java.math.BigDecimal;
 import java.util.Properties;
 
 import org.adempiere.base.IColumnCallout;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
+import org.compiere.util.DB;
 import org.syvasoft.tallyfrontcrusher.model.MWeighmentEntry;
 import org.syvasoft.tallyfrontcrusher.model.TF_MPayment;
 
@@ -18,6 +20,9 @@ public class CalloutPayment_WeighmentEntry implements IColumnCallout {
 		MWeighmentEntry wentry = new MWeighmentEntry(ctx, TF_WeighmentEntry_ID, null);
 		String dcNo = wentry.getDocumentNo();
 		
+		String sql = "SELECT balanceamount FROM DC_ReportOneTimeCust_View WHERE DC_ReportOneTimeCust_View.TF_WeighmentEntry_ID = "+TF_WeighmentEntry_ID;
+		BigDecimal balance = DB.getSQLValueBD(null, sql);
+		
 		String desc = null;
 		if(TF_BPartner_ID > 0 && TF_WeighmentEntry_ID > 0)
 			desc = "Payment Received for DC# " + dcNo;
@@ -25,6 +30,10 @@ public class CalloutPayment_WeighmentEntry implements IColumnCallout {
 			mTab.setValue(TF_MPayment.COLUMNNAME_TF_WeighmentEntry_ID, null); //resetting dc when no bp is selected
 		
 		mTab.setValue(TF_MPayment.COLUMNNAME_Description, desc);
+		if(balance.doubleValue() <= 0)
+			mTab.setValue(TF_MPayment.COLUMNNAME_PayAmt, balance);
+		else
+			mTab.setValue(TF_MPayment.COLUMNNAME_PayAmt, null);
 		return null;
 	}
 
