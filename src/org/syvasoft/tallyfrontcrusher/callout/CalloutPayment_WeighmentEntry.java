@@ -19,21 +19,19 @@ public class CalloutPayment_WeighmentEntry implements IColumnCallout {
 		
 		MWeighmentEntry wentry = new MWeighmentEntry(ctx, TF_WeighmentEntry_ID, null);
 		String dcNo = wentry.getDocumentNo();
-		
-		String sql = "SELECT balanceamount FROM DC_ReportOneTimeCust_View WHERE DC_ReportOneTimeCust_View.TF_WeighmentEntry_ID = "+TF_WeighmentEntry_ID;
-		BigDecimal balance = DB.getSQLValueBD(null, sql);
+		BigDecimal balance = BigDecimal.ZERO;
+		String sql = "SELECT COALESCE(balanceamount,0) AS balanceamount FROM DC_ReportOneTimeCust_View WHERE DC_ReportOneTimeCust_View.TF_WeighmentEntry_ID = "+TF_WeighmentEntry_ID;
+		balance = DB.getSQLValueBD(null, sql);
 		
 		String desc = null;
-		if(TF_BPartner_ID > 0 && TF_WeighmentEntry_ID > 0)
+		if(TF_BPartner_ID > 0 && TF_WeighmentEntry_ID > 0) 
 			desc = "Payment Received for DC# " + dcNo;
 		else 
 			mTab.setValue(TF_MPayment.COLUMNNAME_TF_WeighmentEntry_ID, null); //resetting dc when no bp is selected
 		
 		mTab.setValue(TF_MPayment.COLUMNNAME_Description, desc);
-		if(balance.doubleValue() <= 0)
-			mTab.setValue(TF_MPayment.COLUMNNAME_PayAmt, balance);
-		else
-			mTab.setValue(TF_MPayment.COLUMNNAME_PayAmt, null);
+		mTab.setValue(TF_MPayment.COLUMNNAME_PayAmt, balance);
+
 		return null;
 	}
 
