@@ -2693,7 +2693,7 @@ public class TF_MOrder extends MOrder {
 		issuePermit();		
 		
 		//if(!createConsolidatedTransportInvoice)
-			createTransporterInvoice();
+		//	createTransporterInvoice();
 		//else
 		//	createTransportMaterialReceipt();
 		
@@ -4776,6 +4776,12 @@ public class TF_MOrder extends MOrder {
 	
 	public void postMixedPayment() {
 		if(!isSOTrx())
+			return;
+		
+		if(getC_DocTypeTarget_ID() != TF_MOrder.GSTOrderDocType_ID(getCtx()) &&
+				getC_DocTypeTarget_ID() != TF_MOrder.NonGSTOrderDocType_ID(getCtx()) && 
+				getC_DocTypeTarget_ID() != TF_MOrder.GSTConsolidatedOrderDocType_ID(getCtx()) && 
+				getC_DocTypeTarget_ID() != TF_MOrder.NonGSTConsolidatedOrderDocType_ID(getCtx()))
 			return;
 		
 		if(getTF_WeighmentEntry_ID() == 0)
