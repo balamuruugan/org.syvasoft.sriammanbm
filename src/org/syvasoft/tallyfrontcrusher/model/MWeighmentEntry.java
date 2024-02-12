@@ -1170,20 +1170,19 @@ public class MWeighmentEntry extends X_TF_WeighmentEntry {
 			}
 			
 			
-			//Shipment
-			List<TF_MInOut> ios = new Query(getCtx(), TF_MInOut.Table_Name, oWhereClause, get_TrxName())
+			//Will take Shipment or Materail Receipt as first record
+			TF_MInOut io = new Query(getCtx(), TF_MInOut.Table_Name, oWhereClause, get_TrxName())
 					.setClient_ID()
 					.setParameters(getTF_WeighmentEntry_ID(), getC_BPartner_ID())
-					.list();
+					.setOrderBy(TF_MInOut.COLUMNNAME_M_InOut_ID)
+					.first();
 			
-			for(TF_MInOut io : ios) {	
 				if(io != null) {
 					io.setDocAction(DocAction.ACTION_Reverse_Correct);
 					io.reverseCorrectIt();
 					io.setDocStatus(TF_MOrder.DOCSTATUS_Reversed);
 					io.saveEx();
 				}
-			}
 			
 			//Order
 			List<TF_MOrder> orders = new Query(getCtx(), TF_MOrder.Table_Name, oWhereClause, get_TrxName())
