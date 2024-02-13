@@ -589,7 +589,7 @@ public class TF_MInOut extends MInOut {
 		
 		//Don't reverse Material Receipt for other than Transporters
 		//It stops the recursive loop
-		if(rv.getC_BPartner_ID() == getC_BPartner_ID())
+		if(rv.getC_BPartner_ID() == getC_BPartner_ID() && isSOTrx())
 			return;
 		
 		String whereClause = "TF_WeighmentEntry_ID = ? AND MovementType = ? AND DocStatus = 'CO' AND M_InOut_ID != ? ";
