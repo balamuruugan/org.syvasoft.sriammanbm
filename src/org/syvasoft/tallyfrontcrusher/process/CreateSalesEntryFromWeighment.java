@@ -181,8 +181,10 @@ public class CreateSalesEntryFromWeighment extends SvrProcess {
 						createInvoiceCustomer(wEntry, billQty, true, trx);
 					
 					//if(MSysConfig.getValue("INCLUDE_PASS_AMOUNT_IN_INVOICE", wEntry.getAD_Client_ID(), wEntry.getAD_Org_ID()).equals("N")) {
-					if((!wEntry.isIncludePassAmtInvoice() && !wEntry.isRoyaltyPassInclusive()) || 
-						(!wEntry.isIncludeRentAmtInvoice() && !wEntry.isRentInclusive())	) {
+					if((!wEntry.isIncludePassAmtInvoice() && !wEntry.isRoyaltyPassInclusive() && wEntry.getPermitPassAmount().doubleValue()>0   )
+							|| 
+						(!wEntry.isIncludeRentAmtInvoice() && !wEntry.isRentInclusive())	
+						) {
 						if(wEntry.getPermitPassAmount().doubleValue() > 0 || wEntry.getRent_Amt().doubleValue() > 0) {
 							createSalesQuickEntryForRoyaltyPass(wEntry, wEntry.getPermitIssuedQty(), true, trx);
 						}
