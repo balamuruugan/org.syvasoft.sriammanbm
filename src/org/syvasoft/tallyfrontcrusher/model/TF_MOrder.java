@@ -3307,7 +3307,7 @@ public class TF_MOrder extends MOrder {
 			return null;
 		}
 		
-		createRawMaterialReceipt();	
+	//	createRawMaterialReceipt();	
 		
 		String m_processMsg = null;
 		
