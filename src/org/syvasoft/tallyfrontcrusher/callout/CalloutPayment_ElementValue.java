@@ -51,7 +51,7 @@ public class CalloutPayment_ElementValue implements IColumnCallout {
 			//Salary Payable
 			String sql = "SELECT 	SUM(AmtAcctCr - AmtAcctDr) Earned_Wage FROM Fact_Acct_Balance " +
 					" WHERE AD_Org_ID = ? AND Account_ID = ? AND C_BPartner_ID = ? AND postingtype='A' AND DateAcct <= ?";
-			salaryAmt = DB.getSQLValueBD(null, sql, adorgID, salaryPayable_acctID, bPartnerID, dateAcct);
+			//salaryAmt = DB.getSQLValueBD(null, sql, adorgID, salaryPayable_acctID, bPartnerID, dateAcct);
 			if(salaryAmt == null)
 				salaryAmt = BigDecimal.ZERO;				
 			

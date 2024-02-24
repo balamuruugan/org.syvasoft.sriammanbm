@@ -77,7 +77,7 @@ public class CreateShipmentForWE extends SvrProcess {
 					}
 				}
 				catch (Exception ex) {
-					//throw new AdempiereException(ex);
+					
 					String desc = we.getDescription();
 					if(desc == null)
 						desc = "";
@@ -87,7 +87,8 @@ public class CreateShipmentForWE extends SvrProcess {
 					}		
 					we.setStatus(MWeighmentEntry.STATUS_Error);
 					we.saveEx();
-					addLog(we.get_Table_ID(), we.getGrossWeightTime(), null, ex.getMessage(), we.get_Table_ID(), we.get_ID());
+					throw new AdempiereException(ex);
+					//addLog(we.get_Table_ID(), we.getGrossWeightTime(), null, ex.getMessage(), we.get_Table_ID(), we.get_ID());
 				}
 				i=i+1;
 				if(i > 25)

@@ -38,7 +38,7 @@ public class CalloutPayment_CalcSalaryBalannceAmts implements IColumnCallout {
 			
 			salaryBalance = salaryAmt.subtract(advanceDeduct).subtract(salaryPaid);
 			
-			mTab.setValue(TF_MPayment.COLUMNNAME_PayAmt, salaryPaid);
+			///mTab.setValue(TF_MPayment.COLUMNNAME_PayAmt, salaryPaid);
 		}
 		
 		mTab.setValue(TF_MPayment.COLUMNNAME_Advance_Deduct, advanceDeduct);
