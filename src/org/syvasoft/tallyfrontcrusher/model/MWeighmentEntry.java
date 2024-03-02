@@ -914,6 +914,9 @@ public class MWeighmentEntry extends X_TF_WeighmentEntry {
 			if(isApplyTCS()) {
 				return p.getTax_ID(getGSTRate(), isGST(), isApplyTCS(), bp.isInterState(),ReverseCharge);
 			}
+			else if(!isGST()) {
+				return p.getTax_ID(BigDecimal.ZERO, isGST(), false, false,false);
+			}
 			else {
 				return p.getTax_ID(getGSTRate(), isGST(), false, bp.isInterState(),ReverseCharge);
 			}
