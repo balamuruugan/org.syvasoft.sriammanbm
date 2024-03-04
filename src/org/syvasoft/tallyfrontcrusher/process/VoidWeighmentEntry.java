@@ -46,7 +46,7 @@ public class VoidWeighmentEntry extends SvrProcess {
 		String oWhereClause = "TF_WeighmentEntry_ID = ? AND C_BPartner_ID = ? AND IsSOTrx = 'Y' AND DocStatus IN ('CO','CL')";
 		List<MWeighmentEntry> wEntries = new Query(getCtx(), MWeighmentEntry.Table_Name, whereClause, get_TrxName())
 				.setClient_ID()
-				.setParameters(getAD_PInstance_ID(), getRecord_ID())
+				.setParameters(getAD_PInstance_ID(), TF_WeighmentEntry_ID)
 				.list();
 		
 		for(MWeighmentEntry wEntry : wEntries) {
