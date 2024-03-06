@@ -812,4 +812,35 @@ public class TF_MProduct extends MProduct {
 		int M_Product_ID = DB.getSQLValue(null, sql, barcode);
 		return M_Product_ID;		
 	}
+	
+	public int getTax_ID(boolean isTaxIncluded, boolean isInterState) {
+		String whereClause = "";
+		
+		if(isTaxIncluded) {
+			whereClause = "Rate=? AND IsSummary=? AND IsInterState=? AND ad_org_id=0";
+		
+			MTax tax = new Query(getCtx(), MTax.Table_Name, whereClause, get_TrxName())
+					.setClient_ID()
+					.setParameters(isTaxIncluded?getGSTRate():Env.ZERO, "Y", (getGSTRate().doubleValue() == 0) ? "N" : (isInterState? "Y" : "N"))
+					.first();
+			
+			if(tax != null)
+				return tax.getC_Tax_ID();
+			else
+				return 0;
+		}
+		else {
+			whereClause = "Rate=? AND IsSummary=? AND ad_org_id=0";
+			
+			MTax tax = new Query(getCtx(), MTax.Table_Name, whereClause, get_TrxName())
+					.setClient_ID()
+					.setParameters(isTaxIncluded?getGSTRate():Env.ZERO, "Y")
+					.first();
+			
+			if(tax != null)
+				return tax.getC_Tax_ID();
+			else
+				return 0;
+		}
+	}
 }

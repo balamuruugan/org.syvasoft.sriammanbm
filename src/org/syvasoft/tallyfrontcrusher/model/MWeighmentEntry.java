@@ -1378,4 +1378,33 @@ public class MWeighmentEntry extends X_TF_WeighmentEntry {
 	public BigDecimal getSalesTotalAmount() {
 		return getTotalAmt().add(getDriverTips()).add(getDiscountAmount());
 	}
+	
+	public BigDecimal getMaterialPriceIncludedRent(boolean taxInvoice) {
+		if(getRent_Amt() == null || getRent_Amt().doubleValue() == 0)
+			return getPrice();
+		
+		BigDecimal unitRent = BigDecimal.ZERO;
+		
+		//Incomplete Functionality
+		//if(MSysConfig.getValue("INCLUDE_RENT_AMOUNT_IN_INVOICE").equals("Y"))
+		//if(isIncludeRentAmtInvoice()) {
+		if(getWeighmentEntryType().equals(WEIGHMENTENTRYTYPE_Sales)) {
+			if(getPermitIssuedQty().doubleValue() == 0) {
+				unitRent = getRent_Amt().divide(getNetWeightUnit(), 2,RoundingMode.HALF_EVEN);
+			}
+			else {
+				if(!isDistributeRentAmt() && taxInvoice) {
+					unitRent = BigDecimal.ZERO;
+				}
+				else if(!isDistributeRentAmt() && !taxInvoice) {
+					unitRent = getRent_Amt().divide(getNetWeightUnit().subtract(getPermitIssuedQty()), 2,RoundingMode.HALF_EVEN);
+				}
+				else{
+					unitRent = getRent_Amt().divide(getNetWeightUnit(), 2,RoundingMode.HALF_EVEN);
+				}
+			}
+		}
+		
+		return getPrice().add(unitRent);
+	}
 }

@@ -92,7 +92,7 @@ public class TF_MOrder extends MOrder {
 		return false;
 	}
 
-
+	public int invoiceCount = 0;
 	 /** Column name Item1_Amt */
     public static final String COLUMNNAME_Item1_Amt = "Item1_Amt";
     
