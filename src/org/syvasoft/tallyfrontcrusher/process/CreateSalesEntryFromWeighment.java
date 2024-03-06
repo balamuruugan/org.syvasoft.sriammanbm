@@ -151,6 +151,17 @@ public class CreateSalesEntryFromWeighment extends SvrProcess {
 					BigDecimal InvBillQty = wEntry.getPermitIssuedQty();
 					BigDecimal remainingQty = billQty.subtract(InvBillQty);
 					
+					if(wEntry.isInterState()) { // interstate sales
+						if(billQty.doubleValue() < InvBillQty.doubleValue()) { 
+							InvBillQty = billQty;
+							remainingQty = BigDecimal.ZERO;
+						}						
+					}
+					else { // local sales
+						InvBillQty = billQty;
+						remainingQty = BigDecimal.ZERO;
+					}
+					
 					if(billQty.doubleValue() < InvBillQty.doubleValue()) {
 						double diffQty = InvBillQty.subtract(billQty).setScale(3, RoundingMode.HALF_EVEN).doubleValue();
 						wEntry.setDescription("Permit Qty issued more than actual Qty. Credit Note should be issued for " + diffQty + " MT X Rs." + wEntry.getGrossPrice()
@@ -159,7 +170,16 @@ public class CreateSalesEntryFromWeighment extends SvrProcess {
 						billQty = InvBillQty;
 						//continue;
 					}
-						
+					
+					/***
+					 * GST APPROACH FOR IGST SALES (OTHER STATE SALES)
+					 *    1. Create GST Bill for the royalty pass quantity
+					 *    2. Create Non GST Bill for the remaining quantity
+					 *    
+					 * GST APPROACH FOR THE LOCAL SALES (TAMILNADU SALES)
+					 * 	  1. Create GST Bill for the actual quantity
+					 */
+					
 					if(remainingQty.doubleValue() > 0 && InvBillQty.doubleValue() > 0) {
 						wEntry.setCreateTwoInvoices(true);
 						wEntry.saveEx();
