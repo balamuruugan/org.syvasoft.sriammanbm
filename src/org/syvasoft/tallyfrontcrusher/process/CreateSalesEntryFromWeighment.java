@@ -292,7 +292,7 @@ public class CreateSalesEntryFromWeighment extends SvrProcess {
 			uom_id = wEntry.getM_Product().getC_UOM_ID();
 		
 		ord.setItem1_UOM_ID(wEntry.getC_UOM_ID());
-		ord.setItem1_Tax_ID(wEntry.getC_Tax_ID(taxInvoice));
+		ord.setItem1_Tax_ID(wEntry.getC_Tax_ID(ord.isReverseCharge()));
 		BigDecimal qty = wEntry.getBilledQty();
 		if(billedQty != null)
 			qty = billedQty;
@@ -522,7 +522,7 @@ public class CreateSalesEntryFromWeighment extends SvrProcess {
 		
 		TF_MProduct product = new TF_MProduct(getCtx(),wEntry.getM_Product_Pass_ID(),get_TrxName());
 		
-		int uom_id = wEntry.getC_UOM_ID();
+		int uom_id = product.getC_UOM_ID();
 		
 		ord.setItem1_UOM_ID(uom_id);
 		ord.setItem1_Tax_ID(product.getTax_ID(taxinvoice, bp.isInterState()));
