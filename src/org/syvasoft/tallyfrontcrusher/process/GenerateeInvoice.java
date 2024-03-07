@@ -22,6 +22,7 @@ import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 import org.compiere.util.Env;
 import org.compiere.util.Trx;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.syvasoft.tallyfrontcrusher.model.MEInvoiceLog;
@@ -39,6 +40,8 @@ public class GenerateeInvoice extends SvrProcess{
 	
 	int errorCount = 0;
 	String printJSON = "N";
+	String docType = "INV";
+	
 	@Override
 	protected void prepare() {
 		ProcessInfoParameter[] para = getParameter();		
@@ -47,6 +50,9 @@ public class GenerateeInvoice extends SvrProcess{
 			String name = para[i].getParameterName();
 			if(name.equals("printJSON"))
 				printJSON = para[i].getParameterAsString();
+			
+			if(name.equals("docType")) 
+				docType = para[i].getParameterAsString();
 		}
 		
 	}
@@ -197,7 +203,7 @@ public class GenerateeInvoice extends SvrProcess{
 				JSONObject jsonObjchild = jsonObj.getJSONObject("data");
 				String status = jsonObjchild.getString("Status");
 				String IRN = jsonObjchild.getString("Irn");
-				String AckNo = jsonObjchild.getString("AckNo");
+				String AckNo = jsonObjchild.getNumber("AckNo").toString();
 				String AckDt = jsonObjchild.getString("AckDt");
 				String SignedQRCode = jsonObjchild.getString("SignedQRCode");
 								
@@ -244,6 +250,7 @@ public class GenerateeInvoice extends SvrProcess{
 		 MLocation loc = new MLocation(getCtx(),orginfo.getC_Location_ID(),get_TrxName());
 		 MInvoiceLine[] lines = inv.getLines(true);
 		 JSONObject jsi = new JSONObject();
+		 JSONArray arr = new JSONArray();
 		 BigDecimal IGSTAmt = Env.ZERO;
 		 BigDecimal CGSTAmt = Env.ZERO;
 		 BigDecimal TotalCGST = Env.ZERO;
@@ -286,6 +293,7 @@ public class GenerateeInvoice extends SvrProcess{
 			try {
 			String slNo = (i+1) + "";
 				String IsServc = prod.getProductType().equals(TF_MProduct.PRODUCTTYPE_Item) ? "N" : "Y";
+				jsi = new JSONObject();
 				jsi = jsi.put("SlNo",slNo).put("IsServc",IsServc).put("PrdDesc",prod.getName()).put("HsnCd",prod.getHSNCode()).put("Barcde",prod.getHSNCode());
 				 jsi.put("Qty",line.getQtyEntered().setScale(2, RoundingMode.HALF_EVEN))
 				 .put("FreeQty",0)
@@ -311,6 +319,7 @@ public class GenerateeInvoice extends SvrProcess{
 				 .put("OrgCntry",JSONObject.NULL)
 				 .put("PrdSlNo",JSONObject.NULL);
 				 //jsonArrayBuilderItemList.add(jsi);
+				 arr.put(jsi);
 			}
 			catch(Exception ex) {
 				addLog("Incomplete Information in Product or Invoice Line #" + (i+1));
@@ -328,7 +337,7 @@ public class GenerateeInvoice extends SvrProcess{
          .put("EcmGstin", JSONObject.NULL)
          .put("IgstOnIntra", "N"))
 		 .put("DocDtls",
-		 (new JSONObject()).put("Typ", "INV")
+		 (new JSONObject()).put("Typ", docType)
 		 .put("No", inv.getDocumentNo())
 		 .put("Dt", inv.getDateAcct().toLocalDateTime().format(FORMATTER)))
 		 .put("SellerDtls",
@@ -367,7 +376,7 @@ public class GenerateeInvoice extends SvrProcess{
 			 OtherCharges = BigDecimal.ZERO;
 		 }
 		 
-		 jo.put("ItemList", jsi) //jsonArrayBuilderItemList)
+		 jo.put("ItemList", arr) //jsonArrayBuilderItemList)
 		 .put("ValDtls",(new JSONObject()).put("AssVal",inv.getTotalLines())
 		 .put("CgstVal",TotalCGST)
 		 .put("SgstVal",TotalCGST)
