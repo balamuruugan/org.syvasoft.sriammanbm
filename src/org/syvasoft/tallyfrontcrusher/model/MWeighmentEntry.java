@@ -1407,4 +1407,21 @@ public class MWeighmentEntry extends X_TF_WeighmentEntry {
 		
 		return getPrice().add(unitRent);
 	}
+	
+	public int generateEInvoice() {
+		boolean eInvoiceEnabled = MSysConfig.getBooleanValue("eINVOICE_ENABLED", false);
+		
+		if(!getWeighmentEntryType().equals(MWeighmentEntry.WEIGHMENTENTRYTYPE_Sales) || !eInvoiceEnabled)
+			return 0;
+				
+		MDocType dt = new MDocType(getCtx(), TF_MOrder.GSTOrderDocType_ID(getCtx()), get_TrxName());
+				
+		String sql = " SELECT C_Invoice_ID FROM C_Invoice WHERE TF_WeighmentEntry_ID = "+ getTF_WeighmentEntry_ID()  +" AND C_DocType_ID = " + dt.getC_DocTypeInvoice_ID() 
+			+" AND DocStatus IN ('CO','CL') AND IRN IS NULL";
+		
+		int invoice_Id = DB.getSQLValue(sql, sql);
+				
+		return invoice_Id;
+	}
+	
 }

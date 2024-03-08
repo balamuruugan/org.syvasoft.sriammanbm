@@ -2,7 +2,9 @@ package org.syvasoft.tallyfrontcrusher.process;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.sql.SQLException;
 import java.sql.Savepoint;
+import java.sql.Timestamp;
 import java.util.List;
 
 import org.adempiere.exceptions.AdempiereException;
@@ -21,6 +23,7 @@ import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 import org.compiere.util.Env;
 import org.compiere.util.Trx;
+import org.syvasoft.eInvoiceutil.GenerateEinvoice;
 import org.syvasoft.tallyfrontcrusher.model.MDestination;
 import org.syvasoft.tallyfrontcrusher.model.MLumpSumRentConfig;
 import org.syvasoft.tallyfrontcrusher.model.MRentedVehicle;
@@ -38,6 +41,9 @@ public class CreateSalesEntryFromWeighment extends SvrProcess {
 	private Timestamp DateTo = null;
 	*/		
 	private int RecordId = 0;
+	private Timestamp DateAcct = null;
+	private boolean IsInfo = false;
+	
 	@Override
 	protected void prepare() {
 		/*
@@ -64,18 +70,58 @@ public class CreateSalesEntryFromWeighment extends SvrProcess {
 
 	@Override
 	protected String doIt() throws Exception {
-		
-		String whereClause = " WeighmentEntryType = '1SO' AND IsRequiredTaxInvoicePerLoad = 'Y' AND ((TF_WeighmentEntry.Status IN ('CO') AND (SELECT OrgType FROM AD_Org WHERE "				
-				+ "AD_Org.AD_Org_ID = TF_WeighmentEntry.AD_Org_ID) = 'C'"
-				+ " AND NOT EXISTS(SELECT C_Order.TF_WeighmentEntry_ID FROM C_Order WHERE "
-				+ "C_Order.TF_WeighmentEntry_ID =  TF_WeighmentEntry.TF_WeighmentEntry_ID)) OR (TF_WeighmentEntry_ID = ? AND TF_WeighmentEntry.Status IN ('UR','CO')) ) ";
-		
-		//+ "AND C_Order.DocStatus IN ('CO','DR','IR'))";
+		String whereClause = "";
+		List<MWeighmentEntry> wEntries;
 		int i = 0;
-		List<MWeighmentEntry> wEntries = new Query(getCtx(), MWeighmentEntry.Table_Name, whereClause, get_TrxName())
-				.setClient_ID()
-				.setParameters(RecordId)
-				.list();
+		if(RecordId > 0) {
+			whereClause =" WeighmentEntryType = '1SO' AND (TF_WeighmentEntry_ID = ? AND TF_WeighmentEntry.Status IN ('UR','CO','P')) ";
+			wEntries = new Query(getCtx(), MWeighmentEntry.Table_Name, whereClause, get_TrxName())
+					.setClient_ID()
+					.setParameters(RecordId)
+					.list();
+		}
+		else {
+			if(IsInfo) {
+				whereClause =" WeighmentEntryType = '1SO' AND ((TF_WeighmentEntry.Status IN ('UR','CO','ER') AND (SELECT OrgType FROM AD_Org WHERE "				
+						+ "AD_Org.AD_Org_ID = TF_WeighmentEntry.AD_Org_ID) = 'C' AND (EXISTS (SELECT T_Selection_ID FROM T_Selection WHERE  " + 
+						" T_Selection.AD_PInstance_ID=? AND T_Selection.T_Selection_ID = TF_WeighmentEntry.TF_WeighmentEntry_ID)) "
+						+ " AND NOT EXISTS(SELECT C_Order.TF_WeighmentEntry_ID FROM C_Order WHERE "
+						+ "C_Order.TF_WeighmentEntry_ID =  TF_WeighmentEntry.TF_WeighmentEntry_ID AND C_Order.DocStatus <> 'VO')))";
+				wEntries = new Query(getCtx(), MWeighmentEntry.Table_Name, whereClause, get_TrxName())
+						.setClient_ID()
+						.setParameters(getAD_PInstance_ID()).setOrderBy("GrossWeightTime")
+						.list();
+				
+				String whereInnerClause =" WeighmentEntryType = '1SO' AND DateAcct > ? AND ((TF_WeighmentEntry.Status IN ('UR','CO','ER') AND (SELECT OrgType FROM AD_Org WHERE "				
+						+ "AD_Org.AD_Org_ID = TF_WeighmentEntry.AD_Org_ID) = 'C' AND (EXISTS (SELECT T_Selection_ID FROM T_Selection WHERE  " + 
+						" T_Selection.AD_PInstance_ID=? AND T_Selection.T_Selection_ID = TF_WeighmentEntry.TF_WeighmentEntry_ID)) "
+						+ " AND NOT EXISTS(SELECT C_Order.TF_WeighmentEntry_ID FROM C_Order WHERE "
+						+ "C_Order.TF_WeighmentEntry_ID =  TF_WeighmentEntry.TF_WeighmentEntry_ID AND C_Order.DocStatus <> 'VO')))";
+				
+				MWeighmentEntry wEntry = new Query(getCtx(), MWeighmentEntry.Table_Name, whereInnerClause, get_TrxName())
+						.setClient_ID()
+						.setParameters(DateAcct, getAD_PInstance_ID()).setOrderBy("GrossWeightTime")
+						.first();
+				
+				if(wEntry != null) {
+					throw new AdempiereException("The given Acctout Date should be greater than equal to Weighment Account Date");
+				}
+			}
+			else {
+				whereClause =" WeighmentEntryType = '1SO' AND IsRequiredTaxInvoicePerLoad = 'Y' AND ((TF_WeighmentEntry.Status IN ('CO','P') AND (SELECT OrgType FROM AD_Org WHERE "				
+						+ "AD_Org.AD_Org_ID = TF_WeighmentEntry.AD_Org_ID) = 'C' "
+						//+ " AND (EXISTS (SELECT T_Selection_ID FROM T_Selection WHERE  " + 
+						//" T_Selection.AD_PInstance_ID=? AND T_Selection.T_Selection_ID = TF_WeighmentEntry.TF_WeighmentEntry_ID)) "
+						+ " AND NOT EXISTS(SELECT C_Order.TF_WeighmentEntry_ID FROM C_Order WHERE "
+						+ "C_Order.TF_WeighmentEntry_ID =  TF_WeighmentEntry.TF_WeighmentEntry_ID AND C_Order.DocStatus <> 'VO')))";
+				
+				wEntries = new Query(getCtx(), MWeighmentEntry.Table_Name, whereClause, get_TrxName())
+						.setClient_ID()
+						//.setParameters(getAD_PInstance_ID())
+						.setOrderBy("GrossWeightTime")
+						.list();
+			}
+		}
 		
 		for(MWeighmentEntry wEntry : wEntries) {
 			if(wEntry.getDescription() != null && wEntry.getDescription().contains("ERROR:")) {
@@ -96,6 +142,8 @@ public class CreateSalesEntryFromWeighment extends SvrProcess {
 			
 			
 			Trx trx = Trx.get(get_TrxName(), false);
+			
+			sp = trx.setSavepoint(wEntry.getDocumentNo());
 			
 			if(wEntry.getDocumentNo().equals("SO/4597/AST"))
 				System.out.println(wEntry.getDocumentNo());
@@ -207,6 +255,8 @@ public class CreateSalesEntryFromWeighment extends SvrProcess {
 							createSalesQuickEntryForRoyaltyPass(wEntry, wEntry.getPermitIssuedQty(), true, trx);
 						}
 					}
+					
+					trx.releaseSavepoint(sp);
 				}
 			
 			}
@@ -225,6 +275,11 @@ public class CreateSalesEntryFromWeighment extends SvrProcess {
 			}
 			i++;
 		}
+		
+		for(MWeighmentEntry wEntry : wEntries) {
+			createEInvoice(wEntry);
+		}
+		
 		return i + " Weighment Entries are processed!";
 	}
 	
@@ -233,7 +288,7 @@ public class CreateSalesEntryFromWeighment extends SvrProcess {
 		
 		
 		
-		sp = trx.setSavepoint(wEntry.getDocumentNo());
+		//sp = trx.setSavepoint(wEntry.getDocumentNo());
 		
 		TF_MOrder ord = new TF_MOrder(getCtx(), 0, get_TrxName());
 		ord.firstInvoice = taxInvoice;
@@ -378,13 +433,13 @@ public class CreateSalesEntryFromWeighment extends SvrProcess {
 		//if (! Util.isEmpty(error)) {
 		//		throw new AdempiereException(error);
 		//}
-		trx.releaseSavepoint(sp);
+		//trx.releaseSavepoint(sp);
 		addLog(ord.get_Table_ID(), ord.getCreated(), null, " Sales Entry : " + ord.getDocumentNo() + " is created!", ord.get_Table_ID(), ord.get_ID());
 	}
 
 	private void createInvoiceCustomer(MWeighmentEntry wEntry, BigDecimal billedQty,  boolean taxinvoice, Trx trx) throws Exception {
 		
-		sp = trx.setSavepoint(wEntry.getDocumentNo());
+		//sp = trx.setSavepoint(wEntry.getDocumentNo());
 		MOrderLine oLine = (MOrderLine) wEntry.getC_OrderLine();
 		int C_Order_ID = oLine.getC_Order_ID();
 		TF_MOrder order = new TF_MOrder(getCtx(), C_Order_ID, get_TrxName());
@@ -478,7 +533,7 @@ public class CreateSalesEntryFromWeighment extends SvrProcess {
 		invoice.saveEx();
 		
 		
-		trx.releaseSavepoint(sp);
+		//trx.releaseSavepoint(sp);
 		addLog(invoice.get_Table_ID(), invoice.getCreated(), null, " Invoice No : " +  invoice.getDocumentNo() + " is created!", invoice.get_Table_ID(), invoice.get_ID());
 	}	
 	
@@ -551,14 +606,34 @@ public class CreateSalesEntryFromWeighment extends SvrProcess {
 		ord.setProcessed(false);		
 		ord.saveEx();				
 		
-		sp = trx.setSavepoint(wEntry.getDocumentNo());
+		//sp = trx.setSavepoint(wEntry.getDocumentNo());
 		ord.setDocAction(DocAction.ACTION_Complete);
 		ord.completeIt();
 		ord.setDocStatus(TF_MOrder.DOCSTATUS_Completed);
 		ord.saveEx();
 		
 	
-		trx.releaseSavepoint(sp);
+		//trx.releaseSavepoint(sp);
 		addLog(ord.get_Table_ID(), ord.getCreated(), null, " Sales Entry : " + ord.getDocumentNo() + " is created!", ord.get_Table_ID(), ord.get_ID());
 	}
+	
+	public void createEInvoice(MWeighmentEntry wEntry) throws SQLException {
+		Trx trx = Trx.get(get_TrxName(), false);
+		sp = trx.setSavepoint(wEntry.getDocumentNo());
+		
+		int C_INvoice_ID = wEntry.generateEInvoice(); 
+		
+		if( C_INvoice_ID  <= 0 ) {
+			trx.releaseSavepoint(sp);
+			return;
+		}
+		
+		TF_MInvoice inv = new TF_MInvoice(getCtx(), C_INvoice_ID, get_TrxName());
+		
+		GenerateEinvoice eInv = new GenerateEinvoice(inv, "INV", getAD_PInstance_ID());
+		eInv.generateeInvoice();
+		
+		trx.releaseSavepoint(sp);
+	}
+	
 }
