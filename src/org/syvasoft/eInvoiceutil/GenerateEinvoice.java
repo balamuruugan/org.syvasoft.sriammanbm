@@ -316,7 +316,7 @@ public class GenerateEinvoice {
 		boolean eInvoiceLiveMode = MSysConfig.getBooleanValue("eINVOICE_LIVE", false);
 		
 		if(!eInvoiceLiveMode)
-			return null;
+			return printJSONObject();
 		
 		eInvoiceAuthentication();
 		
