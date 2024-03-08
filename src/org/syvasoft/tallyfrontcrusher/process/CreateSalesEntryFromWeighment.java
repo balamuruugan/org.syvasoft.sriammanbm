@@ -631,7 +631,21 @@ public class CreateSalesEntryFromWeighment extends SvrProcess {
 		TF_MInvoice inv = new TF_MInvoice(getCtx(), C_INvoice_ID, get_TrxName());
 		
 		GenerateEinvoice eInv = new GenerateEinvoice(inv, "INV", getAD_PInstance_ID());
-		eInv.generateeInvoice();
+		String result = eInv.generateeInvoice();
+		
+		if(result != null && result.length() > 0) {
+			addLog("----");
+			addLog(result);
+		}
+		
+		if(eInv.errors != null && eInv.errors.size() > 0) {
+			
+			addLog("-------eInvoice Generation Error For Invoice No: "+ inv.getDocumentNo() +"   ---------");
+			
+			for(String msg : eInv.errors) {
+				addLog(msg);
+			}
+		}
 		
 		trx.releaseSavepoint(sp);
 	}

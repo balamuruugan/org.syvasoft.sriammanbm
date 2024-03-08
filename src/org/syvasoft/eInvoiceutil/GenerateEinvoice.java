@@ -33,7 +33,7 @@ import org.syvasoft.tallyfrontcrusher.model.TF_MProduct;
 public class GenerateEinvoice {
 
 	TF_MInvoice _inv = null;
-	ArrayList<String> errors = null;
+	public ArrayList<String> errors = null;
 	String _docType = "INV";
 	int errorCount = 0;
 	String AuthenticationToken = null;
