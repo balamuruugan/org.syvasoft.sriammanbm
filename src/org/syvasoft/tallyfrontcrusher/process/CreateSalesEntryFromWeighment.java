@@ -46,11 +46,16 @@ public class CreateSalesEntryFromWeighment extends SvrProcess {
 	
 	@Override
 	protected void prepare() {
-		/*
+		
 		ProcessInfoParameter[] para = getParameter();		
 		for (int i = 0; i < para.length; i++)
 		{						
 			String name = para[i].getParameterName();
+			if(name.equals("DateAcct"))
+				DateAcct = para[i].getParameterAsTimestamp();
+			else if(name.equals("IsInfo"))
+				IsInfo = para[i].getParameterAsBoolean();
+			/*
 			if(name.equals("InvoiceType"))
 				InvoiceType = para[i].getParameterAsString();
 			else if (name.equals("CreateTwoInvoices"))
@@ -62,9 +67,9 @@ public class CreateSalesEntryFromWeighment extends SvrProcess {
 				DateFrom = para[i].getParameterAsTimestamp();
 			if(name.equals("DateTo"))
 				DateTo = para[i].getParameterAsTimestamp();
-			
+			*/
 		}
-		*/
+		
 		RecordId = getRecord_ID();
 	}
 
