@@ -100,154 +100,159 @@ public class GenerateEinvoice {
 		jo.put("Version", "1.1");
 		
 		 TF_MBPartner bp = new TF_MBPartner(getCtx(),inv.getC_BPartner_ID(),get_TrxName());
-		 boolean hasTCS = bp.isApplyTCS();
-		 TF_MOrg org = new TF_MOrg(getCtx(),inv.getAD_Org_ID(),get_TrxName());
-		 MOrgInfo orginfo = org.getInfo();
-		 MLocation loc = new MLocation(getCtx(),orginfo.getC_Location_ID(),get_TrxName());
-		 MInvoiceLine[] lines = inv.getLines(true);
-		 JSONObject jsi = new JSONObject();
-		 JSONArray arr = new JSONArray();
-		 BigDecimal IGSTAmt = Env.ZERO;
-		 BigDecimal CGSTAmt = Env.ZERO;
-		 BigDecimal TotalCGST = Env.ZERO;
-		 BigDecimal TotalIGST = Env.ZERO;
-		 BigDecimal OtherCharges = Env.ZERO;
-		 for (int i = 0; i < lines.length; i++)
-		{
-			 MInvoiceLine line = lines[i];
-			TF_MProduct prod = new TF_MProduct(getCtx(),line.getM_Product_ID() ,get_TrxName());
-			MTax tax = new MTax(getCtx(),line.getC_Tax_ID(),get_TrxName());
-			
-			if(hasTCS) {
-				String whereClause= "C_TaxTCS_ID = ?";
-				MTax tax1 = new Query(getCtx(), MTax.Table_Name, whereClause, get_TrxName())
-						.setClient_ID()
-						.setParameters(tax.get_ID())
-						.first();
-				if(tax1 != null) 
-					tax = tax1;
-			}
-			
-			if(tax.get_ValueAsBoolean("IsInterState"))
+			if(bp.getTaxID().length() == 15) {
+			 boolean hasTCS = bp.isApplyTCS();
+			 TF_MOrg org = new TF_MOrg(getCtx(),inv.getAD_Org_ID(),get_TrxName());
+			 MOrgInfo orginfo = org.getInfo();
+			 MLocation loc = new MLocation(getCtx(),orginfo.getC_Location_ID(),get_TrxName());
+			 MInvoiceLine[] lines = inv.getLines(true);
+			 JSONObject jsi = new JSONObject();
+			 JSONArray arr = new JSONArray();
+			 BigDecimal IGSTAmt = Env.ZERO;
+			 BigDecimal CGSTAmt = Env.ZERO;
+			 BigDecimal TotalCGST = Env.ZERO;
+			 BigDecimal TotalIGST = Env.ZERO;
+			 BigDecimal OtherCharges = Env.ZERO;
+			 for (int i = 0; i < lines.length; i++)
 			{
-				IGSTAmt = line.getLineNetAmt().multiply(tax.getRate()).divide(Env.ONEHUNDRED).setScale(2,RoundingMode.HALF_UP);	
+				 MInvoiceLine line = lines[i];
+				TF_MProduct prod = new TF_MProduct(getCtx(),line.getM_Product_ID() ,get_TrxName());
+				MTax tax = new MTax(getCtx(),line.getC_Tax_ID(),get_TrxName());
+				
+				if(hasTCS) {
+					String whereClause= "C_TaxTCS_ID = ?";
+					MTax tax1 = new Query(getCtx(), MTax.Table_Name, whereClause, get_TrxName())
+							.setClient_ID()
+							.setParameters(tax.get_ID())
+							.first();
+					if(tax1 != null) 
+						tax = tax1;
+				}
+				
+				if(tax.get_ValueAsBoolean("IsInterState"))
+				{
+					IGSTAmt = line.getLineNetAmt().multiply(tax.getRate()).divide(Env.ONEHUNDRED).setScale(2,RoundingMode.HALF_UP);	
+				}
+				else
+				{
+					CGSTAmt = line.getLineNetAmt().multiply(tax.getRate()).divide(Env.ONEHUNDRED).setScale(2,RoundingMode.HALF_EVEN);
+					CGSTAmt = CGSTAmt.divide(new BigDecimal(2)).setScale(2,RoundingMode.HALF_EVEN);
+				}
+				OtherCharges = inv.getGrandTotal().subtract(inv.getTotalLines()).subtract(IGSTAmt).subtract(CGSTAmt).subtract(CGSTAmt);
+				
+				if(OtherCharges.doubleValue() < 0) {
+					CGSTAmt = CGSTAmt.add(OtherCharges.divide(new BigDecimal(2), 2, RoundingMode.HALF_EVEN));
+					OtherCharges = BigDecimal.ZERO;
+				}
+				
+				TotalCGST = CGSTAmt.add(TotalCGST);
+				TotalIGST = IGSTAmt.add(TotalIGST);
+				try {
+				String slNo = (i+1) + "";
+					String IsServc = prod.getProductType().equals(TF_MProduct.PRODUCTTYPE_Item) ? "N" : "Y";
+					jsi = new JSONObject();
+					jsi = jsi.put("SlNo",slNo).put("IsServc",IsServc).put("PrdDesc",prod.getName()).put("HsnCd",prod.getHSNCode()).put("Barcde",prod.getHSNCode());
+					 jsi.put("Qty",line.getQtyEntered().setScale(2, RoundingMode.HALF_EVEN))
+					 .put("FreeQty",0)
+					 .put("Unit",line.getC_UOM().getUOMSymbol())
+					 .put("UnitPrice",line.getPriceEntered().setScale(2, RoundingMode.HALF_EVEN))
+					 .put("TotAmt",line.getLineNetAmt())
+					 .put("Discount",0)
+					 .put("PreTaxVal",1)
+					 .put("AssAmt",line.getLineNetAmt().setScale(2, RoundingMode.HALF_EVEN))
+					 .put("GstRt",tax.getRate())
+					 .put("SgstAmt",CGSTAmt)
+					 .put("IgstAmt",IGSTAmt)
+					 .put("CgstAmt",CGSTAmt)
+					 .put("CesRt",0)
+					 .put("CesAmt",0)
+					 .put("CesNonAdvlAmt",0)
+					 .put("StateCesRt",0)
+					 .put("StateCesAmt",0)
+					 .put("StateCesNonAdvlAmt",0)
+					 .put("OthChrg",0)
+					 .put("TotItemVal",line.getLineNetAmt().add(CGSTAmt).add(CGSTAmt).add(IGSTAmt).setScale(2, RoundingMode.HALF_EVEN))
+					 .put("OrdLineRef",JSONObject.NULL)
+					 .put("OrgCntry",JSONObject.NULL)
+					 .put("PrdSlNo",JSONObject.NULL);
+					 //jsonArrayBuilderItemList.add(jsi);
+					 arr.put(jsi);
+				}
+				catch(Exception ex) {
+					 errors.add("Incomplete Information in Product or Invoice Line #" + (i+1));
+					 errors.add(ex.getMessage());				
+				}
 			}
-			else
-			{
-				CGSTAmt = line.getLineNetAmt().multiply(tax.getRate()).divide(Env.ONEHUNDRED).setScale(2,RoundingMode.HALF_EVEN);
-				CGSTAmt = CGSTAmt.divide(new BigDecimal(2)).setScale(2,RoundingMode.HALF_EVEN);
+			 
+			 DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+			 
+			 try {		
+			 jo.put("TranDtls",
+			 (new JSONObject()).put("TaxSch", "GST")
+	         .put("SupTyp", "B2B")
+	         .put("RegRev", "N")
+	         .put("EcmGstin", JSONObject.NULL)
+	         .put("IgstOnIntra", "N"))
+			 .put("DocDtls",
+			 (new JSONObject()).put("Typ", _docType)
+			 .put("No", inv.getDocumentNo())
+			 .put("Dt", inv.getDateAcct().toLocalDateTime().format(FORMATTER)))
+			 .put("SellerDtls",
+			 (new JSONObject()).put("Gstin",org.getgstin())
+			 .put("LglNm",org.getName())
+			 .put("TrdNm",org.getName())
+			 .put("Addr1",loc.getAddress1())
+			 .put("Addr2",loc.getAddress2())
+			 .put("Loc",loc.getCity())
+			 .put("Pin",Integer.parseInt(org.getInfo().getC_Location().getPostal()))
+			 .put("Stcd",org.getStateCode())
+			 .put("Ph",orginfo.getPhone())
+			 .put("Em",orginfo.getEMail()))
+			 .put("BuyerDtls",
+			 (new JSONObject()).put("Gstin",bp.getTaxID())
+			 .put("LglNm",bp.getName())
+			 .put("TrdNm",bp.getName())
+			 .put("Pos",bp.getStateCode())
+			 .put("Addr1",bp.getAddress1())
+			 .put("Addr2",bp.getAddress2())
+			 .put("Loc",bp.getCity())
+			 .put("Pin",Integer.parseInt(bp.getPostal()))
+			 .put("Stcd",bp.getStateCode())
+			 .put("Ph",bp.getPhone())
+			 .put("Em",JSONObject.NULL));
+			 }
+			 catch(Exception ex) {
+				 errors.add("Incomplate Information in the Organization or Business Partner level");
+				 errors.add(ex.getMessage());
+			 }
+			 OtherCharges = inv.getGrandTotal().subtract(inv.getTotalLines()).subtract(TotalCGST)
+					 .subtract(TotalCGST).subtract(TotalIGST).setScale(2, RoundingMode.HALF_EVEN);
+			 BigDecimal rndOff = BigDecimal.ZERO;
+			 if(OtherCharges.doubleValue() < 0 ) {
+				 rndOff = OtherCharges;
+				 OtherCharges = BigDecimal.ZERO;
+			 }
+			 
+			 jo.put("ItemList", arr) //jsonArrayBuilderItemList)
+			 .put("ValDtls",(new JSONObject()).put("AssVal",inv.getTotalLines())
+			 .put("CgstVal",TotalCGST)
+			 .put("SgstVal",TotalCGST)
+			 .put("IgstVal",TotalIGST)
+			 .put("CesVal",0)
+			 .put("StCesVal",0)
+			 .put("Discount",0)
+			 .put("OthChrg",OtherCharges)
+			 .put("RndOffAmt",rndOff)
+			 .put("TotInvVal",inv.getGrandTotal())
+			 .put("TotInvValFc",inv.getGrandTotal())
+			 );
+			 
+			 System.out.println("JSON================>"+jo.toString());
+			 return jo.toString();
+			 
 			}
-			OtherCharges = inv.getGrandTotal().subtract(inv.getTotalLines()).subtract(IGSTAmt).subtract(CGSTAmt).subtract(CGSTAmt);
-			
-			if(OtherCharges.doubleValue() < 0) {
-				CGSTAmt = CGSTAmt.add(OtherCharges.divide(new BigDecimal(2), 2, RoundingMode.HALF_EVEN));
-				OtherCharges = BigDecimal.ZERO;
-			}
-			
-			TotalCGST = CGSTAmt.add(TotalCGST);
-			TotalIGST = IGSTAmt.add(TotalIGST);
-			try {
-			String slNo = (i+1) + "";
-				String IsServc = prod.getProductType().equals(TF_MProduct.PRODUCTTYPE_Item) ? "N" : "Y";
-				jsi = new JSONObject();
-				jsi = jsi.put("SlNo",slNo).put("IsServc",IsServc).put("PrdDesc",prod.getName()).put("HsnCd",prod.getHSNCode()).put("Barcde",prod.getHSNCode());
-				 jsi.put("Qty",line.getQtyEntered().setScale(2, RoundingMode.HALF_EVEN))
-				 .put("FreeQty",0)
-				 .put("Unit",line.getC_UOM().getUOMSymbol())
-				 .put("UnitPrice",line.getPriceEntered().setScale(2, RoundingMode.HALF_EVEN))
-				 .put("TotAmt",line.getLineNetAmt())
-				 .put("Discount",0)
-				 .put("PreTaxVal",1)
-				 .put("AssAmt",line.getLineNetAmt().setScale(2, RoundingMode.HALF_EVEN))
-				 .put("GstRt",tax.getRate())
-				 .put("SgstAmt",CGSTAmt)
-				 .put("IgstAmt",IGSTAmt)
-				 .put("CgstAmt",CGSTAmt)
-				 .put("CesRt",0)
-				 .put("CesAmt",0)
-				 .put("CesNonAdvlAmt",0)
-				 .put("StateCesRt",0)
-				 .put("StateCesAmt",0)
-				 .put("StateCesNonAdvlAmt",0)
-				 .put("OthChrg",0)
-				 .put("TotItemVal",line.getLineNetAmt().add(CGSTAmt).add(CGSTAmt).add(IGSTAmt).setScale(2, RoundingMode.HALF_EVEN))
-				 .put("OrdLineRef",JSONObject.NULL)
-				 .put("OrgCntry",JSONObject.NULL)
-				 .put("PrdSlNo",JSONObject.NULL);
-				 //jsonArrayBuilderItemList.add(jsi);
-				 arr.put(jsi);
-			}
-			catch(Exception ex) {
-				 errors.add("Incomplete Information in Product or Invoice Line #" + (i+1));
-				 errors.add(ex.getMessage());				
-			}
-		}
-		 
-		 DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-		 
-		 try {		
-		 jo.put("TranDtls",
-		 (new JSONObject()).put("TaxSch", "GST")
-         .put("SupTyp", "B2B")
-         .put("RegRev", "N")
-         .put("EcmGstin", JSONObject.NULL)
-         .put("IgstOnIntra", "N"))
-		 .put("DocDtls",
-		 (new JSONObject()).put("Typ", _docType)
-		 .put("No", inv.getDocumentNo())
-		 .put("Dt", inv.getDateAcct().toLocalDateTime().format(FORMATTER)))
-		 .put("SellerDtls",
-		 (new JSONObject()).put("Gstin",org.getgstin())
-		 .put("LglNm",org.getName())
-		 .put("TrdNm",org.getName())
-		 .put("Addr1",loc.getAddress1())
-		 .put("Addr2",loc.getAddress2())
-		 .put("Loc",loc.getCity())
-		 .put("Pin",Integer.parseInt(org.getInfo().getC_Location().getPostal()))
-		 .put("Stcd",org.getStateCode())
-		 .put("Ph",orginfo.getPhone())
-		 .put("Em",orginfo.getEMail()))
-		 .put("BuyerDtls",
-		 (new JSONObject()).put("Gstin",bp.getTaxID())
-		 .put("LglNm",bp.getName())
-		 .put("TrdNm",bp.getName())
-		 .put("Pos",bp.getStateCode())
-		 .put("Addr1",bp.getAddress1())
-		 .put("Addr2",bp.getAddress2())
-		 .put("Loc",bp.getCity())
-		 .put("Pin",Integer.parseInt(bp.getPostal()))
-		 .put("Stcd",bp.getStateCode())
-		 .put("Ph",bp.getPhone())
-		 .put("Em",JSONObject.NULL));
-		 }
-		 catch(Exception ex) {
-			 errors.add("Incomplate Information in the Organization or Business Partner level");
-			 errors.add(ex.getMessage());
-		 }
-		 OtherCharges = inv.getGrandTotal().subtract(inv.getTotalLines()).subtract(TotalCGST)
-				 .subtract(TotalCGST).subtract(TotalIGST).setScale(2, RoundingMode.HALF_EVEN);
-		 BigDecimal rndOff = BigDecimal.ZERO;
-		 if(OtherCharges.doubleValue() < 0 ) {
-			 rndOff = OtherCharges;
-			 OtherCharges = BigDecimal.ZERO;
-		 }
-		 
-		 jo.put("ItemList", arr) //jsonArrayBuilderItemList)
-		 .put("ValDtls",(new JSONObject()).put("AssVal",inv.getTotalLines())
-		 .put("CgstVal",TotalCGST)
-		 .put("SgstVal",TotalCGST)
-		 .put("IgstVal",TotalIGST)
-		 .put("CesVal",0)
-		 .put("StCesVal",0)
-		 .put("Discount",0)
-		 .put("OthChrg",OtherCharges)
-		 .put("RndOffAmt",rndOff)
-		 .put("TotInvVal",inv.getGrandTotal())
-		 .put("TotInvValFc",inv.getGrandTotal())
-		 );
-		 
-		 System.out.println("JSON================>"+jo.toString());
-		 return jo.toString();
+			else 
+				return "0";
 	}
 
 	private String eInvoiceAuthentication() {
@@ -315,9 +320,9 @@ public class GenerateEinvoice {
 		
 		boolean eInvoiceLiveMode = MSysConfig.getBooleanValue("eINVOICE_LIVE", false);
 		
-		if(!eInvoiceLiveMode)
+		if(!eInvoiceLiveMode) {
 			return printJSONObject();
-		
+		}
 		eInvoiceAuthentication();
 		
 		String inputLine = null;
