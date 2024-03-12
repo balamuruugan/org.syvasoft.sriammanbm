@@ -1419,7 +1419,7 @@ public class MWeighmentEntry extends X_TF_WeighmentEntry {
 		String sql = " SELECT C_Invoice_ID FROM C_Invoice WHERE TF_WeighmentEntry_ID = "+ getTF_WeighmentEntry_ID()  +" AND C_DocType_ID = " + dt.getC_DocTypeInvoice_ID() 
 			+" AND DocStatus IN ('CO','CL') AND IRN IS NULL";
 		
-		int invoice_Id = DB.getSQLValue(sql, sql);
+		int invoice_Id = DB.getSQLValue(get_TrxName(), sql);
 				
 		return invoice_Id;
 	}
