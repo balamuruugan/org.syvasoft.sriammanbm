@@ -87,30 +87,60 @@ public class CreateSalesEntryFromWeighment extends SvrProcess {
 		}
 		else {
 			if(IsInfo) {
-				whereClause =" WeighmentEntryType = '1SO' AND ((TF_WeighmentEntry.Status IN ('UR','CO','ER') AND (SELECT OrgType FROM AD_Org WHERE "				
-						+ "AD_Org.AD_Org_ID = TF_WeighmentEntry.AD_Org_ID) = 'C' AND (EXISTS (SELECT T_Selection_ID FROM T_Selection WHERE  " + 
-						" T_Selection.AD_PInstance_ID=? AND T_Selection.T_Selection_ID = TF_WeighmentEntry.TF_WeighmentEntry_ID)) "
-						+ " AND NOT EXISTS(SELECT C_Order.TF_WeighmentEntry_ID FROM C_Order WHERE "
-						+ "C_Order.TF_WeighmentEntry_ID =  TF_WeighmentEntry.TF_WeighmentEntry_ID AND C_Order.DocStatus <> 'VO')))";
-				wEntries = new Query(getCtx(), MWeighmentEntry.Table_Name, whereClause, get_TrxName())
-						.setClient_ID()
-						.setParameters(getAD_PInstance_ID()).setOrderBy("GrossWeightTime")
-						.list();
-				
-				String whereInnerClause =" WeighmentEntryType = '1SO' AND DateAcct > ? AND ((TF_WeighmentEntry.Status IN ('UR','CO','ER') AND (SELECT OrgType FROM AD_Org WHERE "				
-						+ "AD_Org.AD_Org_ID = TF_WeighmentEntry.AD_Org_ID) = 'C' AND (EXISTS (SELECT T_Selection_ID FROM T_Selection WHERE  " + 
-						" T_Selection.AD_PInstance_ID=? AND T_Selection.T_Selection_ID = TF_WeighmentEntry.TF_WeighmentEntry_ID)) "
-						+ " AND NOT EXISTS(SELECT C_Order.TF_WeighmentEntry_ID FROM C_Order WHERE "
-						+ "C_Order.TF_WeighmentEntry_ID =  TF_WeighmentEntry.TF_WeighmentEntry_ID AND C_Order.DocStatus <> 'VO')))";
-				
-				MWeighmentEntry wEntry = new Query(getCtx(), MWeighmentEntry.Table_Name, whereInnerClause, get_TrxName())
-						.setClient_ID()
-						.setParameters(DateAcct, getAD_PInstance_ID()).setOrderBy("GrossWeightTime")
-						.first();
-				
-				if(wEntry != null) {
-					throw new AdempiereException("The given Acctout Date should be greater than equal to Weighment Account Date");
-				}
+//				if(!MWeighmentEntry.COLUMNNAME_Status.equals(MWeighmentEntry.STATUS_Billed)) {
+					whereClause =" WeighmentEntryType = '1SO' AND ((TF_WeighmentEntry.Status IN ('UR','CO','ER') AND (SELECT OrgType FROM AD_Org WHERE "				
+							+ "AD_Org.AD_Org_ID = TF_WeighmentEntry.AD_Org_ID) = 'C' AND (EXISTS (SELECT T_Selection_ID FROM T_Selection WHERE  " + 
+							" T_Selection.AD_PInstance_ID=? AND T_Selection.T_Selection_ID = TF_WeighmentEntry.TF_WeighmentEntry_ID)) "
+							+ " AND NOT EXISTS(SELECT C_Order.TF_WeighmentEntry_ID FROM C_Order WHERE "
+							+ "C_Order.TF_WeighmentEntry_ID =  TF_WeighmentEntry.TF_WeighmentEntry_ID AND C_Order.DocStatus <> 'VO')))";
+					wEntries = new Query(getCtx(), MWeighmentEntry.Table_Name, whereClause, get_TrxName())
+							.setClient_ID()
+							.setParameters(getAD_PInstance_ID()).setOrderBy("GrossWeightTime")
+							.list();
+					
+					String whereInnerClause =" WeighmentEntryType = '1SO' AND DateAcct > ? AND ((TF_WeighmentEntry.Status IN ('UR','CO','ER') AND (SELECT OrgType FROM AD_Org WHERE "				
+							+ "AD_Org.AD_Org_ID = TF_WeighmentEntry.AD_Org_ID) = 'C' AND (EXISTS (SELECT T_Selection_ID FROM T_Selection WHERE  " + 
+							" T_Selection.AD_PInstance_ID=? AND T_Selection.T_Selection_ID = TF_WeighmentEntry.TF_WeighmentEntry_ID)) "
+							+ " AND NOT EXISTS(SELECT C_Order.TF_WeighmentEntry_ID FROM C_Order WHERE "
+							+ "C_Order.TF_WeighmentEntry_ID =  TF_WeighmentEntry.TF_WeighmentEntry_ID AND C_Order.DocStatus <> 'VO')))";
+					
+					
+					
+					MWeighmentEntry wEntry = new Query(getCtx(), MWeighmentEntry.Table_Name, whereInnerClause, get_TrxName())
+							.setClient_ID()
+							.setParameters(DateAcct, getAD_PInstance_ID()).setOrderBy("GrossWeightTime")
+							.first();
+					
+					if(wEntry != null) {
+						throw new AdempiereException("The given Acctout Date should be greater than equal to Weighment Account Date");
+					}
+				/*}else {
+					whereClause = " WeighmentEntryType = '1SO' AND ((TF_WeighmentEntry.Status IN ('CL') AND (SELECT OrgType FROM AD_Org WHERE "				
+							+ "AD_Org.AD_Org_ID = TF_WeighmentEntry.AD_Org_ID) = 'C' AND (EXISTS (SELECT T_Selection_ID FROM T_Selection WHERE  " + 
+							" T_Selection.AD_PInstance_ID=? AND T_Selection.T_Selection_ID = TF_WeighmentEntry.TF_WeighmentEntry_ID)) "
+							+ " AND EXISTS(SELECT C_Order.TF_WeighmentEntry_ID FROM C_Order WHERE "
+							+ "C_Order.TF_WeighmentEntry_ID =  TF_WeighmentEntry.TF_WeighmentEntry_ID AND C_Order.DocStatus <> 'VO')))";
+					
+					wEntries = new Query(getCtx(), MWeighmentEntry.Table_Name, whereClause, get_TrxName())
+							.setClient_ID()
+							.setParameters(getAD_PInstance_ID()).setOrderBy("GrossWeightTime")
+							.list();
+					
+					String whereInnerClause =" WeighmentEntryType = '1SO' AND DateAcct > ? AND ((TF_WeighmentEntry.Status IN ('CL') AND (SELECT OrgType FROM AD_Org WHERE "				
+							+ "AD_Org.AD_Org_ID = TF_WeighmentEntry.AD_Org_ID) = 'C' AND (EXISTS (SELECT T_Selection_ID FROM T_Selection WHERE  " + 
+							" T_Selection.AD_PInstance_ID=? AND T_Selection.T_Selection_ID = TF_WeighmentEntry.TF_WeighmentEntry_ID)) "
+							+ " AND EXISTS(SELECT C_Order.TF_WeighmentEntry_ID FROM C_Order WHERE "
+							+ "C_Order.TF_WeighmentEntry_ID =  TF_WeighmentEntry.TF_WeighmentEntry_ID AND C_Order.DocStatus <> 'VO')))";
+					
+					MWeighmentEntry wEntry = new Query(getCtx(), MWeighmentEntry.Table_Name, whereInnerClause, get_TrxName())
+							.setClient_ID()
+							.setParameters(DateAcct, getAD_PInstance_ID()).setOrderBy("GrossWeightTime")
+							.first();
+					
+					if(wEntry != null) {
+						throw new AdempiereException("The given Acctout Date should be greater than equal to Weighment Account Date");
+					}
+				}*/
 			}
 			else {
 				whereClause =" WeighmentEntryType = '1SO' AND IsRequiredTaxInvoicePerLoad = 'Y' AND ((TF_WeighmentEntry.Status IN ('CO','P') AND (SELECT OrgType FROM AD_Org WHERE "				
@@ -133,6 +163,9 @@ public class CreateSalesEntryFromWeighment extends SvrProcess {
 				addLog(wEntry.get_Table_ID(), wEntry.getGrossWeightTime(), null, wEntry.getDescription(), wEntry.get_Table_ID(), wEntry.get_ID());
 				continue;
 			}
+			
+			if(wEntry.getStatus().equals(MWeighmentEntry.STATUS_Billed))
+				continue;
 			
 
 			if(wEntry.getPaymentRule().equals(MWeighmentEntry.PAYMENTRULE_MixedPayment) &&
@@ -281,8 +314,24 @@ public class CreateSalesEntryFromWeighment extends SvrProcess {
 			i++;
 		}
 		
+		String WhereClause = " WeighmentEntryType = '1SO' AND ((TF_WeighmentEntry.Status NOT IN ('VO') AND (SELECT OrgType FROM AD_Org WHERE "				
+				+ "AD_Org.AD_Org_ID = TF_WeighmentEntry.AD_Org_ID) = 'C' AND (EXISTS (SELECT T_Selection_ID FROM T_Selection WHERE  " + 
+				" T_Selection.AD_PInstance_ID=? AND T_Selection.T_Selection_ID = TF_WeighmentEntry.TF_WeighmentEntry_ID))))";
+		
+		wEntries = new Query(getCtx(), MWeighmentEntry.Table_Name, WhereClause, get_TrxName())
+				.setClient_ID()
+				.setParameters(getAD_PInstance_ID())
+				.setOrderBy("GrossWeightTime")
+				.list();
+		
+		int j=0;
+		
 		for(MWeighmentEntry wEntry : wEntries) {
-			createEInvoice(wEntry);
+			TF_MBPartner bp = new TF_MBPartner(getCtx(), wEntry.getC_BPartner_ID(), get_TrxName());
+			if(bp.getTaxID().length()==15 && wEntry.isPermitSales()) {
+				createEInvoice(wEntry);
+			}
+			j++;
 		}
 		
 		return i + " Weighment Entries are processed!";
