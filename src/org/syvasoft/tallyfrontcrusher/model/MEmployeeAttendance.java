@@ -230,7 +230,7 @@ public class MEmployeeAttendance extends X_TF_EmployeeAttendance {
 	public static BigDecimal getPresentDays(Properties ctx, int AD_Org_ID, int C_BPartner_ID, Timestamp dateFrom, Timestamp dateTo) {
 		
 		String sql = "SELECT SUM(AttendanceUnit) FROM TF_EmployeeAttendance WHERE AD_Org_ID = ? AND C_BPartner_ID =  ? AND "
-				+ " DateAcct >= ? AND DateAcct <= ? AND Status IN ('P','HD') ";
+				+ " DateAcct >= ? AND DateAcct <= ? ";
 		
 		BigDecimal presentDays = DB.getSQLValueBD(null, sql, AD_Org_ID, C_BPartner_ID, dateFrom, dateTo);
 		
