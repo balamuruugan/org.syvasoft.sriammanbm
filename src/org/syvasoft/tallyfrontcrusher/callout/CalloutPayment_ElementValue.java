@@ -31,8 +31,8 @@ public class CalloutPayment_ElementValue implements IColumnCallout {
 		if(mTab.getValue(TF_MPayment.COLUMNNAME_C_ElementValue_ID) != null) {
 			mTab.setValue(TF_MPayment.COLUMNNAME_C_Invoice_ID, 0);
 			acct_id = (int) mTab.getValue(TF_MPayment.COLUMNNAME_C_ElementValue_ID);
-			isSalaryPayment = glConfig.getSalaryPayable_Acct() == acct_id; // && !isReceipt;
-			isSalaryAdvance = glConfig.getSalariesAdvanceAcct_ID() == acct_id; // && !isReceipt;
+			isSalaryPayment = glConfig.getSalaryPayable_Acct() == acct_id && !isReceipt;
+			isSalaryAdvance = glConfig.getSalariesAdvanceAcct_ID() == acct_id && !isReceipt;
 		}
 				
 		mTab.setValue(TF_MPayment.COLUMNNAME_IsSalaryPayment, isSalaryPayment);
@@ -51,7 +51,7 @@ public class CalloutPayment_ElementValue implements IColumnCallout {
 			//Salary Payable
 			String sql = "SELECT 	SUM(AmtAcctCr - AmtAcctDr) Earned_Wage FROM Fact_Acct_Balance " +
 					" WHERE AD_Org_ID = ? AND Account_ID = ? AND C_BPartner_ID = ? AND postingtype='A' AND DateAcct <= ?";
-			//salaryAmt = DB.getSQLValueBD(null, sql, adorgID, salaryPayable_acctID, bPartnerID, dateAcct);
+			salaryAmt = DB.getSQLValueBD(null, sql, adorgID, salaryPayable_acctID, bPartnerID, dateAcct);
 			if(salaryAmt == null)
 				salaryAmt = BigDecimal.ZERO;				
 			
