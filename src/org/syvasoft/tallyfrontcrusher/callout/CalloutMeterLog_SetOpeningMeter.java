@@ -1,6 +1,7 @@
 package org.syvasoft.tallyfrontcrusher.callout;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.Properties;
 
 import org.adempiere.base.IColumnCallout;
@@ -17,15 +18,20 @@ public class CalloutMeterLog_SetOpeningMeter implements IColumnCallout {
 	public String start(Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value, Object oldValue) {
 		int C_UOM_ID = 0;
 		int PM_Machinery_ID = 0;
+		Timestamp date = null;
+		String Shift = null;
 		if(mTab.getValue(MMeterLog.COLUMNNAME_PM_Machinery_ID) != null && mTab.getValue(MMeterLog.COLUMNNAME_C_UOM_ID) != null) {
 			PM_Machinery_ID = (int) mTab.getValue(MMeterLog.COLUMNNAME_PM_Machinery_ID);
 			C_UOM_ID = (int) mTab.getValue(MMeterLog.COLUMNNAME_C_UOM_ID);
+			Shift = CalloutUtil.getString(mTab, MMeterLog.COLUMNNAME_Shift);
+			date = CalloutUtil.getTimestamp(mTab, MMeterLog.COLUMNNAME_DateReport);
+			
 						
-			String whereClause = "PM_Machinery_ID = ? AND C_UOM_ID = ?";
+			String whereClause = "PM_Machinery_ID = ? AND C_UOM_ID = ? AND DateReport <= ? AND Shift = ?";
 			
 			MMeterLog meterLog = new Query(ctx, MMeterLog.Table_Name, whereClause, null)
 			.setClient_ID()
-			.setParameters(PM_Machinery_ID,C_UOM_ID).setOrderBy(MMeterLog.COLUMNNAME_PM_Meter_Log_ID + " desc")
+			.setParameters(PM_Machinery_ID,C_UOM_ID,date,Shift).setOrderBy(MMeterLog.COLUMNNAME_DateReport +"," +MMeterLog.COLUMNNAME_Shift + " desc")
 			.first();
 			
 			if(meterLog != null) {
