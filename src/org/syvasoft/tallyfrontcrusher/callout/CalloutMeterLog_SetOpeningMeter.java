@@ -27,11 +27,11 @@ public class CalloutMeterLog_SetOpeningMeter implements IColumnCallout {
 			date = CalloutUtil.getTimestamp(mTab, MMeterLog.COLUMNNAME_DateReport);
 			
 						
-			String whereClause = "PM_Machinery_ID = ? AND C_UOM_ID = ? AND DateReport <= ? AND Shift = ?";
+			String whereClause = "PM_Machinery_ID = ? AND C_UOM_ID = ? AND DateReport <= ? ";
 			
 			MMeterLog meterLog = new Query(ctx, MMeterLog.Table_Name, whereClause, null)
 			.setClient_ID()
-			.setParameters(PM_Machinery_ID,C_UOM_ID,date,Shift).setOrderBy(MMeterLog.COLUMNNAME_DateReport +"," +MMeterLog.COLUMNNAME_Shift + " desc")
+			.setParameters(PM_Machinery_ID,C_UOM_ID,date).setOrderBy(MMeterLog.COLUMNNAME_DateReport + " desc , " + MMeterLog.COLUMNNAME_Shift + " desc")
 			.first();
 			
 			if(meterLog != null) {
