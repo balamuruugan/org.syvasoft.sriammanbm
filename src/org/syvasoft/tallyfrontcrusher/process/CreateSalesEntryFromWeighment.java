@@ -237,6 +237,16 @@ public class CreateSalesEntryFromWeighment extends SvrProcess {
 					BigDecimal InvBillQty = wEntry.getPermitIssuedQty();
 					BigDecimal remainingQty = billQty.subtract(InvBillQty);
 					
+					/** due to sales tax invoice approach, two invoice approach is suppressed 
+					 * only sales tax invoice will be created for the eInvoice Quantity 
+					 */
+					InvBillQty =  billQty;
+					remainingQty = BigDecimal.ZERO;
+					
+					/*
+					 * Commented due to sales tax invoice approach is followed.
+					 * Invoice (Customer) will have the actual quantity always.
+					 * 
 					if(wEntry.isInterState()) { // interstate sales
 						if(billQty.doubleValue() < InvBillQty.doubleValue()) { 
 							InvBillQty = billQty;
@@ -256,14 +266,17 @@ public class CreateSalesEntryFromWeighment extends SvrProcess {
 						billQty = InvBillQty;
 						//continue;
 					}
-					
+					*/
 					/***
 					 * GST APPROACH FOR IGST SALES (OTHER STATE SALES)
 					 *    1. Create GST Bill for the royalty pass quantity
-					 *    2. Create Non GST Bill for the remaining quantity
+					 *    2. Create Non GST Bill for the actual quantity
+					 *    3. Create Sales Tax Invoice for the royalty pass quantity
 					 *    
 					 * GST APPROACH FOR THE LOCAL SALES (TAMILNADU SALES)
 					 * 	  1. Create GST Bill for the actual quantity
+					 * 	  2. Create Sales Tax Invoice for the actual quantity					 * 
+					 * 
 					 */
 					
 					if(remainingQty.doubleValue() > 0 && InvBillQty.doubleValue() > 0) {
@@ -373,7 +386,7 @@ public class CreateSalesEntryFromWeighment extends SvrProcess {
 			ord.addDescription("Customer Name : " + wEntry.getPartyName());
 		
 		ord.setPaymentRule(wEntry.getPaymentRule());
-		ord.setOnAccount(false);
+		ord.setOnAccount(true);
 
 		//Price List
 		int m_M_PriceList_ID = MPriceList.getDefault(getCtx(), true).getM_PriceList_ID();							
@@ -435,7 +448,7 @@ public class CreateSalesEntryFromWeighment extends SvrProcess {
 		
 		if(wEntry.getM_Product2() != null && wEntry.getM_Product2_ID()>0) {
 			ord.setItem2_ID(wEntry.getM_Product2_ID());
-			ord.setItem2_Qty(wEntry.getPassQtyIssued());	
+			ord.setItem2_Qty(wEntry.getPermitIssuedQty());	
 			ord.setItem2_UOM_ID(wEntry.getC_UOM_ID());
 			ord.setItem2_Price(wEntry.getPassPricePerUnit());
 			ord.setItem2_Amt(wEntry.getPermitPassAmount());

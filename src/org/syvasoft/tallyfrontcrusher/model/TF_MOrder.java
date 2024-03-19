@@ -3715,15 +3715,23 @@ public class TF_MOrder extends MOrder {
 		inv.setDateAcct(getDateAcct());
 		inv.setTF_WeighmentEntry_ID(wEntry.getTF_WeighmentEntry_ID());
 		inv.setDocumentNo(wEntry.getDocumentNo());
-		inv.setM_Warehouse_ID(getM_Warehouse_ID());
-		inv.setPartyName(getPartyName());
+		inv.setM_Warehouse_ID(getM_Warehouse_ID());		
 		inv.setPostTaxToCustomer(false);
 		inv.setPostGSTAsExpense(false);
-		inv.setC_BPartner_ID(getC_BPartner_ID());
+		
+		int bpartner_id = getC_BPartner_ID();
+		String partyName = wEntry.getPartyName();
+		if(wEntry.getBill_BPartner_ID() > 0) {
+			bpartner_id = wEntry.getBill_BPartner_ID();
+			partyName = wEntry.getBill_BPartner().getName();
+		}
+		
+		inv.setPartyName(getPartyName());
+		inv.setC_BPartner_ID(bpartner_id);
 		inv.setDateSupply(getDateAcct());
 		inv.setIsSOTrx(true);
 		
-		TF_MBPartner partner = new TF_MBPartner(getCtx(),getC_BPartner_ID(),get_TrxName());
+		TF_MBPartner partner = new TF_MBPartner(getCtx(),bpartner_id,get_TrxName());
 		if(wEntry != null && partner.getIsPOSCashBP() && getPartyName() == null) {
 			inv.setPartyName(wEntry.getPartyName());
 		}
@@ -3763,7 +3771,7 @@ public class TF_MOrder extends MOrder {
 		invLine.setM_Product_ID(getItem1_ID());
 		invLine.setC_UOM_ID(getItem1_UOM_ID());
 		
-		TF_MBPartner bp = new TF_MBPartner(getCtx(), getC_BPartner_ID(), get_TrxName());
+		//TF_MBPartner bp = new TF_MBPartner(getCtx(), getC_BPartner_ID(), get_TrxName());
 		//MCustomerType custType = new MCustomerType(getCtx(), bp.getTF_CustomerType_ID(), get_TrxName());
 		TF_MProduct prod=new TF_MProduct(getCtx(), getItem1_ID(), get_TrxName());
 		
@@ -3783,6 +3791,9 @@ public class TF_MOrder extends MOrder {
 			price = wEntry.getBillPrice();	
 		}
 		
+		boolean isInterState = partner.isInterState();
+		
+		inv.setIsInterState(isInterState);
 		/*
 		if(isRentBreakup())
 		{
@@ -3801,6 +3812,18 @@ public class TF_MOrder extends MOrder {
 		//Set Qty based on Customer Type Billing Qty Ratio
 		// When BillingQtyRation is ZERO then Based on the amount BillingQty has to be calcualted. 
 		BigDecimal qty = getItem1_Qty();
+		
+		BigDecimal billQty = wEntry.getNetWeightUnit();
+		BigDecimal InvBillQty = wEntry.getPermitIssuedQty();
+		BigDecimal remainingQty = billQty.subtract(InvBillQty);
+		
+		if(isInterState) {
+			qty = InvBillQty;
+		}
+		else {
+			qty = billQty;
+		}
+		
 		//if(custType.getBillingQtyRatio().doubleValue() > 0)
 		//	qty = qty.multiply(custType.getBillingQtyRatio());
 		//else {
@@ -3823,11 +3846,19 @@ public class TF_MOrder extends MOrder {
 		invLine.setPrice(price);
 		invLine.setTaxableAmount(price.multiply(invLine.getQty()));
 						
-		BigDecimal SGST_Rate = taxRate.divide(new BigDecimal(2), 2, RoundingMode.HALF_EVEN);				
-		invLine.setSGST_Rate(SGST_Rate);
-		invLine.setCGST_Rate(SGST_Rate);
-		invLine.setIGST_Rate(BigDecimal.ZERO);
-		invLine.setIGST_Amt(BigDecimal.ZERO);
+		BigDecimal SGST_Rate = taxRate.divide(new BigDecimal(2), 2, RoundingMode.HALF_EVEN);	
+		
+		
+		if(isInterState) {
+			invLine.setSGST_Rate(BigDecimal.ZERO);
+			invLine.setCGST_Rate(BigDecimal.ZERO);
+			invLine.setIGST_Rate(taxRate);
+		}
+		else {
+			invLine.setSGST_Rate(SGST_Rate);
+			invLine.setCGST_Rate(SGST_Rate);
+			invLine.setIGST_Rate(BigDecimal.ZERO);			
+		}
 		
 		invLine.calcAmounts();
 		invLine.saveEx();

@@ -26,7 +26,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for TF_WeighmentEntry
  *  @author iDempiere (generated) 
- *  @version Release 11 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="TF_WeighmentEntry")
 public class X_TF_WeighmentEntry extends PO implements I_TF_WeighmentEntry, I_Persistent 
 {
@@ -34,7 +34,7 @@ public class X_TF_WeighmentEntry extends PO implements I_TF_WeighmentEntry, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231227L;
+	private static final long serialVersionUID = 20240319L;
 
     /** Standard Constructor */
     public X_TF_WeighmentEntry (Properties ctx, int TF_WeighmentEntry_ID, String trxName)
@@ -56,6 +56,7 @@ public class X_TF_WeighmentEntry extends PO implements I_TF_WeighmentEntry, I_Pe
 			setIsTaxIncluded (false);
 // N
 			setPassPricePerUnit (Env.ZERO);
+// 0
 			setProcessed (false);
 			setStatus (null);
 // IP
@@ -83,6 +84,7 @@ public class X_TF_WeighmentEntry extends PO implements I_TF_WeighmentEntry, I_Pe
 			setIsTaxIncluded (false);
 // N
 			setPassPricePerUnit (Env.ZERO);
+// 0
 			setProcessed (false);
 			setStatus (null);
 // IP
@@ -203,6 +205,34 @@ public class X_TF_WeighmentEntry extends PO implements I_TF_WeighmentEntry, I_Pe
 			return "Y".equals(oo);
 		}
 		return false;
+	}
+
+	public org.compiere.model.I_C_BPartner getBill_BPartner() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getBill_BPartner_ID(), get_TrxName());
+	}
+
+	/** Set Invoice Partner.
+		@param Bill_BPartner_ID Business Partner to be invoiced
+	*/
+	public void setBill_BPartner_ID (int Bill_BPartner_ID)
+	{
+		if (Bill_BPartner_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_Bill_BPartner_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_Bill_BPartner_ID, Integer.valueOf(Bill_BPartner_ID));
+	}
+
+	/** Get Invoice Partner.
+		@return Business Partner to be invoiced
+	  */
+	public int getBill_BPartner_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_Bill_BPartner_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Billing Name.
@@ -786,6 +816,21 @@ public class X_TF_WeighmentEntry extends PO implements I_TF_WeighmentEntry, I_Pe
 			return "Y".equals(oo);
 		}
 		return false;
+	}
+
+	/** Set FastagID.
+		@param FastagID FastagID
+	*/
+	public void setFastagID (String FastagID)
+	{
+		set_Value (COLUMNNAME_FastagID, FastagID);
+	}
+
+	/** Get FastagID.
+		@return FastagID	  */
+	public String getFastagID()
+	{
+		return (String)get_Value(COLUMNNAME_FastagID);
 	}
 
 	/** Boulder = BOULDER */
@@ -1731,24 +1776,6 @@ public class X_TF_WeighmentEntry extends PO implements I_TF_WeighmentEntry, I_Pe
 		return bd;
 	}
 
-	/** Set PassQtyIssued.
-		@param PassQtyIssued PassQtyIssued
-	*/
-	public void setPassQtyIssued (BigDecimal PassQtyIssued)
-	{
-		set_Value (COLUMNNAME_PassQtyIssued, PassQtyIssued);
-	}
-
-	/** Get PassQtyIssued.
-		@return PassQtyIssued	  */
-	public BigDecimal getPassQtyIssued()
-	{
-		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_PassQtyIssued);
-		if (bd == null)
-			 return Env.ZERO;
-		return bd;
-	}
-
 	/** PaymentRule AD_Reference_ID=195 */
 	public static final int PAYMENTRULE_AD_Reference_ID=195;
 	/** Cash = B */
@@ -2244,6 +2271,21 @@ public class X_TF_WeighmentEntry extends PO implements I_TF_WeighmentEntry, I_Pe
 	public String getShipmentTo()
 	{
 		return (String)get_Value(COLUMNNAME_ShipmentTo);
+	}
+
+	/** Set ShippingAddress.
+		@param ShippingAddress ShippingAddress
+	*/
+	public void setShippingAddress (String ShippingAddress)
+	{
+		set_Value (COLUMNNAME_ShippingAddress, ShippingAddress);
+	}
+
+	/** Get ShippingAddress.
+		@return ShippingAddress	  */
+	public String getShippingAddress()
+	{
+		return (String)get_Value(COLUMNNAME_ShippingAddress);
 	}
 
 	/** Billed = CL */
@@ -2952,6 +2994,24 @@ public class X_TF_WeighmentEntry extends PO implements I_TF_WeighmentEntry, I_Pe
 	public String getUserName()
 	{
 		return (String)get_Value(COLUMNNAME_UserName);
+	}
+
+	/** Set VehicleMovementID.
+		@param VehicleMovementID VehicleMovementID
+	*/
+	public void setVehicleMovementID (int VehicleMovementID)
+	{
+		set_Value (COLUMNNAME_VehicleMovementID, Integer.valueOf(VehicleMovementID));
+	}
+
+	/** Get VehicleMovementID.
+		@return VehicleMovementID	  */
+	public int getVehicleMovementID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_VehicleMovementID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Vehicle No.

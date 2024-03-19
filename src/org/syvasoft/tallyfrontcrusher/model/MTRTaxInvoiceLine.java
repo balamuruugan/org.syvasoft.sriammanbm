@@ -79,12 +79,14 @@ public class MTRTaxInvoiceLine extends X_TF_TRTaxInvoiceLine {
 		setTaxableAmount(getQty().multiply(getPrice()));		
 		BigDecimal divisor = new BigDecimal(100);		
 		BigDecimal cgstAmt = getCGST_Rate().multiply(getTaxableAmount()).divide(divisor, 2, RoundingMode.HALF_UP);
-		BigDecimal sgstAmt = getSGST_Rate().multiply(getTaxableAmount()).divide(divisor, 2, RoundingMode.HALF_UP);		
+		BigDecimal sgstAmt = getSGST_Rate().multiply(getTaxableAmount()).divide(divisor, 2, RoundingMode.HALF_UP);
+		BigDecimal igstAmt = getIGST_Rate().multiply(getTaxableAmount()).divide(divisor, 2, RoundingMode.HALF_UP);
 		
 		setCGST_Amt(cgstAmt);
 		setSGST_Amt(sgstAmt);
+		setIGST_Amt(igstAmt);
 		
-		BigDecimal total = getTaxableAmount().add(cgstAmt).add(sgstAmt).setScale(2, RoundingMode.HALF_UP);				
+		BigDecimal total = getTaxableAmount().add(cgstAmt).add(sgstAmt).add(igstAmt).setScale(2, RoundingMode.HALF_UP);				
 		setLineTotalAmt(total);		
 	
 	}

@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for TF_WeighmentEntry
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 10
  */
 @SuppressWarnings("all")
 public interface I_TF_WeighmentEntry 
@@ -109,6 +109,21 @@ public interface I_TF_WeighmentEntry
 
 	/** Get Apply TCS	  */
 	public boolean isApplyTCS();
+
+    /** Column name Bill_BPartner_ID */
+    public static final String COLUMNNAME_Bill_BPartner_ID = "Bill_BPartner_ID";
+
+	/** Set Invoice Partner.
+	  * Business Partner to be invoiced
+	  */
+	public void setBill_BPartner_ID (int Bill_BPartner_ID);
+
+	/** Get Invoice Partner.
+	  * Business Partner to be invoiced
+	  */
+	public int getBill_BPartner_ID();
+
+	public org.compiere.model.I_C_BPartner getBill_BPartner() throws RuntimeException;
 
     /** Column name BillingName */
     public static final String COLUMNNAME_BillingName = "BillingName";
@@ -442,6 +457,15 @@ s Transporter	  */
 
 	/** Get Export Customer	  */
 	public boolean isExportCustomer();
+
+    /** Column name FastagID */
+    public static final String COLUMNNAME_FastagID = "FastagID";
+
+	/** Set FastagID	  */
+	public void setFastagID (String FastagID);
+
+	/** Get FastagID	  */
+	public String getFastagID();
 
     /** Column name FirstWeighbridgeName */
     public static final String COLUMNNAME_FirstWeighbridgeName = "FirstWeighbridgeName";
@@ -933,15 +957,6 @@ s Transporter	  */
 	/** Get Pass Price	  */
 	public BigDecimal getPassPricePerUnit();
 
-    /** Column name PassQtyIssued */
-    public static final String COLUMNNAME_PassQtyIssued = "PassQtyIssued";
-
-	/** Set PassQtyIssued	  */
-	public void setPassQtyIssued (BigDecimal PassQtyIssued);
-
-	/** Get PassQtyIssued	  */
-	public BigDecimal getPassQtyIssued();
-
     /** Column name PaymentRule */
     public static final String COLUMNNAME_PaymentRule = "PaymentRule";
 
@@ -1201,6 +1216,15 @@ s Transporter	  */
 
 	/** Get Shipment To	  */
 	public String getShipmentTo();
+
+    /** Column name ShippingAddress */
+    public static final String COLUMNNAME_ShippingAddress = "ShippingAddress";
+
+	/** Set ShippingAddress	  */
+	public void setShippingAddress (String ShippingAddress);
+
+	/** Get ShippingAddress	  */
+	public String getShippingAddress();
 
     /** Column name Status */
     public static final String COLUMNNAME_Status = "Status";
@@ -1533,6 +1557,15 @@ s Transporter	  */
 
 	/** Get User Name	  */
 	public String getUserName();
+
+    /** Column name VehicleMovementID */
+    public static final String COLUMNNAME_VehicleMovementID = "VehicleMovementID";
+
+	/** Set VehicleMovementID	  */
+	public void setVehicleMovementID (int VehicleMovementID);
+
+	/** Get VehicleMovementID	  */
+	public int getVehicleMovementID();
 
     /** Column name VehicleNo */
     public static final String COLUMNNAME_VehicleNo = "VehicleNo";
