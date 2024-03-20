@@ -336,6 +336,8 @@ public class TF_MInOut extends MInOut {
 		if(we.getTF_RentedVehicle_ID() == 0)
 			return;
 		
+		
+		
 		MRentedVehicle rv = new MRentedVehicle(getCtx(), we.getTF_RentedVehicle_ID(), get_TrxName());
 		if(rv.isOwnVehicle() || !rv.isTransporter())
 			return;
@@ -356,8 +358,14 @@ public class TF_MInOut extends MInOut {
 		if(getC_DocType_ID() == dt.getC_DocTypeShipment_ID())
 			return;
 		
+		
+		
 		MDestination dest = new MDestination(getCtx(), we.getTF_Destination_ID(), get_TrxName());
 		TF_MBPartner bp = new TF_MBPartner(getCtx(), rv.getC_BPartner_ID(), get_TrxName());
+		
+		//no need to create transporter dc for cash bp
+		if(bp.getIsPOSCashBP())
+			return;
 		
 		TF_MInOut inout = new TF_MInOut(getCtx(), 0, get_TrxName());
 		inout.materialReceipt = false;

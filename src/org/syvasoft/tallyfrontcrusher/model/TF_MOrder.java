@@ -3814,11 +3814,12 @@ public class TF_MOrder extends MOrder {
 		BigDecimal qty = getItem1_Qty();
 		
 		BigDecimal billQty = wEntry.getNetWeightUnit();
-		BigDecimal InvBillQty = wEntry.getPermitIssuedQty();
-		BigDecimal remainingQty = billQty.subtract(InvBillQty);
+		BigDecimal InvBillQty = wEntry.getPermitIssuedQty();		
 		
 		if(isInterState) {
 			qty = InvBillQty;
+			if(qty == null || qty.equals(BigDecimal.ZERO))
+				qty = billQty;
 		}
 		else {
 			qty = billQty;
