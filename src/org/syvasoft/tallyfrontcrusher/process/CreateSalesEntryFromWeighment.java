@@ -23,10 +23,12 @@ import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 import org.compiere.util.Env;
 import org.compiere.util.Trx;
-import org.syvasoft.eInvoiceutil.GenerateEinvoice;
+import org.syvasoft.eInvoiceutil.GenerateEinvoice4InvCust;
+import org.syvasoft.eInvoiceutil.GenerateEinvoice4SalesTaxInv;
 import org.syvasoft.tallyfrontcrusher.model.MDestination;
 import org.syvasoft.tallyfrontcrusher.model.MLumpSumRentConfig;
 import org.syvasoft.tallyfrontcrusher.model.MRentedVehicle;
+import org.syvasoft.tallyfrontcrusher.model.MTRTaxInvoice;
 import org.syvasoft.tallyfrontcrusher.model.MWeighmentEntry;
 import org.syvasoft.tallyfrontcrusher.model.TF_MBPartner;
 import org.syvasoft.tallyfrontcrusher.model.TF_MInvoice;
@@ -342,7 +344,8 @@ public class CreateSalesEntryFromWeighment extends SvrProcess {
 		for(MWeighmentEntry wEntry : wEntries) {
 			TF_MBPartner bp = new TF_MBPartner(getCtx(), wEntry.getC_BPartner_ID(), get_TrxName());
 			if(bp.getTaxID().length()==15 && wEntry.isPermitSales()) {
-				createEInvoice(wEntry);
+				//createEInvoice(wEntry);
+				createEInvoice4SalesTaxInvoice(wEntry);
 			}
 			j++;
 		}
@@ -697,7 +700,40 @@ public class CreateSalesEntryFromWeighment extends SvrProcess {
 		
 		TF_MInvoice inv = new TF_MInvoice(getCtx(), C_INvoice_ID, get_TrxName());
 		
-		GenerateEinvoice eInv = new GenerateEinvoice(inv, "INV", getAD_PInstance_ID());
+		GenerateEinvoice4InvCust eInv = new GenerateEinvoice4InvCust(inv, "INV", getAD_PInstance_ID());
+		String result = eInv.generateeInvoice();
+		
+		if(result != null && result.length() > 0) {
+			addLog("----");
+			addLog(result);
+		}
+		
+		if(eInv.errors != null && eInv.errors.size() > 0) {
+			
+			addLog("-------eInvoice Generation Error For Invoice No: "+ inv.getDocumentNo() +"   ---------");
+			
+			for(String msg : eInv.errors) {
+				addLog(msg);
+			}
+		}
+		
+		trx.releaseSavepoint(sp);
+	}
+	
+	public void createEInvoice4SalesTaxInvoice(MWeighmentEntry wEntry) throws SQLException {
+		Trx trx = Trx.get(get_TrxName(), false);
+		sp = trx.setSavepoint(wEntry.getDocumentNo());
+		
+		int C_INvoice_ID = wEntry.generateEInvoice4SalesTaxInvoice(); 
+		
+		if( C_INvoice_ID  <= 0 ) {
+			trx.releaseSavepoint(sp);
+			return;
+		}
+		
+		MTRTaxInvoice inv = new MTRTaxInvoice(getCtx(), C_INvoice_ID, get_TrxName());
+		
+		GenerateEinvoice4SalesTaxInv eInv = new GenerateEinvoice4SalesTaxInv(inv, "INV", getAD_PInstance_ID());
 		String result = eInv.generateeInvoice();
 		
 		if(result != null && result.length() > 0) {

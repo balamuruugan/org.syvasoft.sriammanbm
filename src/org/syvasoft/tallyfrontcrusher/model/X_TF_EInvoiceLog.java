@@ -23,19 +23,30 @@ import org.compiere.model.*;
 
 /** Generated Model for TF_EInvoiceLog
  *  @author iDempiere (generated) 
- *  @version Release 5.1 - $Id$ */
+ *  @version Release 10 - $Id$ */
+@org.adempiere.base.Model(table="TF_EInvoiceLog")
 public class X_TF_EInvoiceLog extends PO implements I_TF_EInvoiceLog, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220413L;
+	private static final long serialVersionUID = 20240320L;
 
     /** Standard Constructor */
     public X_TF_EInvoiceLog (Properties ctx, int TF_EInvoiceLog_ID, String trxName)
     {
       super (ctx, TF_EInvoiceLog_ID, trxName);
+      /** if (TF_EInvoiceLog_ID == 0)
+        {
+			setTF_EInvoiceLog_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_TF_EInvoiceLog (Properties ctx, int TF_EInvoiceLog_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, TF_EInvoiceLog_ID, trxName, virtualColumns);
       /** if (TF_EInvoiceLog_ID == 0)
         {
 			setTF_EInvoiceLog_ID (0);
@@ -65,13 +76,14 @@ public class X_TF_EInvoiceLog extends PO implements I_TF_EInvoiceLog, I_Persiste
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_TF_EInvoiceLog[")
+      StringBuilder sb = new StringBuilder ("X_TF_EInvoiceLog[")
         .append(get_ID()).append("]");
       return sb.toString();
     }
 
 	/** Set AckDt.
-		@param AckDt AckDt	  */
+		@param AckDt AckDt
+	*/
 	public void setAckDt (String AckDt)
 	{
 		set_Value (COLUMNNAME_AckDt, AckDt);
@@ -79,13 +91,14 @@ public class X_TF_EInvoiceLog extends PO implements I_TF_EInvoiceLog, I_Persiste
 
 	/** Get AckDt.
 		@return AckDt	  */
-	public String getAckDt () 
+	public String getAckDt()
 	{
 		return (String)get_Value(COLUMNNAME_AckDt);
 	}
 
 	/** Set AckNo.
-		@param AckNo AckNo	  */
+		@param AckNo AckNo
+	*/
 	public void setAckNo (String AckNo)
 	{
 		set_Value (COLUMNNAME_AckNo, AckNo);
@@ -93,32 +106,32 @@ public class X_TF_EInvoiceLog extends PO implements I_TF_EInvoiceLog, I_Persiste
 
 	/** Get AckNo.
 		@return AckNo	  */
-	public String getAckNo () 
+	public String getAckNo()
 	{
 		return (String)get_Value(COLUMNNAME_AckNo);
 	}
 
 	public org.compiere.model.I_AD_PInstance getAD_PInstance() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_PInstance)MTable.get(getCtx(), org.compiere.model.I_AD_PInstance.Table_Name)
-			.getPO(getAD_PInstance_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_PInstance)MTable.get(getCtx(), org.compiere.model.I_AD_PInstance.Table_ID)
+			.getPO(getAD_PInstance_ID(), get_TrxName());
+	}
 
 	/** Set Process Instance.
-		@param AD_PInstance_ID 
-		Instance of the process
-	  */
+		@param AD_PInstance_ID Instance of the process
+	*/
 	public void setAD_PInstance_ID (int AD_PInstance_ID)
 	{
-		if (AD_PInstance_ID < 1) 
+		if (AD_PInstance_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_PInstance_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_PInstance_ID, Integer.valueOf(AD_PInstance_ID));
 	}
 
 	/** Get Process Instance.
 		@return Instance of the process
 	  */
-	public int getAD_PInstance_ID () 
+	public int getAD_PInstance_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_PInstance_ID);
 		if (ii == null)
@@ -127,26 +140,26 @@ public class X_TF_EInvoiceLog extends PO implements I_TF_EInvoiceLog, I_Persiste
 	}
 
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_Name)
-			.getPO(getAD_Table_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
+			.getPO(getAD_Table_ID(), get_TrxName());
+	}
 
 	/** Set Table.
-		@param AD_Table_ID 
-		Database Table information
-	  */
+		@param AD_Table_ID Database Table information
+	*/
 	public void setAD_Table_ID (int AD_Table_ID)
 	{
-		if (AD_Table_ID < 1) 
+		if (AD_Table_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Table_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Table_ID, Integer.valueOf(AD_Table_ID));
 	}
 
 	/** Get Table.
 		@return Database Table information
 	  */
-	public int getAD_Table_ID () 
+	public int getAD_Table_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Table_ID);
 		if (ii == null)
@@ -155,26 +168,26 @@ public class X_TF_EInvoiceLog extends PO implements I_TF_EInvoiceLog, I_Persiste
 	}
 
 	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Invoice)MTable.get(getCtx(), org.compiere.model.I_C_Invoice.Table_Name)
-			.getPO(getC_Invoice_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Invoice)MTable.get(getCtx(), org.compiere.model.I_C_Invoice.Table_ID)
+			.getPO(getC_Invoice_ID(), get_TrxName());
+	}
 
 	/** Set Invoice.
-		@param C_Invoice_ID 
-		Invoice Identifier
-	  */
+		@param C_Invoice_ID Invoice Identifier
+	*/
 	public void setC_Invoice_ID (int C_Invoice_ID)
 	{
-		if (C_Invoice_ID < 1) 
+		if (C_Invoice_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Invoice_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Invoice_ID, Integer.valueOf(C_Invoice_ID));
 	}
 
 	/** Get Invoice.
 		@return Invoice Identifier
 	  */
-	public int getC_Invoice_ID () 
+	public int getC_Invoice_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Invoice_ID);
 		if (ii == null)
@@ -183,7 +196,8 @@ public class X_TF_EInvoiceLog extends PO implements I_TF_EInvoiceLog, I_Persiste
 	}
 
 	/** Set IRN.
-		@param IRN IRN	  */
+		@param IRN IRN
+	*/
 	public void setIRN (String IRN)
 	{
 		set_ValueNoCheck (COLUMNNAME_IRN, IRN);
@@ -191,27 +205,26 @@ public class X_TF_EInvoiceLog extends PO implements I_TF_EInvoiceLog, I_Persiste
 
 	/** Get IRN.
 		@return IRN	  */
-	public String getIRN () 
+	public String getIRN()
 	{
 		return (String)get_Value(COLUMNNAME_IRN);
 	}
 
 	/** Set Record ID.
-		@param Record_ID 
-		Direct internal record ID
-	  */
+		@param Record_ID Direct internal record ID
+	*/
 	public void setRecord_ID (int Record_ID)
 	{
-		if (Record_ID < 0) 
+		if (Record_ID < 0)
 			set_ValueNoCheck (COLUMNNAME_Record_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_Record_ID, Integer.valueOf(Record_ID));
 	}
 
 	/** Get Record ID.
 		@return Direct internal record ID
 	  */
-	public int getRecord_ID () 
+	public int getRecord_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Record_ID);
 		if (ii == null)
@@ -220,9 +233,8 @@ public class X_TF_EInvoiceLog extends PO implements I_TF_EInvoiceLog, I_Persiste
 	}
 
 	/** Set Response Text.
-		@param ResponseText 
-		Request Response Text
-	  */
+		@param ResponseText Request Response Text
+	*/
 	public void setResponseText (String ResponseText)
 	{
 		set_ValueNoCheck (COLUMNNAME_ResponseText, ResponseText);
@@ -231,13 +243,14 @@ public class X_TF_EInvoiceLog extends PO implements I_TF_EInvoiceLog, I_Persiste
 	/** Get Response Text.
 		@return Request Response Text
 	  */
-	public String getResponseText () 
+	public String getResponseText()
 	{
 		return (String)get_Value(COLUMNNAME_ResponseText);
 	}
 
 	/** Set SignedQRCode.
-		@param SignedQRCode SignedQRCode	  */
+		@param SignedQRCode SignedQRCode
+	*/
 	public void setSignedQRCode (String SignedQRCode)
 	{
 		set_Value (COLUMNNAME_SignedQRCode, SignedQRCode);
@@ -245,24 +258,25 @@ public class X_TF_EInvoiceLog extends PO implements I_TF_EInvoiceLog, I_Persiste
 
 	/** Get SignedQRCode.
 		@return SignedQRCode	  */
-	public String getSignedQRCode () 
+	public String getSignedQRCode()
 	{
 		return (String)get_Value(COLUMNNAME_SignedQRCode);
 	}
 
 	/** Set e Invoice Log.
-		@param TF_EInvoiceLog_ID e Invoice Log	  */
+		@param TF_EInvoiceLog_ID e Invoice Log
+	*/
 	public void setTF_EInvoiceLog_ID (int TF_EInvoiceLog_ID)
 	{
-		if (TF_EInvoiceLog_ID < 1) 
+		if (TF_EInvoiceLog_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_TF_EInvoiceLog_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_TF_EInvoiceLog_ID, Integer.valueOf(TF_EInvoiceLog_ID));
 	}
 
 	/** Get e Invoice Log.
 		@return e Invoice Log	  */
-	public int getTF_EInvoiceLog_ID () 
+	public int getTF_EInvoiceLog_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_TF_EInvoiceLog_ID);
 		if (ii == null)
@@ -271,7 +285,8 @@ public class X_TF_EInvoiceLog extends PO implements I_TF_EInvoiceLog, I_Persiste
 	}
 
 	/** Set TF_EInvoiceLog_UU.
-		@param TF_EInvoiceLog_UU TF_EInvoiceLog_UU	  */
+		@param TF_EInvoiceLog_UU TF_EInvoiceLog_UU
+	*/
 	public void setTF_EInvoiceLog_UU (String TF_EInvoiceLog_UU)
 	{
 		set_ValueNoCheck (COLUMNNAME_TF_EInvoiceLog_UU, TF_EInvoiceLog_UU);
@@ -279,8 +294,35 @@ public class X_TF_EInvoiceLog extends PO implements I_TF_EInvoiceLog, I_Persiste
 
 	/** Get TF_EInvoiceLog_UU.
 		@return TF_EInvoiceLog_UU	  */
-	public String getTF_EInvoiceLog_UU () 
+	public String getTF_EInvoiceLog_UU()
 	{
 		return (String)get_Value(COLUMNNAME_TF_EInvoiceLog_UU);
+	}
+
+	public I_TF_TRTaxInvoice getTF_TRTaxInvoice() throws RuntimeException
+	{
+		return (I_TF_TRTaxInvoice)MTable.get(getCtx(), I_TF_TRTaxInvoice.Table_ID)
+			.getPO(getTF_TRTaxInvoice_ID(), get_TrxName());
+	}
+
+	/** Set Sales Tax Invoice (Trading).
+		@param TF_TRTaxInvoice_ID Sales Tax Invoice (Trading)
+	*/
+	public void setTF_TRTaxInvoice_ID (int TF_TRTaxInvoice_ID)
+	{
+		if (TF_TRTaxInvoice_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_TF_TRTaxInvoice_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_TF_TRTaxInvoice_ID, Integer.valueOf(TF_TRTaxInvoice_ID));
+	}
+
+	/** Get Sales Tax Invoice (Trading).
+		@return Sales Tax Invoice (Trading)	  */
+	public int getTF_TRTaxInvoice_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_TF_TRTaxInvoice_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 }

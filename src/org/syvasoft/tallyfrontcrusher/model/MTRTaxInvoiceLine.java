@@ -90,4 +90,11 @@ public class MTRTaxInvoiceLine extends X_TF_TRTaxInvoiceLine {
 		setLineTotalAmt(total);		
 	
 	}
+	
+	public BigDecimal getTaxRate() {
+		if(getCGST_Rate().doubleValue() > 0) 
+			return getCGST_Rate().add(getSGST_Rate()).setScale(2, RoundingMode.HALF_EVEN);
+		else
+			return getIGST_Rate().setScale(2, RoundingMode.HALF_EVEN);
+	}
 }

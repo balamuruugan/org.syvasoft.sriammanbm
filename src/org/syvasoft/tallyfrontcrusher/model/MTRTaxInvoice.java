@@ -79,6 +79,15 @@ public class MTRTaxInvoice extends X_TF_TRTaxInvoice {
 		return super.beforeSave(newRecord);
 	}
 	
+	public List<MTRTaxInvoiceLine> getLines() {
+		List<MTRTaxInvoiceLine> lines = new Query(getCtx(), MTRTaxInvoiceLine.Table_Name,
+				"TF_TRTaxInvoice_ID = ?", get_TrxName())
+				.setClient_ID()
+				.setParameters(getTF_TRTaxInvoice_ID())
+				.list();
+		return lines;
+	}
+	
 	public void processIt(String docAction) {
 		if(DocAction.ACTION_Prepare.equals(docAction)) {
 			setDocStatus(DOCSTATUS_InProgress);

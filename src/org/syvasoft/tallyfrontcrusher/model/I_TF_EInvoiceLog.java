@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for TF_EInvoiceLog
  *  @author iDempiere (generated) 
- *  @version Release 5.1
+ *  @version Release 10
  */
 @SuppressWarnings("all")
 public interface I_TF_EInvoiceLog 
@@ -32,7 +32,7 @@ public interface I_TF_EInvoiceLog
     /** TableName=TF_EInvoiceLog */
     public static final String Table_Name = "TF_EInvoiceLog";
 
-    /** AD_Table_ID=1000390 */
+    /** AD_Table_ID=1000679 */
     public static final int Table_ID = MTable.getTable_ID(Table_Name);
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
@@ -217,6 +217,17 @@ public interface I_TF_EInvoiceLog
 
 	/** Get TF_EInvoiceLog_UU	  */
 	public String getTF_EInvoiceLog_UU();
+
+    /** Column name TF_TRTaxInvoice_ID */
+    public static final String COLUMNNAME_TF_TRTaxInvoice_ID = "TF_TRTaxInvoice_ID";
+
+	/** Set Sales Tax Invoice (Trading)	  */
+	public void setTF_TRTaxInvoice_ID (int TF_TRTaxInvoice_ID);
+
+	/** Get Sales Tax Invoice (Trading)	  */
+	public int getTF_TRTaxInvoice_ID();
+
+	public I_TF_TRTaxInvoice getTF_TRTaxInvoice() throws RuntimeException;
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

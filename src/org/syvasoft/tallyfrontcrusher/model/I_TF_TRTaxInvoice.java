@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for TF_TRTaxInvoice
  *  @author iDempiere (generated) 
- *  @version Release 5.1
+ *  @version Release 10
  */
 @SuppressWarnings("all")
 public interface I_TF_TRTaxInvoice 
@@ -42,6 +42,24 @@ public interface I_TF_TRTaxInvoice
     BigDecimal accessLevel = BigDecimal.valueOf(1);
 
     /** Load Meta Data */
+
+    /** Column name AckDt */
+    public static final String COLUMNNAME_AckDt = "AckDt";
+
+	/** Set AckDt	  */
+	public void setAckDt (String AckDt);
+
+	/** Get AckDt	  */
+	public String getAckDt();
+
+    /** Column name AckNo */
+    public static final String COLUMNNAME_AckNo = "AckNo";
+
+	/** Set AckNo	  */
+	public void setAckNo (String AckNo);
+
+	/** Get AckNo	  */
+	public String getAckNo();
 
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
@@ -100,12 +118,12 @@ public interface I_TF_TRTaxInvoice
     /** Column name C_BPartner_ID */
     public static final String COLUMNNAME_C_BPartner_ID = "C_BPartner_ID";
 
-	/** Set Business Partner .
+	/** Set Business Partner.
 	  * Identifies a Business Partner
 	  */
 	public void setC_BPartner_ID (int C_BPartner_ID);
 
-	/** Get Business Partner .
+	/** Get Business Partner.
 	  * Identifies a Business Partner
 	  */
 	public int getC_BPartner_ID();
@@ -312,6 +330,15 @@ public interface I_TF_TRTaxInvoice
 	/** Get eWay Bill No	  */
 	public String geteWayBillNo();
 
+    /** Column name GenerateeInvoice */
+    public static final String COLUMNNAME_GenerateeInvoice = "GenerateeInvoice";
+
+	/** Set Generate eInvoice	  */
+	public void setGenerateeInvoice (String GenerateeInvoice);
+
+	/** Get Generate eInvoice	  */
+	public String getGenerateeInvoice();
+
     /** Column name GL_Journal_ID */
     public static final String COLUMNNAME_GL_Journal_ID = "GL_Journal_ID";
 
@@ -339,6 +366,15 @@ public interface I_TF_TRTaxInvoice
 	  * Total amount of document
 	  */
 	public BigDecimal getGrandTotal();
+
+    /** Column name IRN */
+    public static final String COLUMNNAME_IRN = "IRN";
+
+	/** Set IRN	  */
+	public void setIRN (String IRN);
+
+	/** Get IRN	  */
+	public String getIRN();
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
@@ -426,6 +462,15 @@ public interface I_TF_TRTaxInvoice
 	/** Get Post GST to Customer	  */
 	public boolean isPostTaxToCustomer();
 
+    /** Column name PrinteInvoice */
+    public static final String COLUMNNAME_PrinteInvoice = "PrinteInvoice";
+
+	/** Set Print eInvoice	  */
+	public void setPrinteInvoice (String PrinteInvoice);
+
+	/** Get Print eInvoice	  */
+	public String getPrinteInvoice();
+
     /** Column name Processed */
     public static final String COLUMNNAME_Processed = "Processed";
 
@@ -466,6 +511,15 @@ public interface I_TF_TRTaxInvoice
 	/** Get Round Off	  */
 	public BigDecimal getRoundOff();
 
+    /** Column name SignedQRCode */
+    public static final String COLUMNNAME_SignedQRCode = "SignedQRCode";
+
+	/** Set SignedQRCode	  */
+	public void setSignedQRCode (String SignedQRCode);
+
+	/** Get SignedQRCode	  */
+	public String getSignedQRCode();
+
     /** Column name TaxID */
     public static final String COLUMNNAME_TaxID = "TaxID";
 
@@ -498,6 +552,7 @@ public interface I_TF_TRTaxInvoice
 	public int getTF_Generate_Taxinvoice_ID();
 
 	
+
     /** Column name TF_TRTaxInvoice_ID */
     public static final String COLUMNNAME_TF_TRTaxInvoice_ID = "TF_TRTaxInvoice_ID";
 

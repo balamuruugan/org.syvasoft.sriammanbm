@@ -1424,4 +1424,18 @@ public class MWeighmentEntry extends X_TF_WeighmentEntry {
 		return invoice_Id;
 	}
 	
+	public int generateEInvoice4SalesTaxInvoice() {
+		boolean eInvoiceEnabled = MSysConfig.getBooleanValue("eINVOICE_ENABLED", false);
+		
+		if(!getWeighmentEntryType().equals(MWeighmentEntry.WEIGHMENTENTRYTYPE_Sales) || !eInvoiceEnabled)
+			return 0;
+						
+		String sql = " SELECT TF_TRTaxInvoice_ID FROM TF_TRTaxInvoice WHERE TF_WeighmentEntry_ID = "+ getTF_WeighmentEntry_ID()   
+			+" AND DocStatus IN ('CO','CL') AND IRN IS NULL";
+		
+		int invoice_Id = DB.getSQLValue(get_TrxName(), sql);
+				
+		return invoice_Id;
+	}
+	
 }

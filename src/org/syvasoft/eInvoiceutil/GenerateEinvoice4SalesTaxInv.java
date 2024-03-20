@@ -11,6 +11,7 @@ import java.sql.Timestamp;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 
 import org.compiere.model.MInvoiceLine;
@@ -25,14 +26,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.syvasoft.tallyfrontcrusher.model.MEInvoiceLog;
+import org.syvasoft.tallyfrontcrusher.model.MTRTaxInvoice;
+import org.syvasoft.tallyfrontcrusher.model.MTRTaxInvoiceLine;
 import org.syvasoft.tallyfrontcrusher.model.TF_MBPartner;
 import org.syvasoft.tallyfrontcrusher.model.TF_MInvoice;
 import org.syvasoft.tallyfrontcrusher.model.TF_MOrg;
 import org.syvasoft.tallyfrontcrusher.model.TF_MProduct;
 
-public class GenerateEinvoice {
+public class GenerateEinvoice4SalesTaxInv {
 
-	TF_MInvoice _inv = null;
+	MTRTaxInvoice _inv = null;
 	public ArrayList<String> errors = null;
 	String _docType = "INV";
 	int errorCount = 0;
@@ -43,7 +46,7 @@ public class GenerateEinvoice {
 	public static String AUTH_TOKEN = null;
 	public static Timestamp AUTH_EXPIRY = null;
 	
-	public GenerateEinvoice(TF_MInvoice inv, String docTyp, int PInstance_ID) {
+	public GenerateEinvoice4SalesTaxInv(MTRTaxInvoice inv, String docTyp, int PInstance_ID) {
 		_inv = inv;
 		errors =  new ArrayList<String>();
 		_docType = docTyp;
@@ -94,7 +97,7 @@ public class GenerateEinvoice {
 	
 	public String printJSONObject() {
 		
-		TF_MInvoice inv = _inv;
+		MTRTaxInvoice inv = _inv;
 		
 		JSONObject jo = new JSONObject();
 		jo.put("Version", "1.1");
@@ -105,7 +108,7 @@ public class GenerateEinvoice {
 			 TF_MOrg org = new TF_MOrg(getCtx(),inv.getAD_Org_ID(),get_TrxName());
 			 MOrgInfo orginfo = org.getInfo();
 			 MLocation loc = new MLocation(getCtx(),orginfo.getC_Location_ID(),get_TrxName());
-			 MInvoiceLine[] lines = inv.getLines(true);
+			 List<MTRTaxInvoiceLine> lines = inv.getLines();
 			 JSONObject jsi = new JSONObject();
 			 JSONArray arr = new JSONArray();
 			 BigDecimal IGSTAmt = Env.ZERO;
@@ -113,37 +116,25 @@ public class GenerateEinvoice {
 			 BigDecimal TotalCGST = Env.ZERO;
 			 BigDecimal TotalIGST = Env.ZERO;
 			 BigDecimal OtherCharges = Env.ZERO;
-			 for (int i = 0; i < lines.length; i++)
+			 BigDecimal totalInvoiceLines = Env.ZERO;
+			 int i = 0;
+			 for (MTRTaxInvoiceLine line : lines)
 			{
-				 MInvoiceLine line = lines[i];
+				 i++;
+				 
 				TF_MProduct prod = new TF_MProduct(getCtx(),line.getM_Product_ID() ,get_TrxName());
-				MTax tax = new MTax(getCtx(),line.getC_Tax_ID(),get_TrxName());
 				
-				if(hasTCS) {
-					String whereClause= "C_TaxTCS_ID = ?";
-					MTax tax1 = new Query(getCtx(), MTax.Table_Name, whereClause, get_TrxName())
-							.setClient_ID()
-							.setParameters(tax.get_ID())
-							.first();
-					if(tax1 != null) 
-						tax = tax1;
-				}
-				
-				if(tax.get_ValueAsBoolean("IsInterState"))
+
+				if(inv.isInterState())
 				{
-					IGSTAmt = line.getLineNetAmt().multiply(tax.getRate()).divide(Env.ONEHUNDRED).setScale(2,RoundingMode.HALF_UP);	
+					IGSTAmt = line.getIGST_Amt().setScale(2,RoundingMode.HALF_EVEN);
 				}
 				else
 				{
-					CGSTAmt = line.getLineNetAmt().multiply(tax.getRate()).divide(Env.ONEHUNDRED).setScale(2,RoundingMode.HALF_EVEN);
-					CGSTAmt = CGSTAmt.divide(new BigDecimal(2)).setScale(2,RoundingMode.HALF_EVEN);
+					//CGSTAmt = line.getLineNetAmt().multiply(tax.getRate()).divide(Env.ONEHUNDRED).setScale(2,RoundingMode.HALF_EVEN);
+					CGSTAmt = line.getCGST_Amt().setScale(2,RoundingMode.HALF_EVEN);
 				}
-				OtherCharges = inv.getGrandTotal().subtract(inv.getTotalLines()).subtract(IGSTAmt).subtract(CGSTAmt).subtract(CGSTAmt);
-				
-				if(OtherCharges.doubleValue() < 0) {
-					CGSTAmt = CGSTAmt.add(OtherCharges.divide(new BigDecimal(2), 2, RoundingMode.HALF_EVEN));
-					OtherCharges = BigDecimal.ZERO;
-				}
+				OtherCharges = inv.getTCSAmount().add(inv.getRoundOff()).setScale(2,RoundingMode.HALF_EVEN);
 				
 				TotalCGST = CGSTAmt.add(TotalCGST);
 				TotalIGST = IGSTAmt.add(TotalIGST);
@@ -152,15 +143,15 @@ public class GenerateEinvoice {
 					String IsServc = prod.getProductType().equals(TF_MProduct.PRODUCTTYPE_Item) ? "N" : "Y";
 					jsi = new JSONObject();
 					jsi = jsi.put("SlNo",slNo).put("IsServc",IsServc).put("PrdDesc",prod.getName()).put("HsnCd",prod.getHSNCode()).put("Barcde",prod.getHSNCode());
-					 jsi.put("Qty",line.getQtyEntered().setScale(2, RoundingMode.HALF_EVEN))
+					 jsi.put("Qty",line.getQty().setScale(2, RoundingMode.HALF_EVEN))
 					 .put("FreeQty",0)
 					 .put("Unit",line.getC_UOM().getUOMSymbol())
-					 .put("UnitPrice",line.getPriceEntered().setScale(2, RoundingMode.HALF_EVEN))
-					 .put("TotAmt",line.getLineNetAmt())
+					 .put("UnitPrice",line.getPrice().setScale(2, RoundingMode.HALF_EVEN))
+					 .put("TotAmt",line.getTaxableAmount().setScale(2, RoundingMode.HALF_EVEN))
 					 .put("Discount",0)
 					 .put("PreTaxVal",1)
-					 .put("AssAmt",line.getLineNetAmt().setScale(2, RoundingMode.HALF_EVEN))
-					 .put("GstRt",tax.getRate())
+					 .put("AssAmt",line.getTaxableAmount().setScale(2, RoundingMode.HALF_EVEN))
+					 .put("GstRt",line.getTaxRate())
 					 .put("SgstAmt",CGSTAmt)
 					 .put("IgstAmt",IGSTAmt)
 					 .put("CgstAmt",CGSTAmt)
@@ -171,7 +162,7 @@ public class GenerateEinvoice {
 					 .put("StateCesAmt",0)
 					 .put("StateCesNonAdvlAmt",0)
 					 .put("OthChrg",0)
-					 .put("TotItemVal",line.getLineNetAmt().add(CGSTAmt).add(CGSTAmt).add(IGSTAmt).setScale(2, RoundingMode.HALF_EVEN))
+					 .put("TotItemVal",line.getLineTotalAmt().setScale(2, RoundingMode.HALF_EVEN))
 					 .put("OrdLineRef",JSONObject.NULL)
 					 .put("OrgCntry",JSONObject.NULL)
 					 .put("PrdSlNo",JSONObject.NULL);
@@ -182,6 +173,8 @@ public class GenerateEinvoice {
 					 errors.add("Incomplete Information in Product or Invoice Line #" + (i+1));
 					 errors.add(ex.getMessage());				
 				}
+				
+				totalInvoiceLines = totalInvoiceLines.add(line.getTaxableAmount().setScale(2, RoundingMode.HALF_EVEN)).setScale(2, RoundingMode.HALF_EVEN);
 			}
 			 
 			 DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -225,8 +218,8 @@ public class GenerateEinvoice {
 				 errors.add("Incomplate Information in the Organization or Business Partner level");
 				 errors.add(ex.getMessage());
 			 }
-			 OtherCharges = inv.getGrandTotal().subtract(inv.getTotalLines()).subtract(TotalCGST)
-					 .subtract(TotalCGST).subtract(TotalIGST).setScale(2, RoundingMode.HALF_EVEN);
+			 OtherCharges = inv.getTCSAmount().setScale(2,RoundingMode.HALF_EVEN);
+			 
 			 BigDecimal rndOff = BigDecimal.ZERO;
 			 if(OtherCharges.doubleValue() < 0 ) {
 				 rndOff = OtherCharges;
@@ -234,7 +227,7 @@ public class GenerateEinvoice {
 			 }
 			 
 			 jo.put("ItemList", arr) //jsonArrayBuilderItemList)
-			 .put("ValDtls",(new JSONObject()).put("AssVal",inv.getTotalLines())
+			 .put("ValDtls",(new JSONObject()).put("AssVal",totalInvoiceLines)
 			 .put("CgstVal",TotalCGST)
 			 .put("SgstVal",TotalCGST)
 			 .put("IgstVal",TotalIGST)
@@ -242,9 +235,9 @@ public class GenerateEinvoice {
 			 .put("StCesVal",0)
 			 .put("Discount",0)
 			 .put("OthChrg",OtherCharges)
-			 .put("RndOffAmt",rndOff)
+			 .put("RndOffAmt",inv.getRoundOff())
 			 .put("TotInvVal",inv.getGrandTotal())
-			 .put("TotInvValFc",inv.getGrandTotal())
+			 .put("TotInvValFc",inv.getTotal())
 			 );
 			 
 			 System.out.println("JSON================>"+jo.toString());
@@ -332,9 +325,10 @@ public class GenerateEinvoice {
 		URL url;
 		MEInvoiceLog eLog = new MEInvoiceLog(getCtx(), 0, get_TrxName());
 		eLog.setAD_Org_ID(_inv.getAD_Org_ID());
-		eLog.setAD_Table_ID(TF_MInvoice.Table_ID);
+		eLog.setAD_Table_ID(MTRTaxInvoice.Table_ID);
 		eLog.setRecord_ID(_inv.get_ID());
 		eLog.setC_Invoice_ID(_inv.get_ID());
+		eLog.setTF_TRTaxInvoice_ID(_inv.getTF_TRTaxInvoice_ID());
 		eLog.setAD_PInstance_ID(getAD_PInstance_ID());
 		
 		try {
