@@ -82,6 +82,9 @@ public class CrusherColumnCalloutFactory implements IColumnCalloutFactory {
 			{
 				list.add(new CalloutBPartner_ExportCustomer());
 			}
+			if(columnName.equals(TF_MBPartner.COLUMNNAME_TaxID)) {
+				list.add(new CalloutBP_GetGSTINDetail());
+			}
 		}
 		//C_Invoice / C_Order - Calc Header Item Amount
 		if((tableName.equals(TF_MInvoice.Table_Name) || tableName.equals(TF_MOrder.Table_Name)) && 
