@@ -251,17 +251,14 @@ public class GenerateEinvoice4SalesTaxInv {
 	private String eInvoiceAuthentication() {
 		
 		
-		if(isAuthTokenExpired()) {
-			AuthenticationToken =  null;
-		}
-		else {
-			AuthenticationToken =  AUTH_TOKEN;
-		}
-		
-			
-		
-		if(AuthenticationToken != null)
-			return null;
+		/*
+		 * if(isAuthTokenExpired()) { AuthenticationToken = null; } else {
+		 * AuthenticationToken = AUTH_TOKEN; }
+		 * 
+		 * 
+		 * 
+		 * if(AuthenticationToken != null) return null;
+		 */
 		
 		String inputLine=null;
 		StringBuffer response = new StringBuffer();
