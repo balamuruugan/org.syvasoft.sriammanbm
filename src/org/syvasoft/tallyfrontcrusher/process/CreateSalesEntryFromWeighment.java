@@ -339,15 +339,15 @@ public class CreateSalesEntryFromWeighment extends SvrProcess {
 				.setOrderBy("GrossWeightTime")
 				.list();
 		
-		int j=0;
+//		int j=0;
 		
 		for(MWeighmentEntry wEntry : wEntries) {
 			TF_MBPartner bp = new TF_MBPartner(getCtx(), wEntry.getC_BPartner_ID(), get_TrxName());
-			if(bp.getTaxID().length()==15 && wEntry.isPermitSales()) {
+			if(bp.getTaxID() != null && bp.getTaxID().length()==15 && wEntry.isPermitSales()) {
 				//createEInvoice(wEntry);
 				createEInvoice4SalesTaxInvoice(wEntry);
 			}
-			j++;
+//			j++;
 		}
 		
 		return i + " Weighment Entries are processed!";
