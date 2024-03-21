@@ -103,7 +103,7 @@ public class GenerateEinvoice4SalesTaxInv {
 		jo.put("Version", "1.1");
 		
 		 TF_MBPartner bp = new TF_MBPartner(getCtx(),inv.getC_BPartner_ID(),get_TrxName());
-			if(bp.getTaxID().length() == 15) {
+			if(bp.getTaxID() != null && bp.getTaxID().length() == 15) {
 			 boolean hasTCS = bp.isApplyTCS();
 			 TF_MOrg org = new TF_MOrg(getCtx(),inv.getAD_Org_ID(),get_TrxName());
 			 MOrgInfo orginfo = org.getInfo();
@@ -245,7 +245,7 @@ public class GenerateEinvoice4SalesTaxInv {
 			 
 			}
 			else 
-				return "0";
+				return "B2C Invoice, GST No is empty";
 	}
 
 	private String eInvoiceAuthentication() {
