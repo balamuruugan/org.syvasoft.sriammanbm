@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Properties;
 
 import org.compiere.model.MRefList;
-import org.compiere.model.MReference;
 import org.compiere.model.MSysConfig;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -54,25 +53,26 @@ public class AddressAutoFillUtil {
 		HttpURLConnection con;
 		String status_code = null,status_desc=null;
 		String link = authenticate_url;
-		link = link+ email;
+		link = link + "email=" + email;
 		URL url;
 		try {
-		url = new URL(link);
-		con = (HttpURLConnection) url.openConnection(); 
-		con.setRequestProperty("username",userName);
-		con.setRequestProperty("password",password);
-		con.setRequestProperty("ip_address", ipaddress);
-		con.setRequestProperty("gstin",GSTIN);
-		con.setRequestProperty("client_id",client_id);
-		con.setRequestProperty("client_secret",secretkey);
-		con.setRequestMethod("GET");
-		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-		
-		int responseCode = con.getResponseCode();
-		while ((inputLine = in.readLine()) != null) {
-			response.append(inputLine); 
-			}
-		in.close();
+			url = new URL(link);
+			con = (HttpURLConnection) url.openConnection(); 
+			con.setRequestProperty("username",userName);
+			con.setRequestProperty("password",password);
+			con.setRequestProperty("ip_address",ipaddress);
+			con.setRequestProperty("gstin",GSTIN);
+			con.setRequestProperty("client_id",client_id);
+			con.setRequestProperty("client_secret",secretkey);
+			con.setRequestMethod("GET");
+			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+			System.out.println(link);
+			int responseCode = con.getResponseCode();
+			while ((inputLine = in.readLine()) != null) {
+				response.append(inputLine); 
+				}
+			in.close();
+			 
 		 
 		} 
         catch(Exception e) {
@@ -94,7 +94,7 @@ public class AddressAutoFillUtil {
 			}
 		//fetchAddress();
 		
-		return "Status Code:"+status_code+";Status Description:"+status_desc;
+		return "";
 	}
 	
 	public void fetchAddress(Properties ctx, String bp_gstin) {
@@ -113,7 +113,7 @@ public class AddressAutoFillUtil {
 		StringBuffer response = new StringBuffer();
 		HttpURLConnection con;		
 		String link = getGSTINDetail_url;
-		link = link+ email + "&param1=" + bp_gstin;
+		link = link+ "email=" + email + "&param1=" + bp_gstin;
 		URL url;
 		try {
 		url = new URL(link);
@@ -139,14 +139,14 @@ public class AddressAutoFillUtil {
         }
 		try {
 			JSONObject jsonObj = new JSONObject(response.toString());
-			System.out.println(jsonObj);
+			System.out.println(jsonObj);			
 			JSONObject jsonObjchild = jsonObj.getJSONObject("data");			
 			Name = jsonObjchild.getString("TradeName");
 			Address1 = jsonObjchild.getString("AddrBno");
 			Address2 = jsonObjchild.getString("AddrSt");
 			City = jsonObjchild.getString("AddrLoc");
-			statecode = jsonObjchild.getString("StateCode");
-			zip  = jsonObjchild.getString("AddrPncd");			
+			statecode = jsonObjchild.getInt("StateCode") + "";
+			zip  = jsonObjchild.getInt("AddrPncd") +"";			
 			MRefList rl = MRefList.get(ctx, 1000198, statecode, null);
 			Region = rl.getName();
 			
