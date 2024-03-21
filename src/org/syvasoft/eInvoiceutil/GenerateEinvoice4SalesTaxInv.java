@@ -327,7 +327,7 @@ public class GenerateEinvoice4SalesTaxInv {
 		eLog.setAD_Org_ID(_inv.getAD_Org_ID());
 		eLog.setAD_Table_ID(MTRTaxInvoice.Table_ID);
 		eLog.setRecord_ID(_inv.get_ID());
-		eLog.setC_Invoice_ID(_inv.get_ID());
+		//eLog.setC_Invoice_ID(_inv.get_ID());
 		eLog.setTF_TRTaxInvoice_ID(_inv.getTF_TRTaxInvoice_ID());
 		eLog.setAD_PInstance_ID(getAD_PInstance_ID());
 		
