@@ -3818,7 +3818,7 @@ public class TF_MOrder extends MOrder {
 		
 		if(isInterState) {
 			qty = InvBillQty;
-			if(qty == null || qty.equals(BigDecimal.ZERO))
+			if(qty == null || qty.equals(BigDecimal.ZERO) || billQty.doubleValue() <= InvBillQty.doubleValue())
 				qty = billQty;
 		}
 		else {
