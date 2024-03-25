@@ -46,8 +46,10 @@ set search_path to adempiere;
 -- ENHANCEMENT COMMENT END
 
 -- Crusher Tables
+UPDATE c_order SET c_paymentsalesdiscount_id=NULL;
+UPDATE tf_boulder_movement SET tf_boulder_receipt_id=NULL,tf_crusherkatingentry_id=NULL;
 UPDATE TF_Boulder_Receipt SET Subcon_Invoice_ID = NULL, TF_Employee_Salary_ID = NULL, TF_Vehicle_Rent_ID = NULL,
-	TF_Quarry_Rent_ID = NULL;
+	TF_Quarry_Rent_ID = NULL, tf_rmsubcon_movement_id=NULL;
 UPDATE TF_Employee_Salary SET GL_Journal_ID = NULL;
 UPDATE TF_Vehicle_Rent SET GL_Journal_ID = NULL;
 UPDATE TF_Quarry_Rent SET GL_Journal_ID = NULL;
@@ -82,8 +84,8 @@ DELETE FROM tf_drillingentry;
 DELETE FROM pm_machinestmt;
 DELETE FROM tf_tripincentive;
 DELETE FROM tf_tripsheet;
-
-
+delete from tf_weighmententry_reload;
+DELETE FROM tf_einvoicelog;
 
 DELETE FROM TF_Employee_Salary;
 DELETE FROM TF_Vehicle_Rent;
@@ -545,4 +547,3 @@ DELETE FROM AD_Org WHERE AD_org_ID NOT IN (0,1000000) AND AD_Client_ID = 1000000
 --SELECT * FROM AD_Org where AD_Org_ID = 1000003;
 
 */
-VACUUM;
