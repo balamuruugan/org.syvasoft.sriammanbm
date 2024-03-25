@@ -2,8 +2,8 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-ClassPath: lib/jakarta.json-api-2.1.2.jar,
  .
-Bundle-Name: Theni Bluemetals
-Bundle-SymbolicName: org.syvasoft.thenibm;singleton:=true
+Bundle-Name: Sri Amman Bluemetals
+Bundle-SymbolicName: org.syvasoft.sriammanbm;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.adempiere.base;bundle-version="4.1.0",
