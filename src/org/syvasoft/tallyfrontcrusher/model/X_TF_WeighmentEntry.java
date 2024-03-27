@@ -26,7 +26,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for TF_WeighmentEntry
  *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="TF_WeighmentEntry")
 public class X_TF_WeighmentEntry extends PO implements I_TF_WeighmentEntry, I_Persistent 
 {
@@ -34,7 +34,7 @@ public class X_TF_WeighmentEntry extends PO implements I_TF_WeighmentEntry, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20240319L;
+	private static final long serialVersionUID = 20240326L;
 
     /** Standard Constructor */
     public X_TF_WeighmentEntry (Properties ctx, int TF_WeighmentEntry_ID, String trxName)
@@ -205,34 +205,6 @@ public class X_TF_WeighmentEntry extends PO implements I_TF_WeighmentEntry, I_Pe
 			return "Y".equals(oo);
 		}
 		return false;
-	}
-
-	public org.compiere.model.I_C_BPartner getBill_BPartner() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
-			.getPO(getBill_BPartner_ID(), get_TrxName());
-	}
-
-	/** Set Invoice Partner.
-		@param Bill_BPartner_ID Business Partner to be invoiced
-	*/
-	public void setBill_BPartner_ID (int Bill_BPartner_ID)
-	{
-		if (Bill_BPartner_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_Bill_BPartner_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_Bill_BPartner_ID, Integer.valueOf(Bill_BPartner_ID));
-	}
-
-	/** Get Invoice Partner.
-		@return Business Partner to be invoiced
-	  */
-	public int getBill_BPartner_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_Bill_BPartner_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
 	}
 
 	/** Set Billing Name.
@@ -532,6 +504,25 @@ public class X_TF_WeighmentEntry extends PO implements I_TF_WeighmentEntry, I_Pe
 	public BigDecimal getChangeAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_ChangeAmt);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
+	/** Set Commission Qty.
+		@param CommissionQty Commission calculation basis Quantity
+	*/
+	public void setCommissionQty (BigDecimal CommissionQty)
+	{
+		set_Value (COLUMNNAME_CommissionQty, CommissionQty);
+	}
+
+	/** Get Commission Qty.
+		@return Commission calculation basis Quantity
+	  */
+	public BigDecimal getCommissionQty()
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_CommissionQty);
 		if (bd == null)
 			 return Env.ZERO;
 		return bd;

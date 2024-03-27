@@ -324,7 +324,8 @@ public class CreateSalesEntryFromWeighment extends SvrProcess {
 							" | ERROR: " + ex.getMessage());					
 				}					
 				wEntry.saveEx();
-				addLog(wEntry.get_Table_ID(), wEntry.getGrossWeightTime(), null, ex.getMessage(), wEntry.get_Table_ID(), wEntry.get_ID());
+				throw new AdempiereException(ex.getMessage());
+				//addLog(wEntry.get_Table_ID(), wEntry.getGrossWeightTime(), null, ex.getMessage(), wEntry.get_Table_ID(), wEntry.get_ID());
 			}
 			i++;
 		}
@@ -368,11 +369,11 @@ public class CreateSalesEntryFromWeighment extends SvrProcess {
 			ord.invoiceCount = 2;
 		
 		//permit qty based tax invoice;
-		ord.setC_DocType_ID(taxInvoice ? TF_MOrder.GSTOrderDocType_ID(getCtx()) : TF_MOrder.NonGSTOrderDocType_ID(getCtx()));
+		ord.setC_DocType_ID(wEntry.getC_DocType_ID(wEntry.getWeighmentEntryType()));
 		ord.setC_DocTypeTarget_ID(ord.getC_DocType_ID());		
 		//ord.setC_DocType_ID(wEntry.getC_DocType_ID(wEntry.getWeighmentEntryType()));
 		//ord.setC_DocTypeTarget_ID(wEntry.getC_DocType_ID(wEntry.getWeighmentEntryType()));
-		
+		ord.setInvoiceNo(wEntry.getInvoiceNo());
 		
 		ord.setM_Warehouse_ID(wEntry.getM_Warehouse_ID());
 		ord.setDateAcct(wEntry.getGrossWeightTime());

@@ -42,7 +42,12 @@ public class MRentedVehicle extends X_TF_RentedVehicle {
 		
 		if(newRecord && getC_BPartner_ID() > 0) {
 			TF_MBPartner bp = new TF_MBPartner(getCtx(), getC_BPartner_ID(), get_TrxName());
-			setIsTransporter(bp.isVendor());	
+			
+			if(bp.getIsPOSCashBP())
+				setIsTransporter(false);
+			else
+				setIsTransporter(bp.isVendor());
+			
 			setIsOwnVehicle(false);
 		}
 		if(!newRecord && isTransporter()) {

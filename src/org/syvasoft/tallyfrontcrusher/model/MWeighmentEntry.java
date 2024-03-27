@@ -1389,7 +1389,7 @@ public class MWeighmentEntry extends X_TF_WeighmentEntry {
 		//if(MSysConfig.getValue("INCLUDE_RENT_AMOUNT_IN_INVOICE").equals("Y"))
 		//if(isIncludeRentAmtInvoice()) {
 		if(getWeighmentEntryType().equals(WEIGHMENTENTRYTYPE_Sales)) {
-			if(getPermitIssuedQty().doubleValue() == 0) {
+			/*if(getPermitIssuedQty().doubleValue() == 0) {
 				unitRent = getRent_Amt().divide(getNetWeightUnit(), 2,RoundingMode.HALF_EVEN);
 			}
 			else {
@@ -1402,7 +1402,9 @@ public class MWeighmentEntry extends X_TF_WeighmentEntry {
 				else{
 					unitRent = getRent_Amt().divide(getNetWeightUnit(), 2,RoundingMode.HALF_EVEN);
 				}
-			}
+			}*/
+			
+			unitRent = getRent_Amt().divide(getNetWeightUnit(), 2,RoundingMode.HALF_EVEN);
 		}
 		
 		return getPrice().add(unitRent);

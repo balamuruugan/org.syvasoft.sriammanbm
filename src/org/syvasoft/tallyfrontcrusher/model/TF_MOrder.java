@@ -3721,28 +3721,28 @@ public class TF_MOrder extends MOrder {
 		
 		int bpartner_id = getC_BPartner_ID();
 		String partyName = wEntry.getPartyName();
-		if(wEntry.getBill_BPartner_ID() > 0) {
+		/*if(wEntry.getBill_BPartner_ID() > 0) {
 			bpartner_id = wEntry.getBill_BPartner_ID();
 			partyName = wEntry.getBill_BPartner().getName();
-		}
+		}*/
 		
 		inv.setPartyName(getPartyName());
-		inv.setC_BPartner_ID(bpartner_id);
+		inv.setC_BPartner_ID(getC_BPartner_ID());
 		inv.setDateSupply(getDateAcct());
 		inv.setIsSOTrx(true);
 		
-		TF_MBPartner partner = new TF_MBPartner(getCtx(),bpartner_id,get_TrxName());
+		/*TF_MBPartner partner = new TF_MBPartner(getCtx(),bpartner_id,get_TrxName());
 		if(wEntry != null && partner.getIsPOSCashBP() && getPartyName() == null) {
 			inv.setPartyName(wEntry.getPartyName());
-		}
-		
-		if(wEntry.getTaxID() != null) {
-			inv.setTaxID(wEntry.getTaxID());
+		}*/
+		inv.setTaxID(wEntry.getTaxID());
+		/*if(wEntry.getTaxID() != null) {
+			
 		}
 		else
 		{
 			inv.setTaxID(partner.getTaxID());
-		}
+		}*/
 			
 		inv.setDocumentNo(wEntry.getInvoiceNo());
 		inv.setBillingName(wEntry.getBillingName());
@@ -3778,7 +3778,7 @@ public class TF_MOrder extends MOrder {
 		BigDecimal divisor = new BigDecimal(1.05);
 		divisor = divisor.setScale(2, RoundingMode.HALF_EVEN);
 		BigDecimal price = BigDecimal.ZERO;	
-		if(wEntry.isPermitSales()) {
+		/*if(wEntry.isPermitSales()) {
 			if(getItem1_Price() == null || getItem1_Price().doubleValue() == 0)
 				throw new AdempiereException("Please set Item Price for " + prod.getName());
 		
@@ -3789,9 +3789,9 @@ public class TF_MOrder extends MOrder {
 				throw new AdempiereException("Please set Bill Price for " + prod.getName());
 				
 			price = wEntry.getBillPrice();	
-		}
+		}*/
 		
-		boolean isInterState = partner.isInterState();
+		boolean isInterState = wEntry.isInterState();
 		
 		inv.setIsInterState(isInterState);
 		/*
@@ -3813,8 +3813,12 @@ public class TF_MOrder extends MOrder {
 		// When BillingQtyRation is ZERO then Based on the amount BillingQty has to be calcualted. 
 		BigDecimal qty = getItem1_Qty();
 		
-		BigDecimal billQty = wEntry.getNetWeightUnit();
-		BigDecimal InvBillQty = wEntry.getPermitIssuedQty();		
+		BigDecimal billQty = wEntry.getCommissionQty();
+		
+		if(billQty == null || billQty.doubleValue()==0)
+			billQty = qty;
+		
+		/*BigDecimal InvBillQty = wEntry.getPermitIssuedQty();		
 		
 		if(isInterState) {
 			qty = InvBillQty;
@@ -3823,19 +3827,22 @@ public class TF_MOrder extends MOrder {
 		}
 		else {
 			qty = billQty;
-		}
+		}*/
+		
+		//qty = we.getco
 		
 		//if(custType.getBillingQtyRatio().doubleValue() > 0)
 		//	qty = qty.multiply(custType.getBillingQtyRatio());
 		//else {
 			//qty = getGrandTotal().divide(price, 2, RoundingMode.HALF_EVEN);
 		//}
+		qty = billQty;
 		invLine.setQty(qty);
 		
-		
+		price = getTotalLines().divide(qty, 2, RoundingMode.HALF_EVEN);
 		//Exclude Tax amount from Price
 		//TF_MProduct prod = new TF_MProduct(getCtx(), getItem1_ID(), get_TrxName());
-		MTax tax = new MTax(getCtx(), prod.getTax_ID(wEntry.getGSTRate(), true, wEntry.isApplyTCS(), partner.isInterState(), isReverseCharge()), get_TrxName());
+		MTax tax = new MTax(getCtx(), prod.getTax_ID(wEntry.getGSTRate(), true, wEntry.isApplyTCS(), wEntry.isInterState(), isReverseCharge()), get_TrxName());
 		
 		if(wEntry.isApplyTCS())	{
 			String whereClause = "C_TaxTCS_ID = ?";
@@ -3902,7 +3909,7 @@ public class TF_MOrder extends MOrder {
 			
 			
 			//Exclude Tax amount from Price
-			MTax tax2 = new MTax(getCtx(), prod2.getTax_ID(true, partner.isInterState(), isReverseCharge()), get_TrxName());				
+			MTax tax2 = new MTax(getCtx(), prod2.getTax_ID(true, wEntry.isInterState(), isReverseCharge()), get_TrxName());				
 			BigDecimal taxRate2 = tax2.getRate();
 			BigDecimal hundred2 = new BigDecimal("100");				
 			BigDecimal priceExcludesTax2 = price2.divide(BigDecimal.ONE

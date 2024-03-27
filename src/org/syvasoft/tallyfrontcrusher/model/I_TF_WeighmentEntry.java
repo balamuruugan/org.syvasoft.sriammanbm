@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for TF_WeighmentEntry
  *  @author iDempiere (generated) 
- *  @version Release 10
+ *  @version Release 11
  */
 @SuppressWarnings("all")
 public interface I_TF_WeighmentEntry 
@@ -109,21 +109,6 @@ public interface I_TF_WeighmentEntry
 
 	/** Get Apply TCS	  */
 	public boolean isApplyTCS();
-
-    /** Column name Bill_BPartner_ID */
-    public static final String COLUMNNAME_Bill_BPartner_ID = "Bill_BPartner_ID";
-
-	/** Set Invoice Partner.
-	  * Business Partner to be invoiced
-	  */
-	public void setBill_BPartner_ID (int Bill_BPartner_ID);
-
-	/** Get Invoice Partner.
-	  * Business Partner to be invoiced
-	  */
-	public int getBill_BPartner_ID();
-
-	public org.compiere.model.I_C_BPartner getBill_BPartner() throws RuntimeException;
 
     /** Column name BillingName */
     public static final String COLUMNNAME_BillingName = "BillingName";
@@ -275,6 +260,19 @@ public interface I_TF_WeighmentEntry
 
 	/** Get Change Amt	  */
 	public BigDecimal getChangeAmt();
+
+    /** Column name CommissionQty */
+    public static final String COLUMNNAME_CommissionQty = "CommissionQty";
+
+	/** Set Commission Qty.
+	  * Commission calculation basis Quantity
+	  */
+	public void setCommissionQty (BigDecimal CommissionQty);
+
+	/** Get Commission Qty.
+	  * Commission calculation basis Quantity
+	  */
+	public BigDecimal getCommissionQty();
 
     /** Column name CompletedBy */
     public static final String COLUMNNAME_CompletedBy = "CompletedBy";
