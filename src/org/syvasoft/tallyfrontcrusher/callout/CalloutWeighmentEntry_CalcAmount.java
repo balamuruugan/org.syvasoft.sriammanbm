@@ -29,6 +29,8 @@ public class CalloutWeighmentEntry_CalcAmount implements IColumnCallout {
 		int freight_uom_id = CalloutUtil.getIntValue(mTab, MWeighmentEntry.COLUMNNAME_FreightRule_ID);
 		int C_UOM_ID = CalloutUtil.getIntValue(mTab, MWeighmentEntry.COLUMNNAME_C_UOM_ID);
 		
+		Boolean ApplyTax = mTab.getValueAsBoolean(MWeighmentEntry.COLUMNNAME_IsPermitSales);
+		
 		boolean isTaxIncluded = (boolean) mTab.getValue(MWeighmentEntry.COLUMNNAME_IsTaxIncluded);
 		boolean isRentIncludesTax = (boolean) mTab.getValue(MWeighmentEntry.COLUMNNAME_RentIncludesTax);
 		
@@ -41,14 +43,14 @@ public class CalloutWeighmentEntry_CalcAmount implements IColumnCallout {
 		BigDecimal taxRate = tax.getRate();
 		BigDecimal hundred = new BigDecimal("100");
 		
-		if(isTaxIncluded) {
+		if(isTaxIncluded && ApplyTax) {
 			priceExcludesTax = price.divide(BigDecimal.ONE.add(taxRate.divide(hundred,2,RoundingMode.HALF_UP)), 2, RoundingMode.HALF_UP);	
 		}
 		else {
 			priceExcludesTax = price;	
 		}
 		
-		if(isRentIncludesTax) {
+		if(isRentIncludesTax && ApplyTax) {
 			rentExcludesTax = rentprice.divide(BigDecimal.ONE.add(taxRate.divide(hundred,2,RoundingMode.HALF_UP)), 2, RoundingMode.HALF_UP);	
 		}
 		else {
@@ -92,7 +94,7 @@ public class CalloutWeighmentEntry_CalcAmount implements IColumnCallout {
 		
 		BigDecimal discountAmt = CalloutUtil.getBDValue(mTab,MWeighmentEntry.COLUMNNAME_DiscountAmount);
 		BigDecimal gstrate = CalloutUtil.getBDValue(mTab, MWeighmentEntry.COLUMNNAME_GSTRate);
-		Boolean ApplyTax = mTab.getValueAsBoolean(MWeighmentEntry.COLUMNNAME_IsPermitSales);
+		
 		Boolean ApplyTCS = mTab.getValueAsBoolean(MWeighmentEntry.COLUMNNAME_ApplyTCS);
 		Boolean BillPriceGST = mTab.getValueAsBoolean(MWeighmentEntry.COLUMNNAME_BillPriceGST);
 		Boolean IncludePassAmtInvoice = mTab.getValueAsBoolean(MWeighmentEntry.COLUMNNAME_IncludePassAmtInvoice);
